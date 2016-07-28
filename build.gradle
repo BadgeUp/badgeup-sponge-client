@@ -1,5 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'maven'
+plugins {
+	id 'java'
+	id 'maven'
+	id 'com.github.johnrengelman.shadow' version '1.2.3'
+	id 'org.spongepowered.plugin' version '0.6'
+}
 
 group = 'io.badgeup'
 version = '1.0.0'
@@ -9,12 +13,27 @@ description = 'BadgeUp Sponge Client'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {      
-     maven { url "http://repo.spongepowered.org/maven/" }
-     maven { url "http://repo.maven.apache.org/maven2" }
+repositories {
+    mavenCentral()
+    maven {
+        name = 'sponge'
+        url = 'http://repo.spongepowered.org/maven'
+    }
 }
 
 dependencies {
+	compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
     compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.13'
-    compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
+    compile 'org.json:json:20160212'
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('org.glassfish.jersey.media:jersey-media-json-jackson:2.13'))
+        include(dependency('org.json:json:20160212'))
+    }
+}
+
+artifacts {
+    archives shadowJar
 }
