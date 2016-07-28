@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'io.badgeup'
+version = '1.0.0'
+
+description = 'BadgeUp Sponge Client'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {      
+     maven { url "http://repo.spongepowered.org/maven/" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.13'
+    compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
+}
