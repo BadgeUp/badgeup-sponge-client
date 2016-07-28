@@ -10,6 +10,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.plugin.Plugin;
 
 import com.google.inject.Inject;
 
@@ -19,6 +20,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
+@Plugin(id = "badgeup-sponge-client", name = "BadgeUpSpongeClient", version = "1.0.0")
 public class BadgeUpSponge {
 
 	private static BlockingQueue<BadgeUpEvent> eventQueue;
@@ -46,7 +48,7 @@ public class BadgeUpSponge {
 		// game.getEventManager().registerListeners(plugin, new
 		// DropItemStackEventListener(this));
 
-		Sponge.getScheduler().createTaskBuilder().async().execute(new PostEventsRunnable()).submit(this);
+		Sponge.getScheduler().createTaskBuilder().async().execute(new PostEventsRunnable(this)).submit(this);
 	}
 
 	private void setupConfig() {
@@ -105,6 +107,10 @@ public class BadgeUpSponge {
 	
 	public static Config getConfig() {
 		return config;
+	}
+	
+	public Logger getLogger() {
+		return logger;
 	}
 
 }

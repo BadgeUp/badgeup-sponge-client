@@ -16,11 +16,11 @@ public class Config {
 		}
 	}
 
-	@Setting("rest-uri")
-	private String RESTURI = "http://localhost:3000/v1/";
+	@Setting("api-key")
+	private String apiKey = "";
 	
-	public String getRESTURI() {
-		return RESTURI;
-	} 
+	public String getAPIKey() {
+		return apiKey;
+	}
 
 }

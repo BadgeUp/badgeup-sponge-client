@@ -1,6 +1,7 @@
 package io.badgeup.sponge;
 
 import java.net.URI;
+import java.util.Base64;
 import java.util.concurrent.BlockingQueue;
 
 import javax.ws.rs.client.Client;
@@ -12,23 +13,46 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.json.JSONObject;
+
+import com.google.common.base.Preconditions;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
 
 public class PostEventsRunnable implements Runnable {
+	
+	private final String BASE_URL = "http://localhost:3000/v1/apps/";
+	
+	private BadgeUpSponge plugin;
+	
+	public PostEventsRunnable(BadgeUpSponge plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public void run() {
-		System.out.println("Posting events...");
+		final String apiKey = BadgeUpSponge.getConfig().getAPIKey();
+		Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
+		// Base64 decode the API key
+		final byte[] decodedKey = Base64.getDecoder().decode(apiKey);
+		JSONObject keyObj = null;
+		try {
+			keyObj = new JSONObject(new String(decodedKey));
+		} catch(Exception e) {
+			plugin.getLogger().error("Please specify a valid API key.");
+		}
+		System.out.println(keyObj);
+		final String appId = keyObj.getString("applicationId");
+		Preconditions.checkArgument(!appId.isEmpty(), "Application ID must not be empty");
+		Preconditions.checkArgument(appId.matches("^[a-zA-Z0-9]*$"), "Application ID must contain only letters and numbers");
 		final BlockingQueue<BadgeUpEvent> eventQueue = BadgeUpSponge.getEventQueue();
 
 		Client client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
-		WebTarget target = client.target(URI.create("http://localhost:3000/v1/apps/zzazynm/events"));
+		WebTarget target = client.target(URI.create("http://localhost:3000/v1/apps/" + appId + "/events"));
 		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
-		invocationBuilder.header("Authorization",
-				"bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwicm9sZSI6ImFjY291bnQtaG9sZGVyIiwiYWNjb3VudElkIjoibm9kczUwdyJ9.ZtKwpkwwcLbIKWgciki-9VHALCUaT7OEgVFmEDSe61U");
-
-		System.out.println("BadgeUp event consumer started");
+		invocationBuilder.header("Authorization", "bearer " + apiKey);
+		
+		plugin.getLogger().info("Started BadgeUp event consumer");
 
 		try {
 			while (true) {
