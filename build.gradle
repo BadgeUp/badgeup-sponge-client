@@ -23,8 +23,8 @@ repositories {
 
 dependencies {
 	compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
+	compile 'ninja.leaping.configurate:configurate-json:3.1.1'
 	compile 'org.glassfish.jersey.core:jersey-client:2.13'
-    compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.13'
     compile 'org.json:json:20160212'
 }
 

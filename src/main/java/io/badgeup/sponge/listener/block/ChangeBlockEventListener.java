@@ -40,17 +40,15 @@ public class ChangeBlockEventListener extends BadgeUpEventListener {
    			final String key = "block:break";
    			final int increment = 1;
    			
-   			final Optional<ItemStack> optItem = player.getItemInHand(HandTypes.MAIN_HAND); // Can't break blocks w/ off-hand
-   			String tool = "fist";
-   			if (optItem.isPresent()) {
-   				tool = optItem.get().getItem().getName().toLowerCase();
-   			}
-   			
-   			final String blockType = transaction.getOriginal().getState().getType().getId().toLowerCase();
-
    			BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
-   			newEvent.addDataEntry("blockType", blockType);
-   			newEvent.addDataEntry("tool", tool);
+   			newEvent.addDataEntry("block", transaction.getOriginal().toContainer());
+   			
+   			final Optional<ItemStack> optItem = player.getItemInHand(HandTypes.MAIN_HAND); // Can't break blocks w/ off-hand
+   			if (optItem.isPresent()) {
+   				newEvent.addDataEntry("tool", optItem.get().toContainer());
+   			} else {
+   				newEvent.addDataEntry("tool", "fist");	
+   			}
    			
    			send(newEvent);
    		}
@@ -72,9 +70,8 @@ public class ChangeBlockEventListener extends BadgeUpEventListener {
    			final String key = "block:place";
    			final int increment = 1;
 
-   			final String blockType = transaction.getFinal().getState().getType().getId().toLowerCase();
    			BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
-   			newEvent.addDataEntry("blockType", blockType);
+   			newEvent.addDataEntry("block", transaction.getFinal().toContainer());
    			
    			send(newEvent);
    		}

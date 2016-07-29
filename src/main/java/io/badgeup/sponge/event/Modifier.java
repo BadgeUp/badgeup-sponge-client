@@ -1,8 +1,5 @@
 package io.badgeup.sponge.event;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-@JsonSerialize(using = ModifierSerializer.class)
 public class Modifier {
 
 	private ModifierOperation operation;

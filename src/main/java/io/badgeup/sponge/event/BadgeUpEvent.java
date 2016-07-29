@@ -1,8 +1,16 @@
 package io.badgeup.sponge.event;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.UUID;
+
+import org.json.JSONObject;
+import org.spongepowered.api.data.DataContainer;
+import org.spongepowered.api.data.translator.ConfigurateTranslator;
+
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.SimpleConfigurationNode;
+import ninja.leaping.configurate.json.JSONConfigurationLoader;
 
 public class BadgeUpEvent {
 
@@ -11,10 +19,10 @@ public class BadgeUpEvent {
 	private UUID subject;
 
 	// user provided data
-	private HashMap<String, Object> data;
+	private JSONObject data;
 	
 	// BadgeUp event options
-	private HashMap<String, Object> options;
+	private JSONObject options;
 
 	private Modifier modifier;
 
@@ -28,29 +36,19 @@ public class BadgeUpEvent {
 		this.key = key;
 		this.subject = subject;
 		this.modifier = modifier;
-		this.data = new HashMap<>();
-		this.options = new HashMap<>();
+		this.data = new JSONObject();
+		this.options = new JSONObject();
 	}
 
-	/**
-	 * Constructor for a BadgeUp event
-	 * @param key the identifying string for this type of event
-	 * @param subject the subject string identifying the user that caused this event
-	 * @param modifier the metric impact this event will have
-	 * @param data Extra data to include with this event
-	 */
-	public BadgeUpEvent(String key, UUID subject, Modifier modifier, HashMap<String, Object> data, HashMap<String, Object> options) {
-		this(key, subject, modifier);
-		this.data = data;
-		this.options = options;
-	}
-	
 	/**
 	 * Add a custom key/value data pair
 	 * @param key
 	 * @param ds
 	 */
-	public void addDataEntry(String key, Object ds) {
+	public void addDataEntry(final String key, Object ds) {
+		if(ds instanceof DataContainer) {
+			ds = dataContainerToJSONObject((DataContainer) ds);
+		}
 		data.put(key, ds);
 	}
 
@@ -65,44 +63,25 @@ public class BadgeUpEvent {
 		}
 	}
 	
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public UUID getSubject() {
-		return subject;
-	}
-
-	public void setSubject(UUID ownerId) {
-		this.subject = ownerId;
-	}
-
-	public HashMap<String, Object> getData() {
-		return data;
-	}
-
-	public void setData(HashMap<String, Object> data) {
-		this.data = data;
+	public JSONObject build() {
+		return new JSONObject()
+				.put("key", key)
+				.put("subject", subject.toString())
+				.put("data", data)
+				.put("options", options)
+				.put("modifier", new JSONObject().put(modifier.getOperation().getName(), modifier.getValue()));
 	}
 	
-	public Map<String, Object> getOptions() {
-		return options;
+	private JSONObject dataContainerToJSONObject(DataContainer container) {
+		StringWriter writer = new StringWriter();
+		ConfigurationNode node = SimpleConfigurationNode.root();
+		ConfigurateTranslator.instance().translateContainerToData(node, container);
+		try {
+			JSONConfigurationLoader.builder().build().saveInternal(node, writer);
+			return new JSONObject(writer.toString());
+		} catch (IOException e) {
+			return new JSONObject();
+		}
 	}
-
-	public void setOptions(HashMap<String, Object> options) {
-		this.options = options;
-	}
-
-	public Modifier getModifier() {
-		return modifier;
-	}
-
-	public void setModifier(Modifier modifier) {
-		this.modifier = modifier;
-	}
-
+	
 }
