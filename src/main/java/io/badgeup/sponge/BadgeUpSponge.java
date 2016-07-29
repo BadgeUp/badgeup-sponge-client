@@ -15,6 +15,7 @@ import org.spongepowered.api.plugin.Plugin;
 import com.google.inject.Inject;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
+import io.badgeup.sponge.listener.block.ChangeBlockEventListener;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -40,9 +41,10 @@ public class BadgeUpSponge {
 		eventQueue = new ArrayBlockingQueue<BadgeUpEvent>(10000);
 
 		setupConfig();
+		
+		// Register event listeners
 
-		// Sponge.getEventManager().registerListeners(plugin, new
-		// BlockEventListener(this));
+		 Sponge.getEventManager().registerListeners(this, new ChangeBlockEventListener(this));
 		// game.getEventManager().registerListeners(plugin, new
 		// PlayerEventListener(this));
 		// game.getEventManager().registerListeners(plugin, new
