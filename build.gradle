@@ -23,14 +23,14 @@ repositories {
 
 dependencies {
 	compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
+	compile 'org.glassfish.jersey.core:jersey-client:2.13'
     compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.13'
     compile 'org.json:json:20160212'
 }
 
 shadowJar {
     dependencies {
-        include(dependency('org.glassfish.jersey.media:jersey-media-json-jackson:2.13'))
-        include(dependency('org.json:json:20160212'))
+        exclude(dependency('org.spongepowered:spongeapi:5.0.0-SNAPSHOT'))
     }
 }
 
