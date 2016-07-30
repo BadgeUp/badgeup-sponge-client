@@ -45,12 +45,12 @@ public class PostEventsRunnable implements Runnable {
 		Preconditions.checkArgument(appId.matches("^[a-zA-Z0-9]*$"),
 				"Application ID must contain only letters and numbers");
 		final BlockingQueue<BadgeUpEvent> eventQueue = BadgeUpSponge.getEventQueue();
-
+		
+		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
 		Client client = ClientBuilder.newBuilder().build();
-		WebTarget target = client.target(URI.create("http://localhost:3000/v1/apps/" + appId + "/events"));
+		WebTarget target = client.target(URI.create(BASE_URL + appId + "/events"));
 		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
-		invocationBuilder.header("Authorization", "bearer "
-				+ "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50SWQiOiJ2aW9vaml4Iiwicm9sZSI6ImFjY291bnRfb3duZXIiLCJpc3MiOiJodHRwczovL2JhZGdldXAuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDU3ODE4MmZiODkzYzU4NmIzZTk1YzAyNCIsImF1ZCI6IlkyTjFlVEpXYjFEZHlWdVo4MXBQY2s4REhUN0V2dG11IiwiZXhwIjoxNDY5ODUzMTkxLCJpYXQiOjE0Njk4MTcxOTF9.yLXn3mZzcUMH5bwECr-y5WRJUgV7axGx0LjCjG4Rhb8");
+		invocationBuilder.header("Authorization", authHeader);
 
 		plugin.getLogger().info("Started BadgeUp event consumer");
 
@@ -59,7 +59,8 @@ public class PostEventsRunnable implements Runnable {
 				final BadgeUpEvent event = eventQueue.take();
 
 				try {
-					Response response = invocationBuilder.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
+					Response response = invocationBuilder
+							.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
 					System.out.println("BadgeUp response status code: " + response.getStatus());
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
