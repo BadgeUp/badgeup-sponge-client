@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.listener.block.ChangeBlockEventListener;
+import io.badgeup.sponge.listener.block.CollideBlockEventListener;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -41,16 +42,22 @@ public class BadgeUpSponge {
 		eventQueue = new ArrayBlockingQueue<BadgeUpEvent>(10000);
 
 		setupConfig();
-		
+
 		// Register event listeners
 
-		 Sponge.getEventManager().registerListeners(this, new ChangeBlockEventListener(this));
+		Sponge.getEventManager().registerListeners(this, new ChangeBlockEventListener(this));
+		// Generates way too many events
+		// Sponge.getEventManager().registerListeners(this, new CollideBlockEventListener(this));
+
 		// game.getEventManager().registerListeners(plugin, new
 		// PlayerEventListener(this));
 		// game.getEventManager().registerListeners(plugin, new
 		// DropItemStackEventListener(this));
 
-		Sponge.getScheduler().createTaskBuilder().async().execute(new PostEventsRunnable(this)).submit(this);
+		for (int i = 1; i <= 8; i++) {
+			Sponge.getScheduler().createTaskBuilder().async().execute(new PostEventsRunnable(this))
+					.name("BadgeUp - Event Posting Thread #" + i).submit(this);
+		}
 	}
 
 	private void setupConfig() {
@@ -102,15 +109,15 @@ public class BadgeUpSponge {
 			this.logger.warn("The default configuration could not be created!");
 		}
 	}
-	
+
 	public static BlockingQueue<BadgeUpEvent> getEventQueue() {
 		return eventQueue;
 	}
-	
+
 	public static Config getConfig() {
 		return config;
 	}
-	
+
 	public Logger getLogger() {
 		return logger;
 	}

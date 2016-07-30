@@ -37,7 +37,7 @@ public class ChangeBlockEventListener extends BadgeUpEventListener {
 
    		for(final Transaction<BlockSnapshot> transaction : event.getTransactions()) {
    			final UUID uuid = player.getUniqueId();
-   			final String key = "block:break";
+   			final String key = "changeblock:break";
    			final int increment = 1;
    			
    			BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
@@ -67,7 +67,7 @@ public class ChangeBlockEventListener extends BadgeUpEventListener {
 
    		for(final Transaction<BlockSnapshot> transaction : event.getTransactions()) {
    			final UUID uuid = player.getUniqueId();
-   			final String key = "block:place";
+   			final String key = "changeblock:place";
    			final int increment = 1;
 
    			BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
