@@ -58,7 +58,12 @@ public class BadgeUpEvent {
 				value = serializedObject;
 			}
 		} else {
-			// TODO deal with enums, discard classes, etc.
+			if(value instanceof Enum) {
+				value = value.toString();
+				System.out.println(value);
+			} else {
+				return;
+			}
 		}
 		data.put(key, value);
 	}

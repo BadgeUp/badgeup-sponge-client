@@ -52,9 +52,7 @@ public class BadgeUpEventListener {
 			final String methodName = m.getName();
 			if (methodName.startsWith("get")) {
 				Object result = m.invoke(event, null);
-				if (result instanceof DataSerializable) {
-					newEvent.addDataEntry(methodName.substring(3), result);
-				}
+				newEvent.addDataEntry(methodName.substring(3), result);
 			}
 		}
 		
