@@ -1,5 +1,6 @@
 package io.badgeup.sponge.event;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 
 import io.badgeup.sponge.Util;
@@ -19,7 +21,7 @@ public class BadgeUpEvent {
 
 	// user provided data
 	private JSONObject data;
-	
+
 	// BadgeUp event options
 	private JSONObject options;
 
@@ -27,9 +29,13 @@ public class BadgeUpEvent {
 
 	/**
 	 * Constructor for a BadgeUp event
-	 * @param key the identifying string for this type of event
-	 * @param subject the subject string identifying the user that caused this event
-	 * @param modifier the metric impact this event will have 
+	 * 
+	 * @param key
+	 *            the identifying string for this type of event
+	 * @param subject
+	 *            the subject string identifying the user that caused this event
+	 * @param modifier
+	 *            the metric impact this event will have
 	 */
 	public BadgeUpEvent(String key, UUID subject, Modifier modifier) {
 		this.key = key;
@@ -38,21 +44,25 @@ public class BadgeUpEvent {
 		this.data = new JSONObject();
 		this.options = new JSONObject();
 	}
-	
+
 	public void setKey(String key) {
 		this.key = key;
 	}
 
 	/**
 	 * Add a custom key/value data pair
+	 * 
 	 * @param key
 	 * @param value
 	 */
+	@SuppressWarnings("rawtypes")
 	public void addDataEntry(final String key, Object value) {
-		if(value instanceof DataSerializable) {
-			if(value instanceof Player) {
-				return;
-			} else if(value instanceof Text) {
+		if (value instanceof Player || value instanceof Cause || value instanceof Class) {
+			return;
+		}
+
+		if (value instanceof DataSerializable) {
+			if (value instanceof Text) {
 				value = ((Text) value).toPlain();
 			} else {
 				JSONObject serializedObject = Util.dataContainerToJSONObject(((DataSerializable) value).toContainer());
@@ -60,21 +70,33 @@ public class BadgeUpEvent {
 				value = serializedObject;
 			}
 		} else {
-			if(value instanceof Enum) {
-				value = value.toString();
-			} else if(value instanceof List) {
+			if (value instanceof List) {
 				JSONArray array = new JSONArray();
-				for(Object entry : (List) value) {
-					if(!(entry instanceof DataSerializable)) {
+				for (Object entry : (List) value) {
+					if (!(entry instanceof DataSerializable)) {
 						return;
 					}
-					JSONObject serializedObject = Util.dataContainerToJSONObject(((DataSerializable) entry).toContainer());
+					JSONObject serializedObject = Util
+							.dataContainerToJSONObject(((DataSerializable) entry).toContainer());
 					Util.cleanData(serializedObject);
 					array.put(serializedObject);
 				}
 				value = array;
 			} else {
-				return;
+				Method toStringMethod;
+				try {
+					toStringMethod = value.getClass().getMethod("toString");
+				} catch (NoSuchMethodException e) {
+					// Can't be thrown since every class has a toString method
+					// through Object
+					return;
+				}
+				if (toStringMethod.getDeclaringClass() == Object.class) {
+					// toString has not been implemented and will only produce
+					// the class name + the object hash
+					// this is useless, so discard it
+					return;
+				}
 			}
 		}
 		data.put(key, value);
@@ -90,14 +112,11 @@ public class BadgeUpEvent {
 			this.options.remove("discard");
 		}
 	}
-	
+
 	public JSONObject build() {
-		return new JSONObject()
-				.put("key", key)
-				.put("subject", subject.toString())
-				.put("data", data)
+		return new JSONObject().put("key", key).put("subject", subject.toString()).put("data", data)
 				.put("options", options)
 				.put("modifier", new JSONObject().put(modifier.getOperation().getName(), modifier.getValue()));
 	}
-	
+
 }
