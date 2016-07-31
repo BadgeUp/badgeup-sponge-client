@@ -1,0 +1,81 @@
+package io.badgeup.sponge;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.spongepowered.api.data.DataSerializable;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.block.CollideBlockEvent;
+import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
+import org.spongepowered.api.event.entity.CollideEntityEvent;
+import org.spongepowered.api.event.entity.MoveEntityEvent;
+
+import io.badgeup.sponge.event.BadgeUpEvent;
+import io.badgeup.sponge.event.Modifier;
+import io.badgeup.sponge.event.ModifierOperation;
+
+public class BadgeUpEventListener {
+
+	private BadgeUpSponge plugin;
+
+	public BadgeUpEventListener(BadgeUpSponge plugin) {
+		this.plugin = plugin;
+	}
+	
+	@Listener(order = Order.POST)
+	public void event(Event event) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		final Optional<Player> optPlayer = event.getCause().<Player>first(Player.class);
+		if (!optPlayer.isPresent()) {
+			return;
+		}
+		if (event instanceof NotifyNeighborBlockEvent || event instanceof MoveEntityEvent
+				|| event instanceof CollideBlockEvent || event instanceof CollideEntityEvent) {
+			return;
+		}
+		
+		final String className = event.getClass().getSimpleName();
+		final String key = className
+				.toLowerCase()
+				.substring(0, className.lastIndexOf("$"))
+				.replace('$', ':')
+				.replace("event", "");
+		
+		final UUID uuid = optPlayer.get().getUniqueId();
+		final int increment = 1;
+
+		BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
+
+		for (Method m : event.getClass().getMethods()) {
+			final String methodName = m.getName();
+			if (methodName.startsWith("get")) {
+				Object result = m.invoke(event, null);
+				if (result instanceof DataSerializable) {
+					newEvent.addDataEntry(methodName.substring(3), result);
+				}
+			}
+		}
+		
+		send(newEvent);
+		
+	}
+
+	private void send(BadgeUpEvent event) {
+		boolean success = true;
+		try {
+			success = BadgeUpSponge.getEventQueue().add(event);
+		} catch (IllegalStateException e) {
+			success = false;
+		}
+
+		if (!success) {
+			this.plugin.getLogger().warn("Could not add another event to the event queue. Discarding event.");
+			// TODO try to re-add somehow
+		}
+	}
+
+}

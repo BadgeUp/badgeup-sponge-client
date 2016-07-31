@@ -1,16 +1,13 @@
 package io.badgeup.sponge.event;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.UUID;
 
 import org.json.JSONObject;
-import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.translator.ConfigurateTranslator;
+import org.spongepowered.api.data.DataSerializable;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.SimpleConfigurationNode;
-import ninja.leaping.configurate.json.JSONConfigurationLoader;
+import io.badgeup.sponge.Util;
 
 public class BadgeUpEvent {
 
@@ -39,17 +36,31 @@ public class BadgeUpEvent {
 		this.data = new JSONObject();
 		this.options = new JSONObject();
 	}
+	
+	public void setKey(String key) {
+		this.key = key;
+	}
 
 	/**
 	 * Add a custom key/value data pair
 	 * @param key
-	 * @param ds
+	 * @param value
 	 */
-	public void addDataEntry(final String key, Object ds) {
-		if(ds instanceof DataContainer) {
-			ds = dataContainerToJSONObject((DataContainer) ds);
+	public void addDataEntry(final String key, Object value) {
+		if(value instanceof DataSerializable) {
+			if(value instanceof Player) {
+				return;
+			} else if(value instanceof Text) {
+				value = ((Text) value).toPlain();
+			} else {
+				JSONObject serializedObject = Util.dataContainerToJSONObject(((DataSerializable) value).toContainer());
+				Util.cleanData(serializedObject);
+				value = serializedObject;
+			}
+		} else {
+			// TODO deal with enums, discard classes, etc.
 		}
-		data.put(key, ds);
+		data.put(key, value);
 	}
 
 	/**
@@ -70,18 +81,6 @@ public class BadgeUpEvent {
 				.put("data", data)
 				.put("options", options)
 				.put("modifier", new JSONObject().put(modifier.getOperation().getName(), modifier.getValue()));
-	}
-	
-	private JSONObject dataContainerToJSONObject(DataContainer container) {
-		StringWriter writer = new StringWriter();
-		ConfigurationNode node = SimpleConfigurationNode.root();
-		ConfigurateTranslator.instance().translateContainerToData(node, container);
-		try {
-			JSONConfigurationLoader.builder().build().saveInternal(node, writer);
-			return new JSONObject(writer.toString());
-		} catch (IOException e) {
-			return new JSONObject();
-		}
 	}
 	
 }

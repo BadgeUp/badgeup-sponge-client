@@ -62,6 +62,10 @@ public class PostEventsRunnable implements Runnable {
 					Response response = invocationBuilder
 							.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
 					System.out.println("BadgeUp response status code: " + response.getStatus());
+					if(response.getStatus() == 413) {
+						System.out.println(event.build().getString("key"));
+						System.out.println(event.build().toString());
+					}
 				} catch (Exception e) {
 					System.err.println(e.getMessage());
 					// TODO possibly put the event back in the queue if it was a
