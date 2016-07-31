@@ -16,6 +16,8 @@ import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
+import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
@@ -28,21 +30,20 @@ public class BadgeUpEventListener {
 	public BadgeUpEventListener(BadgeUpSponge plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	@Listener(order = Order.POST)
-	@Exclude({NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class})
-	public void event(Event event, @Root Player player) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		if(event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+	@Exclude({ NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class,
+			ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class})
+	public void event(Event event, @Root Player player)
+			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
 			return;
 		}
-		
+
 		final String className = event.getClass().getSimpleName();
-		final String key = className
-				.toLowerCase()
-				.substring(0, className.lastIndexOf("$"))
-				.replace('$', ':')
+		final String key = className.toLowerCase().substring(0, className.lastIndexOf("$")).replace('$', ':')
 				.replace("event", "");
-		
+
 		final UUID uuid = player.getUniqueId();
 		final int increment = 1;
 
@@ -57,7 +58,7 @@ public class BadgeUpEventListener {
 		}
 		
 		send(newEvent);
-		
+
 	}
 
 	private void send(BadgeUpEvent event) {

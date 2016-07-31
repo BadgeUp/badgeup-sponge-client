@@ -1,7 +1,9 @@
 package io.badgeup.sponge.event;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.entity.living.player.Player;
@@ -60,7 +62,17 @@ public class BadgeUpEvent {
 		} else {
 			if(value instanceof Enum) {
 				value = value.toString();
-				System.out.println(value);
+			} else if(value instanceof List) {
+				JSONArray array = new JSONArray();
+				for(Object entry : (List) value) {
+					if(!(entry instanceof DataSerializable)) {
+						return;
+					}
+					JSONObject serializedObject = Util.dataContainerToJSONObject(((DataSerializable) entry).toContainer());
+					Util.cleanData(serializedObject);
+					array.put(serializedObject);
+				}
+				value = array;
 			} else {
 				return;
 			}
