@@ -2,11 +2,11 @@ package io.badgeup.sponge;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -14,6 +14,8 @@ import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.event.filter.type.Exclude;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
@@ -28,13 +30,9 @@ public class BadgeUpEventListener {
 	}
 	
 	@Listener(order = Order.POST)
-	public void event(Event event) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		final Optional<Player> optPlayer = event.getCause().<Player>first(Player.class);
-		if (!optPlayer.isPresent()) {
-			return;
-		}
-		if (event instanceof NotifyNeighborBlockEvent || event instanceof MoveEntityEvent
-				|| event instanceof CollideBlockEvent || event instanceof CollideEntityEvent) {
+	@Exclude({NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class})
+	public void event(Event event, @Root Player player) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if(event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
 			return;
 		}
 		
@@ -45,7 +43,7 @@ public class BadgeUpEventListener {
 				.replace('$', ':')
 				.replace("event", "");
 		
-		final UUID uuid = optPlayer.get().getUniqueId();
+		final UUID uuid = player.getUniqueId();
 		final int increment = 1;
 
 		BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
