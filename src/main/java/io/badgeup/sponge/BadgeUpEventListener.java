@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -16,7 +15,8 @@ import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
-import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.CreativeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
@@ -33,7 +33,9 @@ public class BadgeUpEventListener {
 
 	@Listener(order = Order.POST)
 	@Exclude({ NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class,
-			ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class})
+			ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, CreativeInventoryEvent.class,
+			UseItemStackEvent.Replace.class, UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class,
+			UseItemStackEvent.Tick.class })
 	public void event(Event event, @Root Player player)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
@@ -56,7 +58,7 @@ public class BadgeUpEventListener {
 				newEvent.addDataEntry(methodName.substring(3), result);
 			}
 		}
-		
+
 		send(newEvent);
 
 	}
