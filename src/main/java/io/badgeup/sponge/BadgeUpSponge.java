@@ -11,6 +11,7 @@ import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import com.google.inject.Inject;
 
@@ -110,6 +111,10 @@ public class BadgeUpSponge {
 
 	public Logger getLogger() {
 		return logger;
+	}
+	
+	public PluginContainer getContainer() {
+		return Sponge.getPluginManager().getPlugin("badgeup-sponge-client").get();
 	}
 
 }

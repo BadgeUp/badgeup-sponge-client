@@ -12,7 +12,9 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.spongepowered.api.Sponge;
 
 import com.google.common.base.Preconditions;
 
@@ -45,7 +47,7 @@ public class PostEventsRunnable implements Runnable {
 		Preconditions.checkArgument(appId.matches("^[a-zA-Z0-9]*$"),
 				"Application ID must contain only letters and numbers");
 		final BlockingQueue<BadgeUpEvent> eventQueue = BadgeUpSponge.getEventQueue();
-		
+
 		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
 		Client client = ClientBuilder.newBuilder().build();
 		WebTarget target = client.target(URI.create(BASE_URL + appId + "/events"));
@@ -61,8 +63,20 @@ public class PostEventsRunnable implements Runnable {
 				try {
 					Response response = invocationBuilder
 							.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
+					final String rawBody = response.readEntity(String.class);
+					final JSONObject body = new JSONObject(rawBody);
+					final JSONArray achievementProgress = body.getJSONArray("progress");
+					achievementProgress.forEach(progressObj -> {
+						JSONObject progress = (JSONObject) progressObj;
+						if (!(progress.getBoolean("complete"))) { //  && progress.getBoolean("isNew")
+							return;
+						}
+						Sponge.getScheduler().createTaskBuilder().execute(new AwardPlayerRunnable(plugin, body))
+								.submit(plugin);
+					});
+
 					System.out.println("BadgeUp response status code: " + response.getStatus());
-					if(response.getStatus() == 413) {
+					if (response.getStatus() == 413) {
 						System.out.println(event.build().getString("key"));
 						System.out.println(event.build().toString());
 					}
