@@ -60,34 +60,27 @@ public class PostEventsRunnable implements Runnable {
 			while (true) {
 				final BadgeUpEvent event = eventQueue.take();
 
-				try {
-					Response response = invocationBuilder
-							.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
-					final String rawBody = response.readEntity(String.class);
-					final JSONObject body = new JSONObject(rawBody);
-					final JSONArray achievementProgress = body.getJSONArray("progress");
-					achievementProgress.forEach(progressObj -> {
-						JSONObject progress = (JSONObject) progressObj;
-						if (!(progress.getBoolean("complete"))) { //  && progress.getBoolean("isNew")
-							return;
-						}
-						Sponge.getScheduler().createTaskBuilder().execute(new AwardPlayerRunnable(plugin, body))
-								.submit(plugin);
-					});
-
-					System.out.println("BadgeUp response status code: " + response.getStatus());
-					if (response.getStatus() == 413) {
-						System.out.println(event.build().getString("key"));
-						System.out.println(event.build().toString());
-					}
-				} catch (Exception e) {
-					System.err.println(e.getMessage());
-					// TODO possibly put the event back in the queue if it was a
-					// timeout
+				Response response = invocationBuilder
+						.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
+				final String rawBody = response.readEntity(String.class);
+				if (response.getStatus() == 413) {
+					System.out.println("Event too large: " + event.build().getString("key"));
+					continue;
 				}
+				final JSONObject body = new JSONObject(rawBody);
+				final JSONArray achievementProgress = body.getJSONArray("progress");
+				achievementProgress.forEach(progressObj -> {
+					JSONObject progress = (JSONObject) progressObj;
+					if (!(progress.getBoolean("complete"))) { //  && progress.getBoolean("isNew")
+						return;
+					}
+					Sponge.getScheduler().createTaskBuilder().execute(new AwardPlayerRunnable(plugin, event.getSubject(), progress))
+							.submit(plugin);
+				});
 			}
 		} catch (Exception e) {
 			System.err.println(e);
+			e.printStackTrace();
 		}
 	}
 }

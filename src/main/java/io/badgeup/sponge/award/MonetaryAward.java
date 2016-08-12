@@ -15,6 +15,7 @@ import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 
 import io.badgeup.sponge.BadgeUpSponge;
+import io.badgeup.sponge.Util;
 
 public class MonetaryAward extends Award {
 
@@ -25,22 +26,22 @@ public class MonetaryAward extends Award {
 
 	public MonetaryAward(BadgeUpSponge plugin, JSONObject award) {
 		super(plugin, award);
-		this.amount = safeGetBigDecimal(data, "amount", BigDecimal.ZERO);
-		this.currencyId = safeGetString(data, "currency", "");
+		this.amount = Util.safeGetBigDecimal(data, "amount").orElse(BigDecimal.ZERO);
+		this.currencyId = Util.safeGetString(data, "currency").orElse("");
 	}
 
 	@Override
-	public void awardPlayer(Player player) {
+	public boolean awardPlayer(Player player) {
 		final Optional<EconomyService> econSvcOpt = Sponge.getServiceManager().provide(EconomyService.class);
 		if (!econSvcOpt.isPresent()) {
-			plugin.getLogger().warn("No EconomyService present. Cannot give monetary award.");
-			return;
+			plugin.getLogger().error("No EconomyService present. Cannot give monetary award.");
+			return false;
 		}
 		final EconomyService economy = econSvcOpt.get();
 		final Optional<UniqueAccount> accountOpt = economy.getOrCreateAccount(player.getUniqueId());
 		if (!accountOpt.isPresent()) {
-			plugin.getLogger().warn("Unable to retrieve economy account for player " + player.getUniqueId().toString());
-			return;
+			plugin.getLogger().error("Unable to retrieve economy account for player " + player.getUniqueId().toString());
+			return false;
 		}
 		final UniqueAccount playerAccount = accountOpt.get();
 
@@ -62,7 +63,7 @@ public class MonetaryAward extends Award {
 		}
 		// TODO add more stuff to the cause chain
 		playerAccount.deposit(currencyOpt.get(), amount, Cause.source(plugin.getContainer()).build());
-
+		return true;
 	}
 
 }

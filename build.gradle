@@ -27,6 +27,8 @@ dependencies {
 	compile 'org.glassfish.jersey.core:jersey-client:2.13'
     compile 'org.json:json:20160212'
     compile 'org.hibernate:hibernate-validator:5.2.4.Final'
+    compile 'javax.el:javax.el-api:2.2.4'
+    compile 'org.glassfish.web:javax.el:2.2.4'
 }
 
 shadowJar {

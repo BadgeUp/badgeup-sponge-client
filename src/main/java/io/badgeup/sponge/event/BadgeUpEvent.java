@@ -48,6 +48,10 @@ public class BadgeUpEvent {
 	public void setKey(String key) {
 		this.key = key;
 	}
+	
+	public UUID getSubject() {
+		return this.subject;
+	}
 
 	/**
 	 * Add a custom key/value data pair

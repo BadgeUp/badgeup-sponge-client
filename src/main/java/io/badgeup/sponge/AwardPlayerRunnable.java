@@ -13,30 +13,32 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
 import io.badgeup.sponge.award.Award;
+import io.badgeup.sponge.award.ItemAward;
 import io.badgeup.sponge.award.MonetaryAward;
 
 public class AwardPlayerRunnable implements Runnable {
 	
 	private BadgeUpSponge plugin;
-	private JSONObject eventBody;
+	private UUID subjectId;
+	private JSONObject progress;
 	private Player subject;
 	private Validator validator;
 
-	public AwardPlayerRunnable(BadgeUpSponge plugin, JSONObject eventBody) {
+	public AwardPlayerRunnable(BadgeUpSponge plugin, UUID subjectId, JSONObject progress) {
 		this.plugin = plugin;
-		this.eventBody = eventBody;
+		this.subjectId = subjectId;
+		this.progress = progress;
 	    this.validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
 
 	@Override
 	public void run() {
-		final UUID playerId = UUID.fromString(eventBody.getString("subject"));
-		final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(playerId);
+		final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(subjectId);
 		if(!subjectOpt.isPresent()) {
-			plugin.getLogger().info("Unable to find player with ID " + playerId.toString() + " to give an award. The award will be given when the player logs in.");
+			plugin.getLogger().info("Unable to find player with ID " + subjectId.toString() + " to give an award. The award will be given when the player logs in.");
 		}
 		this.subject = subjectOpt.get();
-		eventBody.getJSONObject("achievement").getJSONArray("awards").forEach(this::processAward);
+		progress.getJSONObject("achievement").getJSONArray("awards").forEach(this::processAward);
 	}
 	
 	private void processAward(Object obj) {
@@ -46,6 +48,12 @@ public class AwardPlayerRunnable implements Runnable {
 		switch(awardType.toLowerCase()) {
 			case "monetary":
 				awardOpt = Optional.of(new MonetaryAward(plugin, awardJSON));
+				break;
+			case "item":
+				awardOpt = Optional.of(new ItemAward(plugin, awardJSON));
+				break;
+			default:
+				awardOpt = Optional.empty();
 				break;
 		}
 		
