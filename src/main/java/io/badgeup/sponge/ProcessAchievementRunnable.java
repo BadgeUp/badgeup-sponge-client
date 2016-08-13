@@ -16,7 +16,7 @@ import io.badgeup.sponge.award.Award;
 import io.badgeup.sponge.award.ItemAward;
 import io.badgeup.sponge.award.MonetaryAward;
 
-public class AwardPlayerRunnable implements Runnable {
+public class ProcessAchievementRunnable implements Runnable {
 	
 	private BadgeUpSponge plugin;
 	private UUID subjectId;
@@ -24,7 +24,7 @@ public class AwardPlayerRunnable implements Runnable {
 	private Player subject;
 	private Validator validator;
 
-	public AwardPlayerRunnable(BadgeUpSponge plugin, UUID subjectId, JSONObject progress) {
+	public ProcessAchievementRunnable(BadgeUpSponge plugin, UUID subjectId, JSONObject progress) {
 		this.plugin = plugin;
 		this.subjectId = subjectId;
 		this.progress = progress;

@@ -74,7 +74,7 @@ public class PostEventsRunnable implements Runnable {
 					if (!(progress.getBoolean("complete"))) { //  && progress.getBoolean("isNew")
 						return;
 					}
-					Sponge.getScheduler().createTaskBuilder().execute(new AwardPlayerRunnable(plugin, event.getSubject(), progress))
+					Sponge.getScheduler().createTaskBuilder().execute(new ProcessAchievementRunnable(plugin, event.getSubject(), progress))
 							.submit(plugin);
 				});
 			}
