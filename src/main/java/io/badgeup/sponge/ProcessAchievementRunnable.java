@@ -35,9 +35,12 @@ public class ProcessAchievementRunnable implements Runnable {
 	public void run() {
 		final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(subjectId);
 		if(!subjectOpt.isPresent()) {
-			plugin.getLogger().info("Unable to find player with ID " + subjectId.toString() + " to give an award. The award will be given when the player logs in.");
+			plugin.getLogger().info("Unable to find player with ID " + subjectId.toString() + ". The achievement will be presented when the player logs in.");
+			// TODO Do this ^
+			return;
 		}
 		this.subject = subjectOpt.get();
+		
 		progress.getJSONObject("achievement").getJSONArray("awards").forEach(this::processAward);
 	}
 	
