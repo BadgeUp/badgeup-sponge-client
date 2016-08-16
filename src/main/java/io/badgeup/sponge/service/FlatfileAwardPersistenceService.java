@@ -63,7 +63,7 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
 	@Override
 	public void removePendingAwardByID(UUID playerID, String achievementID) {
 		if (!pendingAwards.has(playerID.toString())) {
-			throw new IllegalStateException("Player " + playerID + " has no unpresented achievements to remove");
+			throw new IllegalStateException("Player " + playerID + " has no pending awards to remove");
 		}
 		JSONArray playerAchievements = pendingAwards.getJSONArray(playerID.toString());
 		for (int i = 0; i < playerAchievements.length(); i++) {

@@ -81,19 +81,20 @@ public class PostEventsRunnable implements Runnable {
 					}
 					final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(event.getSubject());
 					final JSONObject achievement = progress.getJSONObject("achievement");
-					if (!subjectOpt.isPresent()) {
-						AchievementPersistenceService achPS = Sponge.getServiceManager()
-								.provide(AchievementPersistenceService.class).get();
-						achPS.addUnpresentedAchievement(event.getSubject(), achievement);
-					} else {
-						BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
-					}
 					
 					AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
 					if(achievement.get("awards") != null) {
 						achievement.getJSONArray("awards").forEach(award -> {
 							awardPS.addPendingAward(event.getSubject(), (JSONObject) award);
 						});
+					}
+					
+					if (!subjectOpt.isPresent()) {
+						AchievementPersistenceService achPS = Sponge.getServiceManager()
+								.provide(AchievementPersistenceService.class).get();
+						achPS.addUnpresentedAchievement(event.getSubject(), achievement);
+					} else {
+						BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
 					}
 					
 				});
