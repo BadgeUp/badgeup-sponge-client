@@ -81,7 +81,7 @@ public class ItemAward extends Award {
 					continue;
 				}
 				Optional<Integer> enchantLevelOpt = Util.safeGetInt(enchantmentInfo, "level");
-				if (enchantLevelOpt.isPresent()) {
+				if (!enchantLevelOpt.isPresent()) {
 					plugin.getLogger().error("No enchantment level specified. Skipping enchantment.");
 					continue;
 				}
@@ -92,7 +92,9 @@ public class ItemAward extends Award {
 				}
 				enchantments.add(new ItemEnchantment(enchantmentOpt.get(), enchantLevel));
 			}
-			builder.add(Keys.ITEM_ENCHANTMENTS, enchantments);
+			if(!enchantments.isEmpty()) {
+				builder.add(Keys.ITEM_ENCHANTMENTS, enchantments);
+			}
 		}
 		
 		final Optional<Integer> itemDurabilityOpt = Util.safeGetInt(data, "durability");
