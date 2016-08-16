@@ -31,6 +31,7 @@ public class ListAwardsCommandExecutor implements CommandExecutor {
 		awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
 			if (awards.size() == 0) {
 				player.sendMessage(Text.of(TextColors.GREEN, "You have no awards to claim."));
+				return;
 			}
 
 			List<Text> awardTexts = new ArrayList<>();
