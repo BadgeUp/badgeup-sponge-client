@@ -15,19 +15,20 @@ import org.spongepowered.api.entity.living.player.Player;
 import io.badgeup.sponge.award.Award;
 import io.badgeup.sponge.award.ItemAward;
 import io.badgeup.sponge.award.MonetaryAward;
+import io.badgeup.sponge.service.AchievementPersistenceService;
 
 public class ProcessAchievementRunnable implements Runnable {
 	
 	private BadgeUpSponge plugin;
 	private UUID subjectId;
-	private JSONObject progress;
+	private JSONObject achievement;
 	private Player subject;
 	private Validator validator;
 
-	public ProcessAchievementRunnable(BadgeUpSponge plugin, UUID subjectId, JSONObject progress) {
+	public ProcessAchievementRunnable(BadgeUpSponge plugin, UUID subjectId, JSONObject achievement) {
 		this.plugin = plugin;
 		this.subjectId = subjectId;
-		this.progress = progress;
+		this.achievement = achievement;
 	    this.validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
 
@@ -35,13 +36,15 @@ public class ProcessAchievementRunnable implements Runnable {
 	public void run() {
 		final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(subjectId);
 		if(!subjectOpt.isPresent()) {
-			plugin.getLogger().info("Unable to find player with ID " + subjectId.toString() + ". The achievement will be presented when the player logs in.");
-			// TODO Do this ^
+			AchievementPersistenceService aps = Sponge.getServiceManager().provide(AchievementPersistenceService.class).get();
+			aps.addUnpresentedAchievement(subjectId, achievement);
 			return;
 		}
 		this.subject = subjectOpt.get();
 		
-		progress.getJSONObject("achievement").getJSONArray("awards").forEach(this::processAward);
+		
+		
+		achievement.getJSONArray("awards").forEach(this::processAward);
 	}
 	
 	private void processAward(Object obj) {

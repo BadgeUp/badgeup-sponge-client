@@ -2,6 +2,7 @@ package io.badgeup.sponge;
 
 import java.net.URI;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 
 import javax.ws.rs.client.Client;
@@ -15,10 +16,13 @@ import javax.ws.rs.core.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 import com.google.common.base.Preconditions;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
+import io.badgeup.sponge.service.AchievementPersistenceService;
+import io.badgeup.sponge.service.AwardPersistenceService;
 
 public class PostEventsRunnable implements Runnable {
 
@@ -71,11 +75,27 @@ public class PostEventsRunnable implements Runnable {
 				final JSONArray achievementProgress = body.getJSONArray("progress");
 				achievementProgress.forEach(progressObj -> {
 					JSONObject progress = (JSONObject) progressObj;
-					if (!(progress.getBoolean("complete"))) { //  && progress.getBoolean("isNew")
+					if (!(progress.getBoolean("complete"))) { // &&
+																// progress.getBoolean("isNew")
 						return;
 					}
-					Sponge.getScheduler().createTaskBuilder().execute(new ProcessAchievementRunnable(plugin, event.getSubject(), progress))
-							.submit(plugin);
+					final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(event.getSubject());
+					final JSONObject achievement = progress.getJSONObject("achievement");
+					if (!subjectOpt.isPresent()) {
+						AchievementPersistenceService achPS = Sponge.getServiceManager()
+								.provide(AchievementPersistenceService.class).get();
+						achPS.addUnpresentedAchievement(event.getSubject(), achievement);
+					} else {
+						BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
+					}
+					
+					AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
+					if(achievement.get("awards") != null) {
+						achievement.getJSONArray("awards").forEach(award -> {
+							awardPS.addPendingAward(event.getSubject(), (JSONObject) award);
+						});
+					}
+					
 				});
 			}
 		} catch (Exception e) {

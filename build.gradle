@@ -15,10 +15,8 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    maven {
-        name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
-    }
+    maven { url 'http://repo.spongepowered.org/maven' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -29,6 +27,7 @@ dependencies {
     compile 'org.hibernate:hibernate-validator:5.2.4.Final'
     compile 'javax.el:javax.el-api:2.2.4'
     compile 'org.glassfish.web:javax.el:2.2.4'
+    compile 'com.github.BadgeUp:sponge-client-services:f2fcccd664'
 }
 
 shadowJar {
