@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.constraints.Min;
-
-import org.hibernate.validator.constraints.NotBlank;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -24,10 +21,8 @@ import io.badgeup.sponge.Util;
 
 public class ItemAward extends Award {
 
-	@NotBlank
 	private final String typeId;
 
-	@Min(value = 1)
 	private final int quantity;
 
 	public ItemAward(BadgeUpSponge plugin, JSONObject award) {

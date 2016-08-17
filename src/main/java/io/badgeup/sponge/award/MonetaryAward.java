@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Optional;
 
-import javax.validation.constraints.DecimalMin;
-
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -21,7 +19,6 @@ import io.badgeup.sponge.Util;
 
 public class MonetaryAward extends Award {
 
-	@DecimalMin(value = "0", inclusive = false)
 	private final BigDecimal amount;
 
 	private final String currencyId;

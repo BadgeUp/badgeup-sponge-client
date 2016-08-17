@@ -1,11 +1,6 @@
 package io.badgeup.sponge.command.executor;
 
 import java.util.Optional;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
 
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
@@ -28,11 +23,9 @@ import io.badgeup.sponge.service.AwardPersistenceService;
 public class RedeemAwardCommandExecutor implements CommandExecutor {
 
 	private BadgeUpSponge plugin;
-	private Validator validator;
 
 	public RedeemAwardCommandExecutor(BadgeUpSponge plugin) {
 		this.plugin = plugin;
-		this.validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
 
 	@Override
@@ -104,15 +97,6 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
 			return awardOpt;
 		}
 		Award award = awardOpt.get();
-
-		Set<ConstraintViolation<Award>> violations = validator.validate(award);
-		if (!violations.isEmpty()) {
-			plugin.getLogger().error("Invalid data for award type " + awardType + ":");
-			for (ConstraintViolation<Award> violation : violations) {
-				plugin.getLogger().error(violation.getMessage());
-			}
-			return awardOpt;
-		}
 
 		return awardOpt;
 	}
