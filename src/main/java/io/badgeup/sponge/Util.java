@@ -74,9 +74,25 @@ public class Util {
 		}
 	}
 	
+	public static Optional<Double> safeParseDouble(String raw) {
+		try {
+			return Optional.of(Double.parseDouble(raw));
+		} catch(Exception e) {
+			return Optional.empty();
+		}
+	}
+	
 	public static Optional<Object> safeGet(JSONObject obj, String key) {
 		try {
 			return Optional.of(obj.get(key));
+		} catch(Exception e) {
+			return Optional.empty();
+		}
+	}
+	
+	public static Optional<JSONObject> safeGetJSONObject(JSONObject obj, String key) {
+		try {
+			return Optional.of(obj.getJSONObject(key));
 		} catch(Exception e) {
 			return Optional.empty();
 		}
@@ -93,6 +109,14 @@ public class Util {
 	public static Optional<Integer> safeGetInt(JSONObject obj, String key) {
 		try {
 			return Optional.of(obj.getInt(key));
+		} catch(Exception e) {
+			return Optional.empty();
+		}
+	}
+	
+	public static Optional<Double> safeGetDouble(JSONObject obj, String key) {
+		try {
+			return Optional.of(obj.getDouble(key));
 		} catch(Exception e) {
 			return Optional.empty();
 		}

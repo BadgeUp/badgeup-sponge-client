@@ -20,6 +20,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.award.Award;
+import io.badgeup.sponge.award.EntityAward;
 import io.badgeup.sponge.award.ItemAward;
 import io.badgeup.sponge.award.MonetaryAward;
 import io.badgeup.sponge.service.AwardPersistenceService;
@@ -89,6 +90,9 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
 			break;
 		case "item":
 			awardOpt = Optional.of(new ItemAward(plugin, awardJSON));
+			break;
+		case "entity":
+			awardOpt = Optional.of(new EntityAward(plugin, awardJSON));
 			break;
 		default:
 			awardOpt = Optional.empty();
