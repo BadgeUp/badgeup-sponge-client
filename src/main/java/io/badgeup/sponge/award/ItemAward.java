@@ -21,26 +21,28 @@ import io.badgeup.sponge.Util;
 
 public class ItemAward extends Award {
 
-	private final String typeId;
-
-	private final int quantity;
-
 	public ItemAward(BadgeUpSponge plugin, JSONObject award) {
 		super(plugin, award);
-		this.typeId = Util.safeGetString(data, "itemType").orElse("");
-		this.quantity = Util.safeGetInt(data, "quantity").orElse(1);
 	}
 
 	@Override
 	public boolean awardPlayer(Player player) {
-		final Optional<ItemType> optType = Sponge.getRegistry().getType(ItemType.class, typeId);
+		Optional<String> itemTypeIDOpt = Util.safeGetString(data, "itemType");
+		if (!itemTypeIDOpt.isPresent()) {
+			plugin.getLogger().error("No item type specified. Aborting.");
+			return false;
+		}
+
+		String itemTypeID = itemTypeIDOpt.get();
+
+		final Optional<ItemType> optType = Sponge.getRegistry().getType(ItemType.class, itemTypeID);
 		if (!optType.isPresent()) {
-			plugin.getLogger().error("Could not retrieve ItemType with ID " + typeId + ". Aborting.");
+			plugin.getLogger().error("Could not retrieve ItemType with ID " + itemTypeID + ". Aborting.");
 			return false;
 		}
 
 		final ItemStack.Builder builder = Sponge.getRegistry().createBuilder(ItemStack.Builder.class)
-				.itemType(optType.get()).quantity(this.quantity);
+				.itemType(optType.get()).quantity(Util.safeGetInt(data, "quantity").orElse(1));
 
 		final Optional<Text> displayNameOpt = Util.deserializeText(Util.safeGet(data, "displayName").orElse(null));
 		if (displayNameOpt.isPresent()) {

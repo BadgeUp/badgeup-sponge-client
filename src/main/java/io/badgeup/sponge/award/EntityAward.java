@@ -20,24 +20,31 @@ import io.badgeup.sponge.Util;
 
 public class EntityAward extends Award {
 
-	private String entityTypeID;
-	private JSONObject rawPosition;
-
 	public EntityAward(BadgeUpSponge plugin, JSONObject award) {
 		super(plugin, award);
-		this.entityTypeID = Util.safeGetString(data, "entityType").orElse("");
-		this.rawPosition = Util.safeGetJSONObject(data, "position")
-				.orElse(new JSONObject().put("x", "~").put("y", "~").put("z", "~"));
 	}
 
 	@Override
 	public boolean awardPlayer(Player player) {
+		Optional<String> entityTypeIDOpt = Util.safeGetString(data, "entityType");
+		if(!entityTypeIDOpt.isPresent()) {
+			plugin.getLogger().error("No entity type specified. Aborting.");
+			return false;
+		}
+		
+		String entityTypeID = entityTypeIDOpt.get();
+		
 		final Optional<EntityType> optType = Sponge.getRegistry().getType(EntityType.class, entityTypeID);
 		if (!optType.isPresent()) {
+			plugin.getLogger().error("Entity type " + entityTypeID + " not found. Aborting.");
 			return false;
 		}
 
-		Optional<Vector3d> positionOpt = resolvePosition(this.rawPosition, player.getLocation().getPosition());
+		// Default to the player's position
+		JSONObject rawPosition = Util.safeGetJSONObject(data, "position")
+				.orElse(new JSONObject().put("x", "~").put("y", "~").put("z", "~"));
+
+		Optional<Vector3d> positionOpt = resolvePosition(rawPosition, player.getLocation().getPosition());
 		if (!positionOpt.isPresent()) {
 			plugin.getLogger().error("Malformed entity position. Aborting.");
 			return false;

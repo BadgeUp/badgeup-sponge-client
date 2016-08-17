@@ -19,18 +19,18 @@ import io.badgeup.sponge.Util;
 
 public class MonetaryAward extends Award {
 
-	private final BigDecimal amount;
-
-	private final String currencyId;
-
 	public MonetaryAward(BadgeUpSponge plugin, JSONObject award) {
 		super(plugin, award);
-		this.amount = Util.safeGetBigDecimal(data, "amount").orElse(BigDecimal.ZERO);
-		this.currencyId = Util.safeGetString(data, "currency").orElse("");
 	}
 
 	@Override
 	public boolean awardPlayer(Player player) {
+		Optional<BigDecimal> amountOpt = Util.safeGetBigDecimal(data, "amount");
+		if (!amountOpt.isPresent()) {
+			plugin.getLogger().error("No amount specified. Aborting.");
+			return false;
+		}
+
 		final Optional<EconomyService> econSvcOpt = Sponge.getServiceManager().provide(EconomyService.class);
 		if (!econSvcOpt.isPresent()) {
 			plugin.getLogger().error("No EconomyService present. Cannot give monetary award.");
@@ -39,29 +39,34 @@ public class MonetaryAward extends Award {
 		final EconomyService economy = econSvcOpt.get();
 		final Optional<UniqueAccount> accountOpt = economy.getOrCreateAccount(player.getUniqueId());
 		if (!accountOpt.isPresent()) {
-			plugin.getLogger().error("Unable to retrieve economy account for player " + player.getUniqueId().toString());
+			plugin.getLogger()
+					.error("Unable to retrieve economy account for player " + player.getUniqueId().toString());
 			return false;
 		}
 		final UniqueAccount playerAccount = accountOpt.get();
 
+		Optional<String> currencyIDOpt = Util.safeGetString(data, "currency");
 		Optional<Currency> currencyOpt = Optional.empty();
-		if (currencyId.isEmpty()) {
-			currencyOpt = Optional.of(economy.getDefaultCurrency());
-		} else {
+		if (currencyIDOpt.isPresent()) {
 			final Iterator<Currency> iter = economy.getCurrencies().iterator();
 			while (iter.hasNext()) {
 				Currency currency = iter.next();
-				if (currency.getId().equalsIgnoreCase(currencyId)) {
+				if (currency.getId().equalsIgnoreCase(currencyIDOpt.get())) {
 					currencyOpt = Optional.of(currency);
 				}
 			}
+		} else {
+			currencyOpt = Optional.of(economy.getDefaultCurrency());
 		}
+
 		if (!currencyOpt.isPresent()) {
-			plugin.getLogger().error("Could not find currency " + currencyId
+			plugin.getLogger().error("Could not find currency " + currencyIDOpt.get()
 					+ ". Cannot award monetary award to player " + player.getUniqueId().toString());
+			return false;
 		}
 		// TODO add more stuff to the cause chain
-		TransactionResult result = playerAccount.deposit(currencyOpt.get(), amount, Cause.source(plugin.getContainer()).build());
+		TransactionResult result = playerAccount.deposit(currencyOpt.get(), amountOpt.get(),
+				Cause.source(plugin.getContainer()).build());
 		return result.getResult().equals(ResultType.SUCCESS);
 	}
 
