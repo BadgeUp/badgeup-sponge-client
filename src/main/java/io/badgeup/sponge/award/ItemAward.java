@@ -16,6 +16,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.text.Text;
 
 import io.badgeup.sponge.BadgeUpSponge;
@@ -113,8 +114,8 @@ public class ItemAward extends Award {
 		}
 
 		ItemStack item = builder.build();
-		player.getInventory().offer(item);
-		return true;
+		InventoryTransactionResult result = player.getInventory().offer(item);
+		return result.getRejectedItems().isEmpty();
 	}
 
 }

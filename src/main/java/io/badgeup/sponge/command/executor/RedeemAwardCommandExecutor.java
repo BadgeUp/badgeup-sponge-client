@@ -67,9 +67,13 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
 			}
 
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
-				awardOpt.get().awardPlayer(player);
-				awardOpt.get().notifyPlayer(player);
-				awardPS.removePendingAwardByID(player.getUniqueId(), awardID);
+				boolean success = awardOpt.get().awardPlayer(player);
+				if (success) {
+					awardOpt.get().notifyPlayer(player);
+					awardPS.removePendingAwardByID(player.getUniqueId(), awardID);
+				} else {
+					player.sendMessage(Text.of(TextColors.RED, "Unable to redeem award."));
+				}
 			}).submit(plugin);
 
 		});

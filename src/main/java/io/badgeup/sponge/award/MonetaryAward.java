@@ -13,6 +13,8 @@ import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
+import org.spongepowered.api.service.economy.transaction.ResultType;
+import org.spongepowered.api.service.economy.transaction.TransactionResult;
 
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.Util;
@@ -62,8 +64,8 @@ public class MonetaryAward extends Award {
 					+ ". Cannot award monetary award to player " + player.getUniqueId().toString());
 		}
 		// TODO add more stuff to the cause chain
-		playerAccount.deposit(currencyOpt.get(), amount, Cause.source(plugin.getContainer()).build());
-		return true;
+		TransactionResult result = playerAccount.deposit(currencyOpt.get(), amount, Cause.source(plugin.getContainer()).build());
+		return result.getResult().equals(ResultType.SUCCESS);
 	}
 
 }
