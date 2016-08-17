@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.meta.ItemEnchantment;
+import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
@@ -76,8 +77,8 @@ public class ItemAward extends Award {
 				Optional<Enchantment> enchantmentOpt = Sponge.getRegistry().getType(Enchantment.class,
 						enchantmentIDOpt.get());
 				if (!enchantmentOpt.isPresent()) {
-					plugin.getLogger()
-							.error("Could not find enchantment with ID " + enchantmentIDOpt.get() + ". Skipping enchantment.");
+					plugin.getLogger().error(
+							"Could not find enchantment with ID " + enchantmentIDOpt.get() + ". Skipping enchantment.");
 					continue;
 				}
 				Optional<Integer> enchantLevelOpt = Util.safeGetInt(enchantmentInfo, "level");
@@ -87,22 +88,29 @@ public class ItemAward extends Award {
 				}
 				int enchantLevel = enchantLevelOpt.get();
 				if (enchantLevel <= 0) {
-					plugin.getLogger().error("Invalid enchantment level of " + enchantLevel + ". Skipping enchantment.");
+					plugin.getLogger()
+							.error("Invalid enchantment level of " + enchantLevel + ". Skipping enchantment.");
 					continue;
 				}
 				enchantments.add(new ItemEnchantment(enchantmentOpt.get(), enchantLevel));
 			}
-			if(!enchantments.isEmpty()) {
+			if (!enchantments.isEmpty()) {
 				builder.add(Keys.ITEM_ENCHANTMENTS, enchantments);
 			}
 		}
-		
+
 		final Optional<Integer> itemDurabilityOpt = Util.safeGetInt(data, "durability");
-		if(itemDurabilityOpt.isPresent()) {
+		if (itemDurabilityOpt.isPresent()) {
 			builder.add(Keys.ITEM_DURABILITY, itemDurabilityOpt.get());
 		}
 
-		// TODO color (stained glass, wool)
+		Optional<String> colorIdOpt = Util.safeGetString(data, "color");
+		if (colorIdOpt.isPresent()) {
+			Optional<DyeColor> colorOpt = Sponge.getRegistry().getType(DyeColor.class, colorIdOpt.get());
+			if (colorOpt.isPresent()) {
+				builder.add(Keys.DYE_COLOR, colorOpt.get());
+			}
+		}
 
 		ItemStack item = builder.build();
 		player.getInventory().offer(item);
