@@ -11,10 +11,12 @@ import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeClientSettingsEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
@@ -36,7 +38,8 @@ public class BadgeUpSpongeEventListener {
 	@Listener(order = Order.POST)
 	@Exclude({ NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class,
 			ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, UseItemStackEvent.Replace.class,
-			UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class })
+			UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class,
+			ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class, PlayerChangeClientSettingsEvent.class })
 	public void event(Event event, @Root Player player)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
@@ -80,9 +83,10 @@ public class BadgeUpSpongeEventListener {
 	@Listener
 	public void playerJoin(ClientConnectionEvent.Join event) {
 		Player player = event.getTargetEntity();
-		AchievementPersistenceService aps = Sponge.getServiceManager().provide(AchievementPersistenceService.class).get();
+		AchievementPersistenceService aps = Sponge.getServiceManager().provide(AchievementPersistenceService.class)
+				.get();
 		aps.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
-			for(JSONObject achievement : achievements) {
+			for (JSONObject achievement : achievements) {
 				BadgeUpSponge.presentAchievement(player, achievement);
 				aps.removeAchievementByID(player.getUniqueId(), achievement.getString("id"));
 			}
