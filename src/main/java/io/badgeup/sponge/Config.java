@@ -22,5 +22,13 @@ public class Config {
 	public String getAPIKey() {
 		return apiKey;
 	}
+	
+	@Setting("broadcast-achievements")
+	private boolean broadcastAchievements = true;
+	
+	public boolean doBroadcastAchievements() {
+		return broadcastAchievements;
+	}
+	
 
 }

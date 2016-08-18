@@ -87,8 +87,8 @@ public class BadgeUpSponge {
 
 		Sponge.getCommandManager().register(this,
 				CommandSpec.builder().description(Text.of("Redeem a pending award")).permission("badgeup.awards.redeem")
-						.arguments(GenericArguments.string(Text.of("id"))).executor(new RedeemAwardCommandExecutor(this))
-						.build(),
+						.arguments(GenericArguments.string(Text.of("id")))
+						.executor(new RedeemAwardCommandExecutor(this)).build(),
 				"redeem");
 	}
 
@@ -100,8 +100,13 @@ public class BadgeUpSponge {
 					.onHover(TextActions.showText(Text.of(TextColors.BLUE, achievement.getString("description"))));
 		}
 
-		MessageChannel.TO_ALL.send(Text.of(TextColors.GOLD, player.getDisplayNameData().displayName().get(),
-				TextColors.GREEN, " has just completed ", achTextBuilder.build(), TextColors.GREEN, "!"));
+		if (config.doBroadcastAchievements()) {
+			MessageChannel.TO_ALL.send(Text.of(TextColors.GOLD, player.getDisplayNameData().displayName().get(),
+					TextColors.GREEN, " has just completed ", achTextBuilder.build(), TextColors.GREEN, "!"));
+		} else {
+			player.sendMessage(Text.of(TextColors.GREEN, "You have just completed ", achTextBuilder.build(),
+					TextColors.GREEN, "!"));
+		}
 
 		AwardPersistenceService aps = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
 		List<JSONObject> playerAwards;
