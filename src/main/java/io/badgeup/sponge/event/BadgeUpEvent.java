@@ -11,6 +11,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 
+import io.badgeup.sponge.JSONSerializable;
 import io.badgeup.sponge.Util;
 
 public class BadgeUpEvent {
@@ -73,6 +74,8 @@ public class BadgeUpEvent {
 				Util.cleanData(serializedObject);
 				value = serializedObject;
 			}
+		} else if(value instanceof JSONSerializable) {
+			value = ((JSONSerializable) value).toJSON();
 		} else {
 			if (value instanceof List) {
 				JSONArray array = new JSONArray();
