@@ -55,7 +55,7 @@ public class BadgeUpSpongeEventListener {
 		for (Method m : event.getClass().getMethods()) {
 			final String methodName = m.getName();
 			if (methodName.startsWith("get")) {
-				Object result = m.invoke(event, null);
+				Object result = m.invoke(event, (Object[]) null);
 				newEvent.addDataEntry(methodName.substring(3), result);
 			}
 		}
