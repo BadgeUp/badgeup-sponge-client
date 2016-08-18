@@ -63,9 +63,16 @@ public class PostEventsRunnable implements Runnable {
 		try {
 			while (true) {
 				final BadgeUpEvent event = eventQueue.take();
-
-				Response response = invocationBuilder
-						.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
+				
+				Response response;
+				try {
+					response = invocationBuilder
+							.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
+				} catch(Exception e) {
+					plugin.getLogger().error("Could not connect to BadgeUp API!");
+					continue;
+				}
+				
 				final String rawBody = response.readEntity(String.class);
 				if (response.getStatus() == 413) {
 					System.out.println("Event too large: " + event.build().getString("key"));
