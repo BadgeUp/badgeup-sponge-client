@@ -84,6 +84,7 @@ public class BadgeUpSpongeEventListener {
 		aps.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
 			for(JSONObject achievement : achievements) {
 				BadgeUpSponge.presentAchievement(player, achievement);
+				aps.removeAchievementByID(player.getUniqueId(), achievement.getString("id"));
 			}
 		});
 	}
