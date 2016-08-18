@@ -68,7 +68,7 @@ public class BadgeUpSponge {
 
 		setupConfig();
 
-		Sponge.getEventManager().registerListeners(this, new BadgeUpEventListener(this));
+		Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
 
 		for (int i = 1; i <= 8; i++) {
 			Sponge.getScheduler().createTaskBuilder().async().execute(new PostEventsRunnable(this))

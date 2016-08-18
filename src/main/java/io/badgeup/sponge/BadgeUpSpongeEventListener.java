@@ -25,11 +25,11 @@ import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 
-public class BadgeUpEventListener {
+public class BadgeUpSpongeEventListener {
 
 	private BadgeUpSponge plugin;
 
-	public BadgeUpEventListener(BadgeUpSponge plugin) {
+	public BadgeUpSpongeEventListener(BadgeUpSponge plugin) {
 		this.plugin = plugin;
 	}
 
