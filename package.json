@@ -1,0 +1,13 @@
+{
+  "name": "badgeup-sponge-client",
+  "description": "BadgeUp Sponge Client",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BadgeUp/sponge-client.git"
+  },
+  "author": "Robert Herhold <robert@badgeup.io>",
+  "license": "ISC",
+  "dependencies": {
+    "marked": "^0.3.6"
+  }
+}

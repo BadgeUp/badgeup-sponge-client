@@ -9,3 +9,6 @@
 /.gradle/
 /build/
 bin/
+
+node_modules/
+docs/build/
