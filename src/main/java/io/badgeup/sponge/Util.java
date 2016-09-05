@@ -10,20 +10,18 @@ import java.util.Optional;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.translator.ConfigurateTranslator;
+import org.spongepowered.api.data.persistence.DataTranslators;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.json.JSONConfigurationLoader;
 
 public class Util {
 
 	public static JSONObject dataContainerToJSONObject(DataContainer container) {
+		ConfigurationNode node = DataTranslators.CONFIGURATION_NODE.translate(container);
 		StringWriter writer = new StringWriter();
-		ConfigurationNode node = SimpleConfigurationNode.root();
-		ConfigurateTranslator.instance().translateContainerToData(node, container);
 		try {
 			JSONConfigurationLoader.builder().build().saveInternal(node, writer);
 			return new JSONObject(writer.toString());
