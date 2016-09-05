@@ -126,9 +126,7 @@ public class BadgeUpSpongeEventListener {
 	}
 	
 	private EventKeyProvider resolveKeyProvider(Class eventClass) {
-		Class clazz = eventClass;
-		
-		for(Class interfaceClass : clazz.getInterfaces()) {
+		for(Class interfaceClass : eventClass.getInterfaces()) {
 			if(this.keyProviders.containsKey(interfaceClass)) {
 				return this.keyProviders.get(interfaceClass);
 			}
