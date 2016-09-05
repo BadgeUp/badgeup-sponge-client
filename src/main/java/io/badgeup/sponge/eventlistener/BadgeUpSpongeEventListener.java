@@ -1,4 +1,4 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.eventlistener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,6 +27,7 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
@@ -35,11 +36,14 @@ import io.badgeup.sponge.service.AchievementPersistenceService;
 public class BadgeUpSpongeEventListener {
 
 	private BadgeUpSponge plugin;
+	private Map<Class<? extends Event>, EventKeyProvider> keyProviders;
 	private Map<UUID, PlayerPath> playerPaths;
 
 	public BadgeUpSpongeEventListener(BadgeUpSponge plugin) {
 		this.plugin = plugin;
 		this.playerPaths = new HashMap<>();
+		this.keyProviders = new HashMap<>();
+		registerKeyProviders();
 	}
 
 	@Listener(order = Order.POST)
@@ -53,9 +57,8 @@ public class BadgeUpSpongeEventListener {
 			return;
 		}
 
-		final String className = event.getClass().getSimpleName();
-		final String key = className.toLowerCase().substring(0, className.lastIndexOf("$")).replace('$', ':')
-				.replace("event", "");
+		EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
+		final String key = keyProvider.provide(event);
 
 		final UUID uuid = player.getUniqueId();
 		final int increment = 1;
@@ -109,6 +112,50 @@ public class BadgeUpSpongeEventListener {
 
 	}
 
+	@Listener
+	public void playerJoin(ClientConnectionEvent.Join event) {
+		Player player = event.getTargetEntity();
+		AchievementPersistenceService aps = Sponge.getServiceManager().provide(AchievementPersistenceService.class)
+				.get();
+		aps.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
+			for (JSONObject achievement : achievements) {
+				BadgeUpSponge.presentAchievement(player, achievement);
+				aps.removeAchievementByID(player.getUniqueId(), achievement.getString("id"));
+			}
+		});
+	}
+	
+	private EventKeyProvider resolveKeyProvider(Class eventClass) {
+		Class clazz = eventClass;
+		if(clazz.getInterfaces().length == 0) {
+			return null;
+		}
+		
+		for(Class interfaceClass : clazz.getInterfaces()) {
+			if(this.keyProviders.containsKey(interfaceClass)) {
+				return this.keyProviders.get(interfaceClass);
+			}
+			
+			EventKeyProvider provider = resolveKeyProvider(interfaceClass);
+			if(provider == null) {
+				continue;
+			} else {
+				return provider;
+			}
+		}
+		
+		// Shouldn't ever get here
+		return null;
+	}
+	
+	private void registerKeyProviders() {
+		this.keyProviders.put(Event.class, event -> {
+			String className = event.getClass().getSimpleName();
+			return className.toLowerCase().substring(0, className.lastIndexOf("$")).replace('$', ':')
+					.replace("event", "");
+		});
+	}
+	
 	private void send(BadgeUpEvent event) {
 		boolean success = true;
 		try {
@@ -121,19 +168,6 @@ public class BadgeUpSpongeEventListener {
 			this.plugin.getLogger().warn("Could not add another event to the event queue. Discarding event.");
 			// TODO try to re-add somehow
 		}
-	}
-
-	@Listener
-	public void playerJoin(ClientConnectionEvent.Join event) {
-		Player player = event.getTargetEntity();
-		AchievementPersistenceService aps = Sponge.getServiceManager().provide(AchievementPersistenceService.class)
-				.get();
-		aps.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
-			for (JSONObject achievement : achievements) {
-				BadgeUpSponge.presentAchievement(player, achievement);
-				aps.removeAchievementByID(player.getUniqueId(), achievement.getString("id"));
-			}
-		});
 	}
 
 }

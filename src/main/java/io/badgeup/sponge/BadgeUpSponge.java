@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 import io.badgeup.sponge.command.executor.ListAwardsCommandExecutor;
 import io.badgeup.sponge.command.executor.RedeemAwardCommandExecutor;
 import io.badgeup.sponge.event.BadgeUpEvent;
+import io.badgeup.sponge.eventlistener.BadgeUpSpongeEventListener;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
 import io.badgeup.sponge.service.FlatfileAchievementPersistenceService;

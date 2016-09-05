@@ -1,4 +1,4 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.eventlistener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.flowpowered.math.vector.Vector3i;
+
+import io.badgeup.sponge.JSONSerializable;
 
 public class PlayerPath implements JSONSerializable {
 
