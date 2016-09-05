@@ -127,9 +127,6 @@ public class BadgeUpSpongeEventListener {
 	
 	private EventKeyProvider resolveKeyProvider(Class eventClass) {
 		Class clazz = eventClass;
-		if(clazz.getInterfaces().length == 0) {
-			return null;
-		}
 		
 		for(Class interfaceClass : clazz.getInterfaces()) {
 			if(this.keyProviders.containsKey(interfaceClass)) {
@@ -144,7 +141,7 @@ public class BadgeUpSpongeEventListener {
 			}
 		}
 		
-		// Shouldn't ever get here
+		// Only if the class has no interfaces
 		return null;
 	}
 	
