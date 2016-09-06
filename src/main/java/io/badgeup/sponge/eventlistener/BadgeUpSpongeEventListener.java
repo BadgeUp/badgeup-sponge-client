@@ -3,11 +3,14 @@ package io.badgeup.sponge.eventlistener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -144,10 +147,24 @@ public class BadgeUpSpongeEventListener {
 	}
 	
 	private void registerKeyProviders() {
-		this.keyProviders.put(Event.class, event -> {
-			String className = event.getClass().getSimpleName();
-			return className.toLowerCase().substring(0, className.lastIndexOf("$")).replace('$', ':')
-					.replace("event", "");
+		this.keyProviders.put(Event.class, new EventKeyProvider<Event> () {
+			@Override
+			public String provide(Event event) {
+				return getDefault(event);
+			}
+		});
+		
+		this.keyProviders.put(ChangeBlockEvent.Break.class, new EventKeyProvider<ChangeBlockEvent.Break> () {
+			@Override
+			public String provide(ChangeBlockEvent.Break event) {
+				List<Transaction<BlockSnapshot>> transactions = event.getTransactions();
+				if(transactions.isEmpty()) {
+					// Not sure if this can ever happen
+					return getDefault(event);
+				}
+				
+				return getDefault(event) + ":" + transactions.get(0).getOriginal().getState().getType().getId();
+			}
 		});
 	}
 	
