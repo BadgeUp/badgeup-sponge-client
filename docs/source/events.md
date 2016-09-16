@@ -9,6 +9,7 @@ Event keys are derived from the class name of the Sponge event causing the event
 In certain cases, extra commonly-used information is appended to the end of event keys for convenience:
 
  * `changeblock:<break|place>:<block type>`: When breaking or placing blocks, the block's ID is appended to the key to allow you to easily keep track of block change metrics on a per-block basis.
+  - Ex: `changeblock:break:minecraft:dirt`
 
 ## Disabled Events
 
