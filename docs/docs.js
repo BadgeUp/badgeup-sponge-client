@@ -3,6 +3,13 @@
 const fs = require('fs');
 const path = require('path');
 const marked = require('marked');
+const renderer = new marked.Renderer();
+
+renderer.code = function(code, lang) {
+    code = code.replace(/"/g, '&quot;'); // replace double quotes with &quot;
+    
+    return `<codeblock content.one-way="'${code}'" type.one-way="'${lang}'"></codeblock>`;
+}
 
 let pages = [];
 
@@ -31,7 +38,7 @@ for (let fileName of files) {
         fs.mkdirSync(path.resolve(__dirname, 'build'));
     }
 
-    let html = '<template>\n' + marked(rawData) + '</template>';
+    let html = `<template>\n<require from="../../codeblock"></require>\n${marked(rawData, {renderer})}</template>`;
 
     fs.writeFileSync(path.resolve(__dirname, 'build', fileName + '.html'), html);
 }
