@@ -6,7 +6,7 @@ const marked = require('marked');
 
 let pages = [];
 
-const files = ['quickstart'];
+const files = ['quickstart', 'events'];
 for (let fileName of files) {
     const rawData = fs.readFileSync(path.resolve(__dirname, 'source', fileName + '.md'), {
         encoding: 'utf8'
@@ -20,7 +20,7 @@ for (let fileName of files) {
             pageTitle = token.text;
         }
     }
-    
+
     pages.push({
         title: pageTitle,
         id: fileName,
