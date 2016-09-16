@@ -38,6 +38,8 @@ for (let fileName of files) {
         fs.mkdirSync(path.resolve(__dirname, 'build'));
     }
 
+    // Add HTML fluff so the docs site can interpret it
+    // HACK The require tag is an implementation detail of the docs site, which should not be bleeding over but doesn't seem to work any other way
     let html = `<template>\n<require from="../../codeblock"></require>\n${marked(rawData, {renderer})}</template>`;
 
     fs.writeFileSync(path.resolve(__dirname, 'build', fileName + '.html'), html);
