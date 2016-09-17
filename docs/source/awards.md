@@ -84,7 +84,8 @@ This type of award deposits some amount of money into the player's account. The 
 This type of award spawns an entity near the player in a position specified by you. The award data should contain the following:
 
 * `type`: `entity`
-* `entityType`: Rqeuired. Must be of the form `minecraft:entity` and be the ID of one of the entities listed [here](http://minecraft-ids.grahamedgecombe.com/entities).
+* `entityType`: Required. Must be of the form `minecraft:entity` and be the ID of one of the entities listed [here](http://minecraft-ids.grahamedgecombe.com/entities).
+* `color`: Optional. Used for coloring sheep. Must be one of: `white`, `orange`, `magenta`, `light_blue`, `yellow`, `lime`, `pink`, `gray`, `silver`, `cyan`, `purple`, `blue`, `brown`, `green`, `red`, or `black`.
 * `position`: Optional (defaults to the player's position). Takes the following form, where the tilde (~) indicates a relative position.
 
 ```json
@@ -96,8 +97,6 @@ This type of award spawns an entity near the player in a position specified by y
 ```
 
 For example, the above position would specify an x-coordinate of 10 blocks in the positive x-direction relative to the player, a y-coordinate of 100, and a z-coordinate of 20 blocks in the negative z-direction relative to the player.
-
-* `color`: Optional. Used for coloring sheep. Must be one of: `white`, `orange`, `magenta`, `light_blue`, `yellow`, `lime`, `pink`, `gray`, `silver`, `cyan`, `purple`, `blue`, `brown`, `green`, `red`, or `black`.
 
 ### Example Entity Award Data
 
