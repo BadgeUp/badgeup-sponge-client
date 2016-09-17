@@ -15,6 +15,7 @@ Many awards allow you to specify custom text, such as the name of an item or ent
 
 This type of award gives the player an `ItemStack` defined by the following award data:
 
+* `type`: `item`
 * `itemType`: Required. Must be the ID of one of the items described [here](http://minecraft-ids.grahamedgecombe.com/).
 * `quantity`: Optional (defaults to 1). Must be a positive integer of at most 64.
 * `displayName`: Optional. Must be of the format [described above](#text-formatting).
@@ -29,6 +30,7 @@ This type of award gives the player an `ItemStack` defined by the following awar
 
 ```json
 {
+    "type": "item",
     "itemType": "minecraft:diamond_sword",
     "displayName": "&6The Best Sword",
     "lore": [
@@ -47,6 +49,7 @@ This type of award gives the player an `ItemStack` defined by the following awar
 
 ```json
 {
+    "type": "item",
     "itemType": "minecraft:wool",
     "quantity": 10,
     "displayName": "&6The Best Wool",
@@ -55,5 +58,78 @@ This type of award gives the player an `ItemStack` defined by the following awar
         "&2Really colorful"
     ],
     "color": "cyan"
+}
+```
+
+## Monetary Awards
+
+This type of award deposits some amount of money into the player's account. The award data should contain the following:
+
+* `type`: `monetary`
+* `amount`: Required. Must be positive.
+* `currency`: Optional. This is the ID of a custom currency used on your server. If not specified, the default currency will be used.
+
+### Example Monetary Award Data
+
+```json
+{
+    "type": "monetary",
+    "amount": 999999,
+    "currency": "gems"
+}
+```
+
+## Entity Awards
+
+This type of award spawns an entity near the player in a position specified by you. The award data should contain the following:
+
+* `type`: `entity`
+* `entityType`: Rqeuired. Must be of the form `minecraft:entity` and be the ID of one of the entities listed [here](http://minecraft-ids.grahamedgecombe.com/entities).
+* `position`: Optional (defaults to the player's position). Takes the following form, where the tilde (~) indicates a relative position.
+
+```json
+{
+    "x": "~10",
+    "y": "100",
+    "z": "~-20"
+}
+```
+
+For example, the above position would specify an x-coordinate of 10 blocks in the positive x-direction relative to the player, a y-coordinate of 100, and a z-coordinate of 20 blocks in the negative z-direction relative to the player.
+
+* `color`: Optional. Used for coloring sheep. Must be one of: `white`, `orange`, `magenta`, `light_blue`, `yellow`, `lime`, `pink`, `gray`, `silver`, `cyan`, `purple`, `blue`, `brown`, `green`, `red`, or `black`.
+
+### Example Entity Award Data
+
+```json
+{
+    "type": "entity",
+    "entityType": "minecraft:sheep",
+    "position": {
+        "x": "~",
+        "y": "~5",
+        "z": "~"
+    },
+    "color": "red"
+}
+```
+
+## Potion Effect Awards
+
+This type of award gives a particular potion effect to the player. The award data should contain the following:
+
+* `type`: `potion`
+* `potionEffectType`: Required. Must be one of the status effects listed [here](http://minecraft.gamepedia.com/Data_values#Status_effects).
+* `duration`: Required. Must be a positive integer.
+* `amplifier`: Optional (defaults to 1). This is the time in ticks (20 ticks = 1 second); must be a positive integer.
+
+### Example Entity Award Data
+
+```json
+{
+    "type": "potion",
+    "potionEffectType": "minecraft:speed",
+    "duration": 30000,
+    "amplifier": 2
 }
 ```
