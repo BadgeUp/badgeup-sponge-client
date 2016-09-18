@@ -2,13 +2,13 @@
 
 const fs = require('fs');
 const path = require('path');
+const entities = new (require('html-entities').XmlEntities)();
 const marked = require('marked');
 const renderer = new marked.Renderer();
 
 renderer.code = function(code, lang) {
-    code = code.replace(/"/g, '&quot;'); // replace double quotes with &quot;
-    
-    return `<codeblock content.one-way="'${code}'" type.one-way="'${lang}'"></codeblock>`;
+    code = entities.encode(code);
+    return `<codeblock type.one-way="'${lang}'">${code}</codeblock>`;
 }
 
 let pages = [];
@@ -40,7 +40,11 @@ for (let fileName of files) {
 
     // Add HTML fluff so the docs site can interpret it
     // HACK The require tag is an implementation detail of the docs site, which should not be bleeding over but doesn't seem to work any other way
-    let html = `<template>\n<require from="../../codeblock"></require>\n${marked(rawData, {renderer})}</template>`;
+    let html = 
+        `<template>
+            <require from="../../codeblock"></require>
+            ${marked(rawData, {renderer})}
+        </template>`;
 
     fs.writeFileSync(path.resolve(__dirname, 'build', fileName + '.html'), html);
 }
