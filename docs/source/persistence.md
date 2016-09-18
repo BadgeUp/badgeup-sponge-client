@@ -8,13 +8,13 @@ You may access these interfaces via JitPack with either Gradle or Maven.
 
 Gradle:
 
-```
+```groovy
 repositories {
 	maven { url "https://jitpack.io" }
 }
 
 dependencies {
-        compile 'com.github.BadgeUp:sponge-client-services:v1.0.0'
+    compile 'com.github.BadgeUp:sponge-client-services:v1.0.0'
 }
 ```
 
