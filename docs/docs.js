@@ -14,7 +14,7 @@ renderer.code = function(code, lang) {
 
 let pages = [];
 
-const files = ['quickstart', 'events', 'awards', 'persistence'];
+const files = ['quickstart', 'events', 'awards', 'configuration', 'persistence'];
 for (let fileName of files) {
     const rawData = fs.readFileSync(path.resolve(__dirname, 'source', fileName + '.md'), {
         encoding: 'utf8'

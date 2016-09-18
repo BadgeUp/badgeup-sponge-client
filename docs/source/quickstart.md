@@ -12,3 +12,5 @@ After starting the Sponge server with the BadgeUp Sponge client installed, a def
 
 1. Create a new BadgeUp API key with the `event:create` scope.
 1. Copy the API key to the `api-key` field of the configuration file.
+
+Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
