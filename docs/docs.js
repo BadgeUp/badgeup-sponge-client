@@ -8,7 +8,8 @@ const renderer = new marked.Renderer();
 
 renderer.code = function(code, lang) {
     code = entities.encode(code);
-    return `<codeblock type.one-way="'${lang}'">${code}</codeblock>`;
+    // htmlmin:ignore so that whitespace/indentation doesn't get destroyed by the minifier
+    return `<!-- htmlmin:ignore --><codeblock type.one-way="'${lang}'">${code}</codeblock><!-- htmlmin:ignore -->`;
 }
 
 let pages = [];
