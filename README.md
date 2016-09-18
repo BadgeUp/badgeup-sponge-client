@@ -5,8 +5,6 @@
   <img src="./badgeup-sponge.png"/>
 </p>
 
-![joi Logo](https://raw.githubusercontent.com/BadgeUp/sponge-client/master/badgeup-sponge.png)
-
 ## Install
 ... coming soon ...
 
