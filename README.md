@@ -1,9 +1,7 @@
 # BadgeUp Sponge Client
 > Easily add Achievements and Awards to your Sponge server
 
-<p align="center">
-  <img src="./badgeup-sponge.png"/>
-</p>
+[![BadgeUp & SpongePowered](./badgeup-sponge.png)](https://www.badgeup.io)
 
 ## Install
 ... coming soon ...
