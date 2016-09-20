@@ -10,9 +10,9 @@ To run the BadgeUp Sponge Client on your server, follow the [quickstart instruct
 ### Building the Project
 To build the client jar, run `gradlew build`. This will output the built jar to `build/libs/sponge-client-1.0.0-all.jar`.
 
-## Documentation
+### Documentation
 
-To generate documentation, run `node docs/doc.js`. The rendered HTML will reside in `docs/build/`.
+To generate documentation needed for [docs.badgeup.io](https://docs.badgeup.io/), run `node docs/doc.js`. The rendered HTML will reside in `docs/build/`.
 
 ## Disclaimer
 
