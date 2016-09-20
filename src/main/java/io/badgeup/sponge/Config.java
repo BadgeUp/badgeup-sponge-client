@@ -23,6 +23,22 @@ public class Config {
 		return apiKey;
 	}
 	
+	@Setting("region")
+	private String apiRegion = "useast1";
+	
+	public String getRegion() {
+		return apiRegion;
+	}
+	
+	// setting intended for development purposes
+	// overrides the api-host config setting
+	@Setting("base-api-url")
+	private String baseURL = "";
+	
+	public String getBaseAPIURL() {
+		return baseURL;
+	}
+	
 	@Setting("broadcast-achievements")
 	private boolean broadcastAchievements = true;
 	

@@ -26,8 +26,6 @@ import io.badgeup.sponge.service.AwardPersistenceService;
 
 public class PostEventsRunnable implements Runnable {
 
-	private final String BASE_URL = "http://localhost:3000/v1/apps/";
-
 	private BadgeUpSponge plugin;
 
 	public PostEventsRunnable(BadgeUpSponge plugin) {
@@ -36,8 +34,22 @@ public class PostEventsRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		final String apiKey = BadgeUpSponge.getConfig().getAPIKey();
+		final Config config = BadgeUpSponge.getConfig();
+		
+		final String apiKey = config.getAPIKey();
 		Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
+				
+		// build the base API URL
+		String baseURL = "";
+		
+		if (config.getBaseAPIURL() != null) {
+			// override other config settings with this base URL
+			baseURL = config.getBaseAPIURL();
+		} else {
+			// region provided
+			baseURL = "https://api." + config.getRegion() + ".badgeup.io/v1/apps/"; 
+		}
+		
 		// Base64 decode the API key
 		final byte[] decodedKey = Base64.getDecoder().decode(apiKey);
 		JSONObject keyObj = null;
@@ -54,7 +66,7 @@ public class PostEventsRunnable implements Runnable {
 
 		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
 		Client client = ClientBuilder.newBuilder().build();
-		WebTarget target = client.target(URI.create(BASE_URL + appId + "/events"));
+		WebTarget target = client.target(URI.create(baseURL + appId + "/events"));
 		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
 		invocationBuilder.header("Authorization", authHeader);
 		invocationBuilder.header("User-Agent", "BadgeUp_SpongeClient v1.0.0");
