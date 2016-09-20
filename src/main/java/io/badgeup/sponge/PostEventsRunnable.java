@@ -57,6 +57,7 @@ public class PostEventsRunnable implements Runnable {
 		WebTarget target = client.target(URI.create(BASE_URL + appId + "/events"));
 		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
 		invocationBuilder.header("Authorization", authHeader);
+		invocationBuilder.header("User-Agent", "BadgeUp_SpongeClient v1.0.0");
 
 		plugin.getLogger().info("Started BadgeUp event consumer");
 
