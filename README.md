@@ -8,7 +8,7 @@ To run the BadgeUp Sponge Client on your server, follow the [quickstart instruct
 
 ## Development
 ### Building the Project
-To build the client jar, run `gradlew build`. This will output the built jar to `build/libs/sponge-client-1.0.0-all.jar`.c
+To build the client jar, run `gradlew build`. This will output the built jar to `build/libs/sponge-client-1.0.0-all.jar`.
 
 ## Documentation
 
