@@ -42,7 +42,7 @@ public class PostEventsRunnable implements Runnable {
 		// build the base API URL
 		String baseURL = "";
 		
-		if (config.getBaseAPIURL() != null) {
+		if (!config.getBaseAPIURL().isEmpty()) {
 			// override other config settings with this base URL
 			baseURL = config.getBaseAPIURL();
 		} else {
