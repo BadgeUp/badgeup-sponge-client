@@ -36,18 +36,18 @@ public class PostEventsRunnable implements Runnable {
 	public void run() {
 		final Config config = BadgeUpSponge.getConfig();
 		
-		final String apiKey = config.getAPIKey();
+		final String apiKey = config.getBadgeUpConfig().getAPIKey();
 		Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
 				
 		// build the base API URL
 		String baseURL = "";
 		
-		if (!config.getBaseAPIURL().isEmpty()) {
+		if (!config.getBadgeUpConfig().getBaseAPIURL().isEmpty()) {
 			// override other config settings with this base URL
-			baseURL = config.getBaseAPIURL();
+			baseURL = config.getBadgeUpConfig().getBaseAPIURL();
 		} else {
 			// region provided
-			baseURL = "https://api." + config.getRegion() + ".badgeup.io/v1/apps/"; 
+			baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io/v1/apps/"; 
 		}
 		
 		// Base64 decode the API key
