@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -15,8 +16,10 @@ import java.util.concurrent.ExecutionException;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
+import org.apache.http.entity.mime.Header;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -36,6 +39,7 @@ import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.Unirest;
 
@@ -118,10 +122,16 @@ public class BadgeUpSponge {
 		TrustManager[] trustAllCerts = { new InsecureTrustManager() };
 		sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
 		
+		String apiKey = config.getBadgeUpConfig().getAPIKey();
+		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
+		
 		CloseableHttpClient httpclient = HttpClients.custom()
 				.setSSLHostnameVerifier(new InsecureHostnameVerifier())
 				.setSSLContext(sslcontext)
-				.build();
+				.setDefaultHeaders(Lists.newArrayList(
+						new BasicHeader("User-Agent", "BadgeUp_SpongeClient v1.0.0"),
+						new BasicHeader("Authorization", authHeader)
+				)).build();
 		
 		Unirest.setHttpClient(httpclient);
 	}

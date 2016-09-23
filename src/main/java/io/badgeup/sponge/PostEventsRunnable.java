@@ -26,42 +26,38 @@ public class PostEventsRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		final Config config = BadgeUpSponge.getConfig();
-		
+
+		Config config = BadgeUpSponge.getConfig();
+
 		// build the base API URL
 		String baseURL = "";
-		
+
 		if (!config.getBadgeUpConfig().getBaseAPIURL().isEmpty()) {
 			// override other config settings with this base URL
 			baseURL = config.getBadgeUpConfig().getBaseAPIURL();
 		} else {
 			// region provided
-			baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io/v1/apps/"; 
+			baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io/v1/apps/";
 		}
-		
-		String apiKey = config.getBadgeUpConfig().getAPIKey();
-		String appId = Util.parseAppIdFromAPIKey(apiKey).get();
 
-		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
+		String appId = Util.parseAppIdFromAPIKey(config.getBadgeUpConfig().getAPIKey()).get();
 
 		plugin.getLogger().info("Started BadgeUp event consumer");
 
 		try {
 			while (true) {
 				final BadgeUpEvent event = BadgeUpSponge.getEventQueue().take();
-				
+
 				HttpResponse<JsonNode> response;
 				try {
 					response = Unirest.post(baseURL + appId + "/events")
-							.header("Authorization", authHeader)
-							.header("User-Agent", "BadgeUp_SpongeClient v1.0.0")
 							.body(event.build())
 							.asJson();
 				} catch(Exception e) {
 					plugin.getLogger().error("Could not connect to BadgeUp API!");
 					continue;
 				}
-				
+
 				
 				if (response.getStatus() == 413) {
 					System.out.println("Event too large: " + event.build().getString("key"));
@@ -77,14 +73,14 @@ public class PostEventsRunnable implements Runnable {
 					}
 					final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(event.getSubject());
 					final JSONObject achievement = progress.getJSONObject("achievement");
-					
+
 					AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
 					if(achievement.get("awards") != null) {
 						achievement.getJSONArray("awards").forEach(award -> {
 							awardPS.addPendingAward(event.getSubject(), (JSONObject) award);
 						});
 					}
-					
+
 					if (!subjectOpt.isPresent()) {
 						AchievementPersistenceService achPS = Sponge.getServiceManager()
 								.provide(AchievementPersistenceService.class).get();
@@ -92,7 +88,7 @@ public class PostEventsRunnable implements Runnable {
 					} else {
 						BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
 					}
-					
+
 				});
 			}
 		} catch (Exception e) {
