@@ -157,17 +157,19 @@ public class BadgeUpSponge {
 			this.logger.info("Generating config file...");
 			this.configFile.getParentFile().mkdirs();
 			this.configFile.createNewFile();
-			CommentedConfigurationNode rawConfig = this.configLoader.load();
+			CommentedConfigurationNode configNode = this.configLoader.load();
 
 			try {
 				// Populate config with default values
-				config = Config.MAPPER.bindToNew().populate(rawConfig);
-				Config.MAPPER.bind(config).serialize(rawConfig);
+				config = Config.MAPPER.bindToNew().populate(configNode);
+				Config.MAPPER.bind(config).serialize(configNode);
 			} catch (ObjectMappingException e) {
 				e.printStackTrace();
 			}
+			
+			configNode.removeChild("base-api-url"); // Remove the base URL config setting only intended for development
 
-			this.configLoader.save(rawConfig);
+			this.configLoader.save(configNode);
 			this.logger.info("Config file successfully generated.");
 		} catch (IOException exception) {
 			this.logger.warn("The default configuration could not be created!");
