@@ -1,17 +1,8 @@
 package io.badgeup.sponge;
 
-import java.net.URI;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,6 +10,9 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
 import com.google.common.base.Preconditions;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
 
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.service.AchievementPersistenceService;
@@ -41,6 +35,9 @@ public class PostEventsRunnable implements Runnable {
 				
 		// build the base API URL
 		String baseURL = "";
+		
+		System.out.println(config.getBadgeUpConfig().getBaseAPIURL());
+		System.out.println(config.getBadgeUpConfig().getBaseAPIURL().isEmpty());
 		
 		if (!config.getBadgeUpConfig().getBaseAPIURL().isEmpty()) {
 			// override other config settings with this base URL
@@ -65,11 +62,6 @@ public class PostEventsRunnable implements Runnable {
 		final BlockingQueue<BadgeUpEvent> eventQueue = BadgeUpSponge.getEventQueue();
 
 		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
-		Client client = ClientBuilder.newBuilder().build();
-		WebTarget target = client.target(URI.create(baseURL + appId + "/events"));
-		Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON_TYPE);
-		invocationBuilder.header("Authorization", authHeader);
-		invocationBuilder.header("User-Agent", "BadgeUp_SpongeClient v1.0.0");
 
 		plugin.getLogger().info("Started BadgeUp event consumer");
 
@@ -77,21 +69,24 @@ public class PostEventsRunnable implements Runnable {
 			while (true) {
 				final BadgeUpEvent event = eventQueue.take();
 				
-				Response response;
+				HttpResponse<JsonNode> response;
 				try {
-					response = invocationBuilder
-							.post(Entity.entity(event.build().toString(), MediaType.APPLICATION_JSON_TYPE));
+					response = Unirest.post(baseURL + appId + "/events")
+							.header("Authorization", authHeader)
+							.header("User-Agent", "BadgeUp_SpongeClient v1.0.0")
+							.body(event.build())
+							.asJson();
 				} catch(Exception e) {
 					plugin.getLogger().error("Could not connect to BadgeUp API!");
 					continue;
 				}
 				
-				final String rawBody = response.readEntity(String.class);
+				
 				if (response.getStatus() == 413) {
 					System.out.println("Event too large: " + event.build().getString("key"));
 					continue;
 				}
-				final JSONObject body = new JSONObject(rawBody);
+				final JSONObject body = response.getBody().getObject();
 				final JSONArray achievementProgress = body.getJSONArray("progress");
 				achievementProgress.forEach(progressObj -> {
 					JSONObject progress = (JSONObject) progressObj;

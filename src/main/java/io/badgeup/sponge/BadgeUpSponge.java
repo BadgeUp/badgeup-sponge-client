@@ -3,12 +3,19 @@ package io.badgeup.sponge;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -28,6 +35,7 @@ import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
+import com.mashape.unirest.http.Unirest;
 
 import io.badgeup.sponge.command.executor.ListAwardsCommandExecutor;
 import io.badgeup.sponge.command.executor.RedeemAwardCommandExecutor;
@@ -67,7 +75,16 @@ public class BadgeUpSponge {
 	public void preInit(GamePreInitializationEvent event) {
 		eventQueue = new ArrayBlockingQueue<BadgeUpEvent>(10000);
 
+		try {
+			setupRestClient();
+		} catch (KeyManagementException | NoSuchAlgorithmException e) {
+			logger.error("Could not initialize the REST client with TLS enabled. Shutting down.");
+			e.printStackTrace();
+			Sponge.getServer().shutdown();
+		}
+		
 		setupConfig();
+		
 
 		Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
 
@@ -91,6 +108,20 @@ public class BadgeUpSponge {
 						.arguments(GenericArguments.string(Text.of("id")))
 						.executor(new RedeemAwardCommandExecutor(this)).build(),
 				"redeem");
+	}
+	
+	private void setupRestClient() throws NoSuchAlgorithmException, KeyManagementException {
+		SSLContext sslcontext = SSLContext.getInstance("TLSv1");
+		System.setProperty("https.protocols", "TLSv1");
+		TrustManager[] trustAllCerts = { new InsecureTrustManager() };
+		sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
+		
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setSSLHostnameVerifier(new InsecureHostnameVerifier())
+				.setSSLContext(sslcontext)
+				.build();
+		
+		Unirest.setHttpClient(httpclient);
 	}
 
 	// Run asynchronously
