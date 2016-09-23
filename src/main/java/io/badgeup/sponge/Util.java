@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,19 @@ import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.json.JSONConfigurationLoader;
 
 public class Util {
+	
+	public static Optional<String> parseAppIdFromAPIKey(String apiKey) {
+		try {
+			// Base64 decode the API key
+			final byte[] decodedKey = Base64.getDecoder().decode(apiKey);
+			JSONObject keyObj = new JSONObject(new String(decodedKey));
+			final String appId = keyObj.getString("applicationId");
+			return appId.isEmpty() ? Optional.empty() : Optional.of(appId);
+		} catch(Exception e) {
+			return Optional.empty();
+		}
+		
+	}
 
 	public static JSONObject dataContainerToJSONObject(DataContainer container) {
 		ConfigurationNode node = DataTranslators.CONFIGURATION_NODE.translate(container);

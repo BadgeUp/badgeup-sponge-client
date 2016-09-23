@@ -6,7 +6,9 @@ import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
@@ -34,6 +36,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.Unirest;
 
@@ -84,7 +87,7 @@ public class BadgeUpSponge {
 		}
 		
 		setupConfig();
-		
+		validateConfig();
 
 		Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
 
@@ -161,6 +164,14 @@ public class BadgeUpSponge {
 		} else {
 			loadConfig();
 		}
+	}
+	
+	private void validateConfig() {
+		final String apiKey = config.getBadgeUpConfig().getAPIKey();
+		Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
+		
+		Optional<String> appIdOpt = Util.parseAppIdFromAPIKey(apiKey);
+		Preconditions.checkArgument(appIdOpt.isPresent(), "API key is invalid");
 	}
 
 	/**

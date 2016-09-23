@@ -30,9 +30,6 @@ public class PostEventsRunnable implements Runnable {
 	public void run() {
 		final Config config = BadgeUpSponge.getConfig();
 		
-		final String apiKey = config.getBadgeUpConfig().getAPIKey();
-		Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
-				
 		// build the base API URL
 		String baseURL = "";
 		
@@ -44,19 +41,8 @@ public class PostEventsRunnable implements Runnable {
 			baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io/v1/apps/"; 
 		}
 		
-		// Base64 decode the API key
-		final byte[] decodedKey = Base64.getDecoder().decode(apiKey);
-		JSONObject keyObj = null;
-		try {
-			keyObj = new JSONObject(new String(decodedKey));
-		} catch (Exception e) {
-			plugin.getLogger().error("Please specify a valid API key.");
-		}
-		final String appId = keyObj.getString("applicationId");
-		Preconditions.checkArgument(!appId.isEmpty(), "Application ID must not be empty");
-		Preconditions.checkArgument(appId.matches("^[a-zA-Z0-9]*$"),
-				"Application ID must contain only letters and numbers");
-		final BlockingQueue<BadgeUpEvent> eventQueue = BadgeUpSponge.getEventQueue();
+		String apiKey = config.getBadgeUpConfig().getAPIKey();
+		String appId = Util.parseAppIdFromAPIKey(apiKey).get();
 
 		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
 
@@ -64,7 +50,7 @@ public class PostEventsRunnable implements Runnable {
 
 		try {
 			while (true) {
-				final BadgeUpEvent event = eventQueue.take();
+				final BadgeUpEvent event = BadgeUpSponge.getEventQueue().take();
 				
 				HttpResponse<JsonNode> response;
 				try {
