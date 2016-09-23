@@ -2,14 +2,12 @@ package io.badgeup.sponge;
 
 import java.util.Base64;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
-import com.google.common.base.Preconditions;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;

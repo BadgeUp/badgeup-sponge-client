@@ -98,9 +98,7 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
 
 		if (!awardOpt.isPresent()) {
 			plugin.getLogger().warn("Could not parse award for type " + awardType);
-			return awardOpt;
 		}
-		Award award = awardOpt.get();
 
 		return awardOpt;
 	}
