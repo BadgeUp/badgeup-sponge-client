@@ -24,7 +24,7 @@ dependencies {
 	compile 'ninja.leaping.configurate:configurate-json:3.1.1'
 	compile 'org.glassfish.jersey.core:jersey-client:2.13'
     compile 'org.json:json:20160212'
-    compile 'com.github.BadgeUp:sponge-client-services:f2fcccd664'
+    compile 'com.github.BadgeUp:sponge-client-services:v1.0.0'
 }
 
 shadowJar {
