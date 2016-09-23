@@ -36,9 +36,6 @@ public class PostEventsRunnable implements Runnable {
 		// build the base API URL
 		String baseURL = "";
 		
-		System.out.println(config.getBadgeUpConfig().getBaseAPIURL());
-		System.out.println(config.getBadgeUpConfig().getBaseAPIURL().isEmpty());
-		
 		if (!config.getBadgeUpConfig().getBaseAPIURL().isEmpty()) {
 			// override other config settings with this base URL
 			baseURL = config.getBadgeUpConfig().getBaseAPIURL();
