@@ -49,6 +49,7 @@ public class FlatfileAchievementPersistenceService implements AchievementPersist
 
 	@Override
 	public void addUnpresentedAchievement(UUID playerID, JSONObject achievement) {
+		// TODO validate achievement data before saving
 		if(unpresentedAchievements.has(playerID.toString())) {
 			JSONArray playerAchievements = unpresentedAchievements.getJSONArray(playerID.toString());
 			playerAchievements.put(achievement);

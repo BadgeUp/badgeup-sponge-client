@@ -49,6 +49,7 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
 
 	@Override
 	public void addPendingAward(UUID playerID, JSONObject achievement) {
+		// TODO validate award data before saving
 		if (pendingAwards.has(playerID.toString())) {
 			JSONArray playerAchievements = pendingAwards.getJSONArray(playerID.toString());
 			playerAchievements.put(achievement);
