@@ -6,7 +6,7 @@
     "url": "git+https://github.com/BadgeUp/sponge-client.git"
   },
   "author": "Robert Herhold <robert@badgeup.io>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "html-entities": "^1.2.0",
     "marked": "^0.3.6"
