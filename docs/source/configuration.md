@@ -16,6 +16,6 @@ broadcast-achievements=true
 
 ## Property Explanation
 
- * `badgeup`/`api-key`: [Required] Before using the BadgeUp Sponge client, you **must** fill in the `api-key` field with an API key with at least the `event:create` scope.
+ * `badgeup`/`api-key`: [Required] Before using the BadgeUp Sponge client, you **must** fill in the `api-key` field with an API key with at least these scopes: `event:create`, `achievement:read`, `earnedachievement:read`, and `award:read`.
  * `badgeup`/`region`: [Optional] The BadgeUp region to send data to. Defaults to `useast1`.
  * `broadcast-achievements`: [Optional] When a player earns an achievement, this determines whether the achievement announcement is sent to all players or just the one that earned the achievement.

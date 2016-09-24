@@ -10,7 +10,7 @@ The BadgeUp Sponge client is [hosted on GitHub](https://github.com/BadgeUp/spong
 ## Configuration
 After starting the Sponge server with the BadgeUp Sponge client installed, a default configuration file will be generated (see the `config` directory).
 
-1. Create a new BadgeUp API key with the `event:create` scope.
+1. Create a new BadgeUp API key with these scopes: `event:create`, `achievement:read`, `earnedachievement:read`, and `award:read`.
 1. Copy the API key to the `api-key` field of the configuration file.
 
 Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
