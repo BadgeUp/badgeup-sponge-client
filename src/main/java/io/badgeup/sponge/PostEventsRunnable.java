@@ -1,9 +1,9 @@
 package io.badgeup.sponge;
 
-import java.util.Base64;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -48,49 +48,66 @@ public class PostEventsRunnable implements Runnable {
 			while (true) {
 				final BadgeUpEvent event = BadgeUpSponge.getEventQueue().take();
 
-				HttpResponse<JsonNode> response;
 				try {
-					response = Unirest.post(baseURL + appId + "/events")
-							.body(event.build())
+					HttpResponse<JsonNode> response = Unirest.post(baseURL + appId + "/events").body(event.build())
 							.asJson();
-				} catch(Exception e) {
+					if (response.getStatus() == 413) {
+						System.out.println("Event too large: " + event.build().getString("key"));
+						continue;
+					}
+					final JSONObject body = response.getBody().getObject();
+
+					List<JSONObject> completedAchievements = new ArrayList<>();
+					body.getJSONArray("progress").forEach(progressObj -> {
+						JSONObject record = (JSONObject) progressObj;
+						if (record.getBoolean("isComplete")) { // &&
+																// record.getBoolean("isNew")
+							completedAchievements.add(record);
+						}
+					});
+
+					for (JSONObject record : completedAchievements) {
+						final String earnedAchievementId = record.getString("earnedAchievementId");
+						final JSONObject earnedAchievementRecord = Unirest
+								.get(baseURL + appId + "/earnedachievements/" + earnedAchievementId).asJson().getBody()
+								.getObject();
+
+						final String achievementId = earnedAchievementRecord.getString("achievementId");
+						final JSONObject achievement = Unirest.get(baseURL + appId + "/achievements/" + achievementId)
+								.asJson().getBody().getObject();
+
+						final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(event.getSubject());
+
+						AwardPersistenceService awardPS = Sponge.getServiceManager()
+								.provide(AwardPersistenceService.class).get();
+						List<String> awardIds = new ArrayList<>();
+						achievement.getJSONArray("awards")
+								.forEach(award -> awardIds.add(((JSONObject) award).getString("id")));
+
+						for (String awardId : awardIds) {
+							final JSONObject award = Unirest.get(baseURL + appId + "/awards/" + awardId).asJson()
+									.getBody().getObject();
+							awardPS.addPendingAward(event.getSubject(), award);
+						}
+
+						if (!subjectOpt.isPresent()) {
+							AchievementPersistenceService achPS = Sponge.getServiceManager()
+									.provide(AchievementPersistenceService.class).get();
+							achPS.addUnpresentedAchievement(event.getSubject(), achievement);
+						} else {
+							BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
+						}
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println(e.getMessage());
 					plugin.getLogger().error("Could not connect to BadgeUp API!");
 					continue;
 				}
 
-				
-				if (response.getStatus() == 413) {
-					System.out.println("Event too large: " + event.build().getString("key"));
-					continue;
-				}
-				final JSONObject body = response.getBody().getObject();
-				final JSONArray achievementProgress = body.getJSONArray("progress");
-				achievementProgress.forEach(progressObj -> {
-					JSONObject progress = (JSONObject) progressObj;
-					if (!(progress.getBoolean("complete"))) { // &&
-																// progress.getBoolean("isNew")
-						return;
-					}
-					final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(event.getSubject());
-					final JSONObject achievement = progress.getJSONObject("achievement");
-
-					AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
-					if(achievement.get("awards") != null) {
-						achievement.getJSONArray("awards").forEach(award -> {
-							awardPS.addPendingAward(event.getSubject(), (JSONObject) award);
-						});
-					}
-
-					if (!subjectOpt.isPresent()) {
-						AchievementPersistenceService achPS = Sponge.getServiceManager()
-								.provide(AchievementPersistenceService.class).get();
-						achPS.addUnpresentedAchievement(event.getSubject(), achievement);
-					} else {
-						BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
-					}
-
-				});
 			}
+
 		} catch (Exception e) {
 			System.err.println(e);
 			e.printStackTrace();

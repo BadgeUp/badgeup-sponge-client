@@ -80,7 +80,10 @@ public class BadgeUpSponge {
 	@Listener(order = Order.EARLY)
 	public void preInit(GamePreInitializationEvent event) {
 		eventQueue = new ArrayBlockingQueue<BadgeUpEvent>(10000);
-
+		
+		setupConfig();
+		validateConfig();
+		
 		try {
 			setupRestClient();
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
@@ -88,9 +91,6 @@ public class BadgeUpSponge {
 			e.printStackTrace();
 			Sponge.getServer().shutdown();
 		}
-		
-		setupConfig();
-		validateConfig();
 
 		Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
 
