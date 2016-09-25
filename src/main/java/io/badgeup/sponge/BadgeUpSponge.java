@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutionException;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
-import org.apache.http.entity.mime.Header;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
@@ -139,7 +138,7 @@ public class BadgeUpSponge {
 	// Run asynchronously
 	public static void presentAchievement(Player player, JSONObject achievement) {
 		Text.Builder achTextBuilder = Text.builder(achievement.getString("name")).color(TextColors.GOLD);
-		if (achievement.has("description")) {
+		if (!achievement.isNull("description")) {
 			achTextBuilder
 					.onHover(TextActions.showText(Text.of(TextColors.BLUE, achievement.getString("description"))));
 		}
