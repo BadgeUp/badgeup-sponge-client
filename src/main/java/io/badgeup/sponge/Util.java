@@ -142,6 +142,14 @@ public class Util {
 		}
 	}
 	
+	public static Optional<Boolean> safeGetBoolean(JSONObject obj, String key) {
+		try {
+			return Optional.of(obj.getBoolean(key));
+		} catch(Exception e) {
+			return Optional.empty();
+		}
+	}
+	
 	public static Optional<List<Object>> safeGetList(JSONObject obj, String key) {
 		try {
 			List<Object> entries = new ArrayList<>();

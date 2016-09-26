@@ -31,10 +31,12 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import com.flowpowered.math.vector.Vector3i;
 
 import io.badgeup.sponge.BadgeUpSponge;
+import io.badgeup.sponge.Util;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
 import io.badgeup.sponge.service.AchievementPersistenceService;
+import io.badgeup.sponge.service.AwardPersistenceService;
 
 public class BadgeUpSpongeEventListener {
 
@@ -53,7 +55,8 @@ public class BadgeUpSpongeEventListener {
 	@Exclude({ NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class,
 			ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, UseItemStackEvent.Replace.class,
 			UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class,
-			ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class, PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class })
+			ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class, PlayerChangeClientSettingsEvent.class,
+			ChangeInventoryEvent.Held.class })
 	public void event(Event event, @Root Player player)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
@@ -109,7 +112,7 @@ public class BadgeUpSpongeEventListener {
 					new Modifier(ModifierOperation.INC, playerPath.getDistance()));
 
 			send(distanceEvent);
-			
+
 			this.playerPaths.remove(player.getUniqueId());
 		}
 
@@ -118,56 +121,67 @@ public class BadgeUpSpongeEventListener {
 	@Listener
 	public void playerJoin(ClientConnectionEvent.Join event) {
 		Player player = event.getTargetEntity();
-		AchievementPersistenceService aps = Sponge.getServiceManager().provide(AchievementPersistenceService.class)
+		AchievementPersistenceService achPS = Sponge.getServiceManager().provide(AchievementPersistenceService.class)
 				.get();
-		aps.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
+		achPS.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
 			for (JSONObject achievement : achievements) {
 				BadgeUpSponge.presentAchievement(player, achievement);
-				aps.removeAchievementByID(player.getUniqueId(), achievement.getString("id"));
+				achPS.removeAchievementByID(player.getUniqueId(), achievement.getString("id"));
 			}
 		});
+
+		AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
+		awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
+			for (JSONObject award : awards) {
+				// Check if award is auto-redeemable. If so, redeem it
+				if (Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false)) {
+					Sponge.getCommandManager().process(player, "redeem " + award.getString("id"));
+				}
+			}
+		});
+
 	}
-	
+
 	private EventKeyProvider resolveKeyProvider(Class eventClass) {
-		for(Class interfaceClass : eventClass.getInterfaces()) {
-			if(this.keyProviders.containsKey(interfaceClass)) {
+		for (Class interfaceClass : eventClass.getInterfaces()) {
+			if (this.keyProviders.containsKey(interfaceClass)) {
 				return this.keyProviders.get(interfaceClass);
 			}
-			
+
 			EventKeyProvider provider = resolveKeyProvider(interfaceClass);
-			if(provider == null) {
+			if (provider == null) {
 				continue;
 			} else {
 				return provider;
 			}
 		}
-		
+
 		// Only if the class has no interfaces
 		return null;
 	}
-	
+
 	private void registerKeyProviders() {
-		this.keyProviders.put(Event.class, new EventKeyProvider<Event> () {
+		this.keyProviders.put(Event.class, new EventKeyProvider<Event>() {
 			@Override
 			public String provide(Event event) {
 				return getDefault(event);
 			}
 		});
-		
-		this.keyProviders.put(ChangeBlockEvent.Break.class, new EventKeyProvider<ChangeBlockEvent.Break> () {
+
+		this.keyProviders.put(ChangeBlockEvent.Break.class, new EventKeyProvider<ChangeBlockEvent.Break>() {
 			@Override
 			public String provide(ChangeBlockEvent.Break event) {
 				List<Transaction<BlockSnapshot>> transactions = event.getTransactions();
-				if(transactions.isEmpty()) {
+				if (transactions.isEmpty()) {
 					// Not sure if this can ever happen
 					return getDefault(event);
 				}
-				
+
 				return getDefault(event) + ":" + transactions.get(0).getOriginal().getState().getType().getId();
 			}
 		});
 	}
-	
+
 	private void send(BadgeUpEvent event) {
 		boolean success = true;
 		try {

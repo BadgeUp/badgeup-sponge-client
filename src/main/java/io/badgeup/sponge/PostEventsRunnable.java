@@ -88,13 +88,21 @@ public class PostEventsRunnable implements Runnable {
 							final JSONObject award = Unirest.get(baseURL + appId + "/awards/" + awardId).asJson()
 									.getBody().getObject();
 							awardPS.addPendingAward(event.getSubject(), award);
+							
+							boolean autoRedeem = Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false);
+							if (subjectOpt.isPresent() && autoRedeem) {
+								// Check if the award is auto-redeemable and send the redeem command if it is
+								Sponge.getCommandManager().process(subjectOpt.get(), "redeem " + awardId);
+							}
 						}
 
 						if (!subjectOpt.isPresent()) {
+							// Store the achievement to be presented later
 							AchievementPersistenceService achPS = Sponge.getServiceManager()
 									.provide(AchievementPersistenceService.class).get();
 							achPS.addUnpresentedAchievement(event.getSubject(), achievement);
 						} else {
+							// Present the achievement to the player
 							BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
 						}
 					}

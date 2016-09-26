@@ -7,9 +7,14 @@ The BadgeUp Sponge client has the ability to interpret and grant four different 
 3. [Entity Awards](#entity-awards)
 4. [Potion Effect Awards](#potion-effect-awards)
 
+Every award's data includes at least the following fields:
+
+* `type`: The type of award; can be either `item`, `monetary`, `entity`, or `potion`.
+* `autoRedeem`: Optional boolean. Determines whether the award is automatically redeemed upon receipt of an achievement.
+
 ## Text Formatting
 
-Many awards allow you to specify custom text, such as the name of an item or entity. When used, they can be either a string formatted [as described here](http://minecraft.gamepedia.com/Formatting_codes), using the ampersand (&) as the formatting character; or a JSON object following the schema [described here](http://minecraft.gamepedia.com/Commands#Raw_JSON_Text).
+Many awards allow you to specify custom text such as the name of an item or entity. When used, they can be either a string formatted [as described here](http://minecraft.gamepedia.com/Formatting_codes), using the ampersand (&) as the formatting character; or a JSON object following the schema [described here](http://minecraft.gamepedia.com/Commands#Raw_JSON_Text).
 
 ## Item Awards
 
