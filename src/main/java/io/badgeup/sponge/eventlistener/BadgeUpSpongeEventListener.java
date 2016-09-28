@@ -55,8 +55,8 @@ public class BadgeUpSpongeEventListener {
 	@Exclude({ NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class,
 			ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, UseItemStackEvent.Replace.class,
 			UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class,
-			ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class, PlayerChangeClientSettingsEvent.class,
-			ChangeInventoryEvent.Held.class })
+			UseItemStackEvent.Stop.class, ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class,
+			PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class })
 	public void event(Event event, @Root Player player)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
@@ -180,7 +180,7 @@ public class BadgeUpSpongeEventListener {
 				return getDefault(event) + ":" + transactions.get(0).getOriginal().getState().getType().getId();
 			}
 		});
-		
+
 		this.keyProviders.put(ChangeBlockEvent.Place.class, new EventKeyProvider<ChangeBlockEvent.Place>() {
 			@Override
 			public String provide(ChangeBlockEvent.Place event) {
@@ -191,6 +191,13 @@ public class BadgeUpSpongeEventListener {
 				}
 
 				return getDefault(event) + ":" + transactions.get(0).getFinal().getState().getType().getId();
+			}
+		});
+
+		this.keyProviders.put(UseItemStackEvent.class, new EventKeyProvider<UseItemStackEvent>() {
+			@Override
+			public String provide(UseItemStackEvent event) {
+				return getDefault(event) + ":" + event.getItemStackInUse().getType().getId();
 			}
 		});
 	}

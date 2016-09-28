@@ -10,6 +10,8 @@ In certain cases, extra commonly-used information is appended to the end of even
 
  * `changeblock:<break|place>:<block type>`: When breaking or placing blocks, the block's ID is appended to the key to allow you to easily keep track of block change metrics on a per-block basis.
   - Ex: `changeblock:break:minecraft:dirt`
+ * `useitemstack:finish:<item type>`: When using an item stack, the item's ID is appended to the key to allow you to easily keep track of item usage metrics on a per-item basis.
+  - Ex: `useitemsack:finish:minecraft:mutton`
 
 ## Disabled Events
 
