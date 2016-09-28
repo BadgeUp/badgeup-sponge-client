@@ -180,6 +180,19 @@ public class BadgeUpSpongeEventListener {
 				return getDefault(event) + ":" + transactions.get(0).getOriginal().getState().getType().getId();
 			}
 		});
+		
+		this.keyProviders.put(ChangeBlockEvent.Place.class, new EventKeyProvider<ChangeBlockEvent.Place>() {
+			@Override
+			public String provide(ChangeBlockEvent.Place event) {
+				List<Transaction<BlockSnapshot>> transactions = event.getTransactions();
+				if (transactions.isEmpty()) {
+					// Not sure if this can ever happen
+					return getDefault(event);
+				}
+
+				return getDefault(event) + ":" + transactions.get(0).getFinal().getState().getType().getId();
+			}
+		});
 	}
 
 	private void send(BadgeUpEvent event) {
