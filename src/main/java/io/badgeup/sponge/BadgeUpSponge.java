@@ -135,9 +135,11 @@ public class BadgeUpSponge {
 		String apiKey = config.getBadgeUpConfig().getAPIKey();
 		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
 
-		CloseableHttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(new InsecureHostnameVerifier())
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setSSLHostnameVerifier(new InsecureHostnameVerifier())
 				.setSSLContext(sslcontext)
-				.setDefaultHeaders(Lists.newArrayList(new BasicHeader("User-Agent", "BadgeUp_SpongeClient v1.0.0"),
+				.setDefaultHeaders(Lists.newArrayList(
+						new BasicHeader("User-Agent", "BadgeUp_SpongeClient v1.0.0"),
 						new BasicHeader("Authorization", authHeader)))
 				.build();
 
@@ -226,16 +228,8 @@ public class BadgeUpSponge {
 				e.printStackTrace();
 			}
 
-			configNode.getNode("badgeup").removeChild("base-api-url"); // Remove
-																		// the
-																		// base
-																		// URL
-																		// config
-																		// setting
-																		// only
-																		// intended
-																		// for
-																		// development
+			// Remove the base URL config setting only intended for development
+			configNode.getNode("badgeup").removeChild("base-api-url"); 
 
 			this.configLoader.save(configNode);
 			this.logger.info("Config file successfully generated.");
