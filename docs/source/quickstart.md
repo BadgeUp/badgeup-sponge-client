@@ -12,7 +12,17 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 ## Configuration
 After starting the Sponge server with the BadgeUp Sponge client installed, a default configuration file will be generated (see the `config` directory).
 
-1. Create a new BadgeUp API key with these scopes: `event:create`, `achievement:read`, `earnedachievement:read`, and `award:read`.
+1. Create a new BadgeUp API key with the following scopes:
+ - `event:create`
+ - `achievement:read`
+ - `earnedachievement:read`
+ - `award:read`
+ - `criterion:create`
+ - `achievement:create`
 1. Copy the API key to the `api-key` field of the configuration file.
+1. Restart the server.
 
 Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
+
+## Demo Achievements
+Once the server is started, run the `/badgeup init` command to pre-load your account with Sponge achievements.

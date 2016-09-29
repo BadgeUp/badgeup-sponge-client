@@ -6,8 +6,11 @@ import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -42,6 +45,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.Unirest;
 
+import io.badgeup.sponge.command.executor.BadgeUpInitCommandExecutor;
 import io.badgeup.sponge.command.executor.ListAwardsCommandExecutor;
 import io.badgeup.sponge.command.executor.RedeemAwardCommandExecutor;
 import io.badgeup.sponge.event.BadgeUpEvent;
@@ -79,10 +83,10 @@ public class BadgeUpSponge {
 	@Listener(order = Order.EARLY)
 	public void preInit(GamePreInitializationEvent event) {
 		eventQueue = new ArrayBlockingQueue<BadgeUpEvent>(10000);
-		
+
 		setupConfig();
 		validateConfig();
-		
+
 		try {
 			setupRestClient();
 		} catch (KeyManagementException | NoSuchAlgorithmException e) {
@@ -113,25 +117,30 @@ public class BadgeUpSponge {
 						.arguments(GenericArguments.string(Text.of("id")))
 						.executor(new RedeemAwardCommandExecutor(this)).build(),
 				"redeem");
+
+		Map<List<String>, CommandSpec> subCommands = new HashMap<>();
+		subCommands.put(Arrays.asList("init"),
+				CommandSpec.builder().description(Text.of("Initialize your BadgeUp account with demo achievements"))
+						.permission("badgeup.admin.init").executor(new BadgeUpInitCommandExecutor(this)).build());
+
+		Sponge.getCommandManager().register(this, CommandSpec.builder().children(subCommands).build(), "badgeup");
 	}
-	
+
 	private void setupRestClient() throws NoSuchAlgorithmException, KeyManagementException {
 		SSLContext sslcontext = SSLContext.getInstance("TLSv1");
 		System.setProperty("https.protocols", "TLSv1");
 		TrustManager[] trustAllCerts = { new InsecureTrustManager() };
 		sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
-		
+
 		String apiKey = config.getBadgeUpConfig().getAPIKey();
 		final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
-		
-		CloseableHttpClient httpclient = HttpClients.custom()
-				.setSSLHostnameVerifier(new InsecureHostnameVerifier())
+
+		CloseableHttpClient httpclient = HttpClients.custom().setSSLHostnameVerifier(new InsecureHostnameVerifier())
 				.setSSLContext(sslcontext)
-				.setDefaultHeaders(Lists.newArrayList(
-						new BasicHeader("User-Agent", "BadgeUp_SpongeClient v1.0.0"),
-						new BasicHeader("Authorization", authHeader)
-				)).build();
-		
+				.setDefaultHeaders(Lists.newArrayList(new BasicHeader("User-Agent", "BadgeUp_SpongeClient v1.0.0"),
+						new BasicHeader("Authorization", authHeader)))
+				.build();
+
 		Unirest.setHttpClient(httpclient);
 	}
 
@@ -173,11 +182,11 @@ public class BadgeUpSponge {
 			loadConfig();
 		}
 	}
-	
+
 	private void validateConfig() {
 		final String apiKey = config.getBadgeUpConfig().getAPIKey();
 		Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
-		
+
 		Optional<String> appIdOpt = Util.parseAppIdFromAPIKey(apiKey);
 		Preconditions.checkArgument(appIdOpt.isPresent(), "API key is invalid");
 	}
@@ -216,8 +225,17 @@ public class BadgeUpSponge {
 			} catch (ObjectMappingException e) {
 				e.printStackTrace();
 			}
-			
-			configNode.getNode("badgeup").removeChild("base-api-url"); // Remove the base URL config setting only intended for development
+
+			configNode.getNode("badgeup").removeChild("base-api-url"); // Remove
+																		// the
+																		// base
+																		// URL
+																		// config
+																		// setting
+																		// only
+																		// intended
+																		// for
+																		// development
 
 			this.configLoader.save(configNode);
 			this.logger.info("Config file successfully generated.");

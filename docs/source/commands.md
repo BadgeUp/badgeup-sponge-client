@@ -1,6 +1,11 @@
 # Commands
 
-There are 2 commands exposed to players:
+## Admin Commands
+
+`/badgeup init`: Pre-loads your BadgeUp account with demo Minecraft achievements.
+ * Permission: `badgeup.admin.init`
+
+## Player Commands
 
 `/awards`: Lists all unclaimed awards
  * Permission: `badgeup.awards.list`
