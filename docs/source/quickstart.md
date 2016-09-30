@@ -82,3 +82,19 @@ Chop 50 logs
 * "Chainsaw" Diamond Axe
  - Efficiency 5
  - Unbreaking 3 
+ 
+### Moneybags
+
+#### How to obtain
+Drop a gold ingot
+
+#### Awards
+* $100,000
+
+### One Man's Trash
+
+#### How to obtain
+Pick up 100 rotten flesh
+
+#### Awards
+* Zombie Head
