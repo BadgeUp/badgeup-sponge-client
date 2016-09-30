@@ -80,6 +80,33 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 				e.printStackTrace();
 			}
 			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Veggematic achievement."));
+			
+			try {
+				greenThumbAchievement();
+			} catch (JSONException | UnirestException e) {
+				src.sendMessage(Text.of(TextColors.RED, "Failed to create Green Thumb achievement."));
+				src.sendMessage(contactSupportMsg);
+				e.printStackTrace();
+			}
+			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Green Thumb achievement."));
+			
+			try {
+				pyroAchievement();
+			} catch (JSONException | UnirestException e) {
+				src.sendMessage(Text.of(TextColors.RED, "Failed to create Pyro achievement."));
+				src.sendMessage(contactSupportMsg);
+				e.printStackTrace();
+			}
+			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Pyro achievement."));
+			
+			try {
+				lumberjackAchievement();
+			} catch (JSONException | UnirestException e) {
+				src.sendMessage(Text.of(TextColors.RED, "Failed to create Lumberjack achievement."));
+				src.sendMessage(contactSupportMsg);
+				e.printStackTrace();
+			}
+			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Lumberjack achievement."));
 		}
 
 		private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
@@ -416,6 +443,99 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 													.put(TYPE, GROUP))
 											)
 									))
+					.asJson();
+			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+
+		}
+		
+		private void greenThumbAchievement() throws JSONException, UnirestException, IllegalStateException {
+			final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+			final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
+
+			HttpResponse<JsonNode> placeSaplingCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Place Saplings")
+							.put(DESC, "Place 10 Saplings")
+							.put(KEY, "changeblock:place:minecraft:sapling")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 10))
+					.asJson();
+			Preconditions.checkArgument(placeSaplingCritResponse.getStatus() == 201);
+			final String placeSaplingCritId = placeSaplingCritResponse.getBody().getObject().getString(ID);
+			
+			// Create the achievement
+			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+					.body(new JSONObject()
+							.put(NAME, "Green Thumb")
+							.put(DESC, "That deep-rooted desire")
+							.put(EVAL_TREE, new JSONObject()
+									.put(CONDITION, AND)
+									.put(CRITERIA, new JSONArray()
+											.put(new JSONObject().put(ID, placeSaplingCritId)))
+									.put(TYPE, GROUP)
+									.put(GROUPS, new JSONArray())))
+					.asJson();
+			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+
+		}
+		
+		private void pyroAchievement() throws JSONException, UnirestException, IllegalStateException {
+			final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+			final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
+
+			HttpResponse<JsonNode> lightFireCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Light Fires")
+							.put(DESC, "Light a fire")
+							.put(KEY, "changeblock:place:minecraft:fire")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(lightFireCritResponse.getStatus() == 201);
+			final String lightFireCritId = lightFireCritResponse.getBody().getObject().getString(ID);
+			
+			// Create the achievement
+			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+					.body(new JSONObject()
+							.put(NAME, "Pyro")
+							.put(DESC, "Some people just want to watch the world burn")
+							.put(EVAL_TREE, new JSONObject()
+									.put(CONDITION, AND)
+									.put(CRITERIA, new JSONArray()
+											.put(new JSONObject().put(ID, lightFireCritId)))
+									.put(TYPE, GROUP)
+									.put(GROUPS, new JSONArray())))
+					.asJson();
+			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+
+		}
+		
+		private void lumberjackAchievement() throws JSONException, UnirestException, IllegalStateException {
+			final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+			final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
+
+			HttpResponse<JsonNode> chopLogsCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Chop Trees")
+							.put(DESC, "Chop 50 Logs")
+							.put(KEY, "changeblock:break:minecraft:log")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 50))
+					.asJson();
+			Preconditions.checkArgument(chopLogsCritResponse.getStatus() == 201);
+			final String chopLogsCritId = chopLogsCritResponse.getBody().getObject().getString(ID);
+			
+			// Create the achievement
+			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+					.body(new JSONObject()
+							.put(NAME, "Lumberjack")
+							.put(DESC, "Haven't you heard of email?")
+							.put(EVAL_TREE, new JSONObject()
+									.put(CONDITION, AND)
+									.put(CRITERIA, new JSONArray()
+											.put(new JSONObject().put(ID, chopLogsCritId)))
+									.put(TYPE, GROUP)
+									.put(GROUPS, new JSONArray())))
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
