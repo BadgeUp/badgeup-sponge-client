@@ -31,7 +31,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		Sponge.getScheduler().createTaskBuilder().async().execute(new BadgeUpInitRunnable(plugin, src)).submit(plugin);
+		Sponge.getScheduler().createTaskBuilder().async().execute(new BadgeUpInitRunnable(src)).submit(plugin);
 		return CommandResult.success();
 	}
 
@@ -53,17 +53,15 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 		private static final String TYPE = "type";
 		private static final String GROUP = "GROUP";
 
-		private BadgeUpSponge plugin;
 		private CommandSource src;
 
-		public BadgeUpInitRunnable(BadgeUpSponge plugin, CommandSource src) {
-			this.plugin = plugin;
+		public BadgeUpInitRunnable(CommandSource src) {
 			this.src = src;
 		}
 
 		@Override
 		public void run() {
-			Text contactSupportMsg = Text.of("Please contact BadgeUp Support at support@badgeup.io with the following error log:");
+			final Text contactSupportMsg = Text.of("Please contact BadgeUp Support at support@badgeup.io with the following error log:");
 			
 			try {
 				meatLoverAchievement();
@@ -73,11 +71,20 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 				e.printStackTrace();
 			}
 			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Meat Lover achievement."));
+			
+			try {
+				vegematicAchievement();
+			} catch (JSONException | UnirestException e) {
+				src.sendMessage(Text.of(TextColors.RED, "Failed to create Veggematic achievement."));
+				src.sendMessage(contactSupportMsg);
+				e.printStackTrace();
+			}
+			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Veggematic achievement."));
 		}
 
 		private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
-			final String baseURL = plugin.getConfig().getBadgeUpConfig().getBaseAPIURL();
-			final String appId = Util.parseAppIdFromAPIKey(plugin.getConfig().getBadgeUpConfig().getAPIKey()).get();
+			final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+			final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
 			HttpResponse<JsonNode> rawPorkCritResponse = Unirest.post(baseURL + appId + "/criteria")
 					.body(new JSONObject()
@@ -232,6 +239,179 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 													.put(CRITERIA, new JSONArray()
 															.put(new JSONObject().put(ID, rawRabbitCritId))
 															.put(new JSONObject().put(ID, cookedRabbitCritId)))
+													.put(GROUPS, new JSONArray())
+													.put(TYPE, GROUP))
+											)
+									))
+					.asJson();
+			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+
+		}
+		
+		private void vegematicAchievement() throws JSONException, UnirestException, IllegalStateException {
+			final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+			final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
+
+			HttpResponse<JsonNode> appleCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Apple")
+							.put(DESC, "Eat 1 Apple")
+							.put(KEY, "useitemstack:finish:minecraft:apple")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(appleCritResponse.getStatus() == 201);
+			final String appleCritId = appleCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> goldenAppleCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Golden Apple")
+							.put(DESC, "Eat 1 Golden Apple")
+							.put(KEY, "useitemstack:finish:minecraft:golden_apple")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(goldenAppleCritResponse.getStatus() == 201);
+			final String goldenAppleCritId = goldenAppleCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> mushroomStewCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Mushroom Stew")
+							.put(DESC, "Eat 1 Mushroom Stew")
+							.put(KEY, "useitemstack:finish:minecraft:mushroom_stew")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(mushroomStewCritResponse.getStatus() == 201);
+			final String mushroomStewCritId = mushroomStewCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> melonCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Melon")
+							.put(DESC, "Eat 1 Melon")
+							.put(KEY, "useitemstack:finish:minecraft:melon")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(melonCritResponse.getStatus() == 201);
+			final String melonCritId = melonCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> carrotCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Carrot")
+							.put(DESC, "Eat 1 Carrot")
+							.put(KEY, "useitemstack:finish:minecraft:carrot")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(carrotCritResponse.getStatus() == 201);
+			final String carrotCritId = carrotCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> goldenCarrotCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Golden Carrot")
+							.put(DESC, "Eat 1 Golden Carrot")
+							.put(KEY, "useitemstack:finish:minecraft:golden_carrot")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(goldenCarrotCritResponse.getStatus() == 201);
+			final String goldenCarrotCritId = goldenCarrotCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> rawPotatoCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Raw Potato")
+							.put(DESC, "Eat 1 Raw Potato")
+							.put(KEY, "useitemstack:finish:minecraft:potato")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(rawPotatoCritResponse.getStatus() == 201);
+			final String rawPotatoCritId = rawPotatoCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> bakedPotatoCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Baked Potato")
+							.put(DESC, "Eat 1 Baked Mutton")
+							.put(KEY, "useitemstack:finish:minecraft:baked_potato")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(bakedPotatoCritResponse.getStatus() == 201);
+			final String bakedPotatoCritId = bakedPotatoCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> poisonousPotatoCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Poisonous Potato")
+							.put(DESC, "Eat 1 Poisonous Potato")
+							.put(KEY, "useitemstack:finish:minecraft:poisonous_potato")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(poisonousPotatoCritResponse.getStatus() == 201);
+			final String poisonousPotatoCritId = poisonousPotatoCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> beetrootCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Beetroot")
+							.put(DESC, "Eat 1 Beetroot")
+							.put(KEY, "useitemstack:finish:minecraft:beetroot")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(beetrootCritResponse.getStatus() == 201);
+			final String beetrootCritId = beetrootCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> beetrootSoupCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Beetroot Soup")
+							.put(DESC, "Eat 1 Beetroot Soup")
+							.put(KEY, "useitemstack:finish:minecraft:beetroot_soup")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(beetrootSoupCritResponse.getStatus() == 201);
+			final String beetrootSoupCritId = beetrootSoupCritResponse.getBody().getObject().getString(ID);
+			
+			// Create the achievement
+			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+					.body(new JSONObject()
+							.put(NAME, "Veggematic")
+							.put(DESC, "Is that a leaf growing from your head?")
+							.put(EVAL_TREE, new JSONObject()
+									.put(CONDITION, AND)
+									.put(CRITERIA, new JSONArray()
+											.put(new JSONObject().put(ID, mushroomStewCritId))
+											.put(new JSONObject().put(ID, melonCritId)))
+									.put(TYPE, GROUP)
+									.put(GROUPS, new JSONArray()
+											.put(new JSONObject()
+													.put(CONDITION, OR)
+													.put(CRITERIA, new JSONArray()
+															.put(new JSONObject().put(ID, appleCritId))
+															.put(new JSONObject().put(ID, goldenAppleCritId)))
+													.put(GROUPS, new JSONArray())
+													.put(TYPE, GROUP))
+											.put(new JSONObject()
+													.put(CONDITION, OR)
+													.put(CRITERIA, new JSONArray()
+															.put(new JSONObject().put(ID, carrotCritId))
+															.put(new JSONObject().put(ID, goldenCarrotCritId)))
+													.put(GROUPS, new JSONArray())
+													.put(TYPE, GROUP))
+											.put(new JSONObject()
+													.put(CONDITION, OR)
+													.put(CRITERIA, new JSONArray()
+															.put(new JSONObject().put(ID, rawPotatoCritId))
+															.put(new JSONObject().put(ID, bakedPotatoCritId))
+															.put(new JSONObject().put(ID, poisonousPotatoCritId)))
+													.put(GROUPS, new JSONArray())
+													.put(TYPE, GROUP))
+											.put(new JSONObject()
+													.put(CONDITION, OR)
+													.put(CRITERIA, new JSONArray()
+															.put(new JSONObject().put(ID, beetrootCritId))
+															.put(new JSONObject().put(ID, beetrootSoupCritId)))
 													.put(GROUPS, new JSONArray())
 													.put(TYPE, GROUP))
 											)
