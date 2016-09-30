@@ -225,6 +225,13 @@ public class BadgeUpSpongeEventListener {
 				return getDefault(event) + ":" + item.getItemType().getId();
 			}
 		});
+		
+		this.keyProviders.put(ChangeInventoryEvent.Pickup.class, new EventKeyProvider<ChangeInventoryEvent.Pickup>() {
+			@Override
+			public String provide(ChangeInventoryEvent.Pickup event) {
+				return getDefault(event) + ":" + event.getTargetEntity().getItemType().getId();
+			}
+		});
 	}
 
 	private void send(BadgeUpEvent event) {
