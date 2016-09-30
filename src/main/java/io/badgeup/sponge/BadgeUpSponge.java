@@ -59,7 +59,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-@Plugin(id = "badgeup-sponge-client", name = "BadgeUpSpongeClient", version = "1.0.0")
+@Plugin(id = "badgeup-sponge-client")
 public class BadgeUpSponge {
 
 	private static BlockingQueue<BadgeUpEvent> eventQueue;

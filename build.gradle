@@ -8,6 +8,11 @@ plugins {
 sponge {
     plugin {
         id = 'badgeup-sponge-client'
+		meta {
+			name = 'BadgeUp Sponge Client'
+			url = 'https://www.badgeup.io/'
+			authors = ['Robert Herhold']
+		}
     }
 }
 
