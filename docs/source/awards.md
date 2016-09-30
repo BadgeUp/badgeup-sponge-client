@@ -30,6 +30,7 @@ This type of award gives the player an `ItemStack` defined by the following awar
  * `level`: Required. Must be a positive integer.
 * `durability`: Optional. Must be an integer.
 * `color`: Optional. Must be one of: `white`, `orange`, `magenta`, `light_blue`, `yellow`, `lime`, `pink`, `gray`, `silver`, `cyan`, `purple`, `blue`, `brown`, `green`, `red`, or `black`.
+* `skullType`: Optional (only used with the `minecraft:skull` item type; defaults to `skeleton`). Must be one of: `skeleton`, `zombie`, `wither_skeleton`, `creeper`, `ender_dragon`.
 
 ### Example Item Award Data
 

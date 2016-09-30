@@ -59,6 +59,8 @@ public class EntityAward extends Award {
 			Optional<DyeColor> colorOpt = Sponge.getRegistry().getType(DyeColor.class, colorIdOpt.get());
 			if (colorOpt.isPresent()) {
 				entity.offer(Keys.DYE_COLOR, colorOpt.get());
+			} else {
+				plugin.getLogger().error("Could not retrieve DyeColor with ID " + colorIdOpt.get() + ". Skipping.");
 			}
 		}
 		

@@ -9,6 +9,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.DyeColor;
+import org.spongepowered.api.data.type.SkullType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
@@ -107,6 +108,18 @@ public class ItemAward extends Award {
 			Optional<DyeColor> colorOpt = Sponge.getRegistry().getType(DyeColor.class, colorIdOpt.get());
 			if (colorOpt.isPresent()) {
 				builder.add(Keys.DYE_COLOR, colorOpt.get());
+			} else {
+				plugin.getLogger().error("Could not retrieve DyeColor with ID " + colorIdOpt.get() + ". Skipping.");
+			}
+		}
+		
+		Optional<String> skullTypeStringOpt = Util.safeGetString(data, "skullType");
+		if(skullTypeStringOpt.isPresent()) {
+			final Optional<SkullType> skullTypeOpt = Sponge.getRegistry().getType(SkullType.class, skullTypeStringOpt.get());
+			if (skullTypeOpt.isPresent()) {
+				builder.add(Keys.SKULL_TYPE, skullTypeOpt.get());
+			} else {
+				plugin.getLogger().error("Could not retrieve SkullType with ID " + skullTypeStringOpt.get() + ". Skipping.");
 			}
 		}
 
