@@ -90,6 +90,7 @@ This type of award spawns an entity near the player in a position specified by y
 
 * `type`: `entity`
 * `entityType`: Required. Must be of the form `minecraft:entity` and be the ID of one of the entities listed [here](http://minecraft-ids.grahamedgecombe.com/entities).
+* `displayName`: Optional. Must be of the format [described above](#text-formatting).
 * `color`: Optional. Used for coloring sheep. Must be one of: `white`, `orange`, `magenta`, `light_blue`, `yellow`, `lime`, `pink`, `gray`, `silver`, `cyan`, `purple`, `blue`, `brown`, `green`, `red`, or `black`.
 * `position`: Optional (defaults to the player's position). Takes the following form, where the tilde (~) indicates a relative position.
 

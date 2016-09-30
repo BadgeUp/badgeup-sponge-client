@@ -12,6 +12,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
+import org.spongepowered.api.text.Text;
 
 import com.flowpowered.math.vector.Vector3d;
 
@@ -59,6 +60,11 @@ public class EntityAward extends Award {
 			if (colorOpt.isPresent()) {
 				entity.offer(Keys.DYE_COLOR, colorOpt.get());
 			}
+		}
+		
+		final Optional<Text> displayNameOpt = Util.deserializeText(Util.safeGet(data, "displayName").orElse(null));
+		if (displayNameOpt.isPresent()) {
+			entity.offer(Keys.DISPLAY_NAME, displayNameOpt.get());
 		}
 
 		// TODO configurable world?
