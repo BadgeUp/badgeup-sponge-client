@@ -19,7 +19,7 @@ public abstract class Award {
 		this.plugin = plugin;
 		this.name = award.getString("name");
 
-		if (award.get("description") != null) {
+		if (!award.isNull("description")) {
 			this.description = award.getString("description");
 		} else {
 			this.description = null;

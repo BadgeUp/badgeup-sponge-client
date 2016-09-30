@@ -44,6 +44,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 		private static final String OPERATOR = "operator";
 		private static final String THRESHOLD = "threshold";
 		
+		private static final String AWARDS = "awards";
 		private static final String EVAL_TREE = "evalTree";
 		private static final String CRITERIA = "criteria";
 		private static final String GROUPS = "groups";
@@ -52,6 +53,8 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 		private static final String OR = "OR";
 		private static final String TYPE = "type";
 		private static final String GROUP = "GROUP";
+		
+		private static final String DATA = "data";
 
 		private CommandSource src;
 
@@ -223,6 +226,19 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			Preconditions.checkArgument(cookedRabbitCritResponse.getStatus() == 201);
 			final String cookedRabbitCritId = cookedRabbitCritResponse.getBody().getObject().getString(ID);
 			
+			HttpResponse<JsonNode> steakAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "Where's the Meat?")
+							.put(DESC, "A feast to behold!")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "item")
+									.put("itemType", "minecraft:cooked_beef")
+									.put("quantity", 64)))
+					.asJson();
+			Preconditions.checkArgument(steakAwardResponse.getStatus() == 201);
+			final String steakAwardId = steakAwardResponse.getBody().getObject().getString(ID);
+			
+			
 			// Create the achievement
 			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
 					.body(new JSONObject()
@@ -268,8 +284,10 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 															.put(new JSONObject().put(ID, cookedRabbitCritId)))
 													.put(GROUPS, new JSONArray())
 													.put(TYPE, GROUP))
-											)
-									))
+											))
+								.put(AWARDS, new JSONArray()
+										.put(new JSONObject().put(ID, steakAwardId)))
+							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
@@ -400,6 +418,28 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			Preconditions.checkArgument(beetrootSoupCritResponse.getStatus() == 201);
 			final String beetrootSoupCritId = beetrootSoupCritResponse.getBody().getObject().getString(ID);
 			
+			HttpResponse<JsonNode> goldenAppleAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "Golden Apple")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "item")
+									.put("itemType", "minecraft:golden_apple")
+									.put("quantity", 1)))
+					.asJson();
+			Preconditions.checkArgument(goldenAppleAwardResponse.getStatus() == 201);
+			final String goldenAppleAwardId = goldenAppleAwardResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> goldenCarrotAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "Golden Carrot")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "item")
+									.put("itemType", "minecraft:golden_carrot")
+									.put("quantity", 1)))
+					.asJson();
+			Preconditions.checkArgument(goldenCarrotAwardResponse.getStatus() == 201);
+			final String goldenCarrotAwardId = goldenCarrotAwardResponse.getBody().getObject().getString(ID);
+			
 			// Create the achievement
 			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
 					.body(new JSONObject()
@@ -441,8 +481,11 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 															.put(new JSONObject().put(ID, beetrootSoupCritId)))
 													.put(GROUPS, new JSONArray())
 													.put(TYPE, GROUP))
-											)
-									))
+											))
+								.put(AWARDS, new JSONArray()
+										.put(new JSONObject().put(ID, goldenAppleAwardId))
+										.put(new JSONObject().put(ID, goldenCarrotAwardId)))
+							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
@@ -473,7 +516,8 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 									.put(CRITERIA, new JSONArray()
 											.put(new JSONObject().put(ID, placeSaplingCritId)))
 									.put(TYPE, GROUP)
-									.put(GROUPS, new JSONArray())))
+									.put(GROUPS, new JSONArray()))
+							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
@@ -494,6 +538,30 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			Preconditions.checkArgument(lightFireCritResponse.getStatus() == 201);
 			final String lightFireCritId = lightFireCritResponse.getBody().getObject().getString(ID);
 			
+			HttpResponse<JsonNode> tntAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "TNT")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "item")
+									.put("itemType", "minecraft:tnt")
+									.put("quantity", 10)))
+					.asJson();
+			Preconditions.checkArgument(tntAwardResponse.getStatus() == 201);
+			final String tntAwardId = tntAwardResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> resistanceEffectAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "Resistance Potion Effect")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "potion")
+									.put("potionEffectType", "minecraft:resistance")
+									.put("duration", 2400) // 2 minutes
+									.put("amplifier", 4)
+								))
+					.asJson();
+			Preconditions.checkArgument(resistanceEffectAwardResponse.getStatus() == 201);
+			final String resistanceEffectAwardId = resistanceEffectAwardResponse.getBody().getObject().getString(ID);
+			
 			// Create the achievement
 			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
 					.body(new JSONObject()
@@ -504,7 +572,11 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 									.put(CRITERIA, new JSONArray()
 											.put(new JSONObject().put(ID, lightFireCritId)))
 									.put(TYPE, GROUP)
-									.put(GROUPS, new JSONArray())))
+									.put(GROUPS, new JSONArray()))
+							.put(AWARDS, new JSONArray()
+									.put(new JSONObject().put(ID, tntAwardId))
+									.put(new JSONObject().put(ID, resistanceEffectAwardId)))
+							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
@@ -525,6 +597,27 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			Preconditions.checkArgument(chopLogsCritResponse.getStatus() == 201);
 			final String chopLogsCritId = chopLogsCritResponse.getBody().getObject().getString(ID);
 			
+			HttpResponse<JsonNode> axeAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "Chainsaw")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "item")
+									.put("itemType", "minecraft:diamond_axe")
+									.put("displayName", "&6Chainsaw")
+									.put("enchantments", new JSONArray()
+											.put(new JSONObject()
+													.put(ID, "minecraft:efficiency")
+													.put("level", 5)
+											).put(new JSONObject()
+													.put(ID, "minecraft:unbreaking")
+													.put("level", 3)
+													)
+											)
+								))
+					.asJson();
+			Preconditions.checkArgument(axeAwardResponse.getStatus() == 201);
+			final String axeAwardId = axeAwardResponse.getBody().getObject().getString(ID);
+			
 			// Create the achievement
 			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
 					.body(new JSONObject()
@@ -535,7 +628,10 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 									.put(CRITERIA, new JSONArray()
 											.put(new JSONObject().put(ID, chopLogsCritId)))
 									.put(TYPE, GROUP)
-									.put(GROUPS, new JSONArray())))
+									.put(GROUPS, new JSONArray()))
+							.put(AWARDS, new JSONArray()
+									.put(new JSONObject().put(ID, axeAwardId)))
+							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 

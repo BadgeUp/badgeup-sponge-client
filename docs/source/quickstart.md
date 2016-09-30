@@ -17,6 +17,7 @@ After starting the Sponge server with the BadgeUp Sponge client installed, a def
  - `achievement:read`
  - `earnedachievement:read`
  - `award:read`
+ - `award:create`
  - `criterion:create`
  - `achievement:create`
 1. Copy the API key to the `api-key` field of the configuration file.

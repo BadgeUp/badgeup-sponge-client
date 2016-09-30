@@ -38,7 +38,7 @@ public class ListAwardsCommandExecutor implements CommandExecutor {
 			awards.forEach(award -> {
 				Text.Builder awardTextBuilder = Text.builder(award.getString("name")).color(TextColors.GOLD);
 
-				if (award.get("description") != null) {
+				if (!award.isNull("description")) {
 					awardTextBuilder
 							.onHover(TextActions.showText(Text.of(TextColors.GOLD, award.getString("description"))));
 				}
