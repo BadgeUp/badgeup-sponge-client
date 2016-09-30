@@ -47,6 +47,7 @@ public class PostEventsRunnable implements Runnable {
 		try {
 			while (true) {
 				final BadgeUpEvent event = BadgeUpSponge.getEventQueue().take();
+				event.setDiscardable(true);
 
 				try {
 					HttpResponse<JsonNode> response = Unirest.post(baseURL + appId + "/events").body(event.build())
