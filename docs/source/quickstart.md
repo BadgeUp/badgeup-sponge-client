@@ -26,4 +26,59 @@ After starting the Sponge server with the BadgeUp Sponge client installed, a def
 Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
 
 ## Demo Achievements
-Once the server is started, run the `/badgeup init` command to pre-load your account with Sponge achievements.
+Once the server is started, run the `/badgeup init` command to pre-load your application with Sponge achievements.
+
+### Meat Lover
+
+#### How to obtain
+Eat one of each of the following foods:
+ * Raw Porkchop or Cooked Porkchop
+ * Raw Chicken or Cooked Chicken
+ * Raw Mutton or Cooked Mutton
+ * Raw Beef or Steak
+ * Raw Rabbit or Cooked Rabbit
+ 
+#### Awards
+* 64 Steak
+
+### Vegematic
+
+#### How to obtain
+Eat one of each of the following foods:
+ * Apple or Golden Apple
+ * Mushroom Stew
+ * Melon
+ * Carrot or Golden Carrot
+ * Potato or Baked Potato or Poisonous Potato
+ * Beetroot or Beetroot Soup
+ 
+#### Awards
+ * Golden Apple
+ * Golden Carrot
+
+### Green Thumb
+
+#### How to obtain
+Plant 10 saplings
+ 
+#### Awards
+ * Rainbow Sheep
+
+### Pyro
+
+#### How to obtain
+Light a fire
+ 
+#### Awards
+ * 10 TNT
+ * Resistance Potion Effect for 2 minutes
+ 
+### Lumberjack
+
+#### How to obtain
+Chop 50 logs
+
+#### Awards
+* "Chainsaw" Diamond Axe
+ - Efficiency 5
+ - Unbreaking 3 

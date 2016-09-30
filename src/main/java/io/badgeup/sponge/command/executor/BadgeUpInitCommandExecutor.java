@@ -443,7 +443,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			// Create the achievement
 			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
 					.body(new JSONObject()
-							.put(NAME, "Veggematic")
+							.put(NAME, "Vegematic")
 							.put(DESC, "Is that a leaf growing from your head?")
 							.put(EVAL_TREE, new JSONObject()
 									.put(CONDITION, AND)
