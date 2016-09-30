@@ -4,14 +4,8 @@ The BadgeUp Sponge client is [hosted on GitHub](https://github.com/BadgeUp/spong
 
 The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a compatible version of Sponge.
 
-## Installation
-1. Set up a Sponge server as detailed [here](https://docs.spongepowered.org/master/en/server/getting-started/implementations/index.html).
-1. Download the latest version of the BadgeUp Sponge Client [here](https://github.com/BadgeUp/sponge-client/releases/latest).
-1. Place the `badgeup-sponge-client.jar` file in the `mods` directory of your server.
-
-## Configuration
-After starting the Sponge server with the BadgeUp Sponge client installed, a default configuration file will be generated (see the `config` directory).
-
+## BadgeUp Setup
+1. [Create a BadgeUp account](https://www.badgeup.io/)
 1. Create a new BadgeUp API key with the following scopes:
  - `event:create`
  - `achievement:read`
@@ -20,7 +14,13 @@ After starting the Sponge server with the BadgeUp Sponge client installed, a def
  - `award:create`
  - `criterion:create`
  - `achievement:create`
-1. Copy the API key to the `api-key` field of the configuration file.
+
+## Installation
+1. Set up a Sponge server as detailed [here](https://docs.spongepowered.org/master/en/server/getting-started/implementations/index.html).
+1. Download the latest version of the BadgeUp Sponge Client [here](https://github.com/BadgeUp/sponge-client/releases/latest).
+1. Place the `badgeup-sponge-client.jar` file in the `mods` directory of your server.
+1. Start the server to let configuration files generate. The BadgeUp Sponge Client configuration file is at `config/badgeup-sponge-client/badgeup-sponge-client.conf`.
+1. Copy the BadgeUp API key (created above) to the `api-key` field of the configuration file.
 1. Restart the server.
 
 Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
