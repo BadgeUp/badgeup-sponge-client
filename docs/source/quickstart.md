@@ -26,7 +26,7 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
 
 ## Demo Achievements
-Once the server is started, run the `/badgeup init` command to pre-load your application with Sponge achievements.
+Once the server is started, run `/badgeup init` (requires the `badgeup.admin.init` permission) to pre-load your application with Sponge achievements.
 
 ### Meat Lover
 
