@@ -110,6 +110,15 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 				e.printStackTrace();
 			}
 			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Lumberjack achievement."));
+		
+			try {
+				moneybagsAchievement();
+			} catch (JSONException | UnirestException e) {
+				src.sendMessage(Text.of(TextColors.RED, "Failed to create Moneybags achievement."));
+				src.sendMessage(contactSupportMsg);
+				e.printStackTrace();
+			}
+			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Moneybags achievement."));
 		}
 
 		private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
@@ -645,6 +654,52 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 									.put(GROUPS, new JSONArray()))
 							.put(AWARDS, new JSONArray()
 									.put(new JSONObject().put(ID, axeAwardId)))
+							)
+					.asJson();
+			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+
+		}
+		
+		private void moneybagsAchievement() throws JSONException, UnirestException, IllegalStateException {
+			final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+			final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
+
+			HttpResponse<JsonNode> dropGoldCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Drop Gold")
+							.put(DESC, "Drop a Gold Ingot")
+							.put(KEY, "dropitem:dispense:minecraft:gold_ingot")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 1))
+					.asJson();
+			Preconditions.checkArgument(dropGoldCritResponse.getStatus() == 201);
+			final String dropGoldCritId = dropGoldCritResponse.getBody().getObject().getString(ID);
+			
+			HttpResponse<JsonNode> moneyAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "100 Grand")
+							.put(DESC, "Better than the candy bar!")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "monetary")
+									.put("amount", 100000)
+								))
+					.asJson();
+			Preconditions.checkArgument(moneyAwardResponse.getStatus() == 201);
+			final String moneyAwardId = moneyAwardResponse.getBody().getObject().getString(ID);
+			
+			// Create the achievement
+			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+					.body(new JSONObject()
+							.put(NAME, "Moneybags")
+							.put(DESC, "'I can help you with that!'")
+							.put(EVAL_TREE, new JSONObject()
+									.put(CONDITION, AND)
+									.put(CRITERIA, new JSONArray()
+											.put(new JSONObject().put(ID, dropGoldCritId)))
+									.put(TYPE, GROUP)
+									.put(GROUPS, new JSONArray()))
+							.put(AWARDS, new JSONArray()
+									.put(new JSONObject().put(ID, moneyAwardId)))
 							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
