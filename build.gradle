@@ -5,10 +5,15 @@ plugins {
 	id 'org.spongepowered.plugin' version '0.6'
 }
 
+sponge {
+    plugin {
+        id = 'badgeup-sponge-client'
+    }
+}
+
 group = 'io.badgeup'
 version = '1.0.0'
-
-description = 'BadgeUp Sponge Client'
+description = 'Easily add Achievements and Awards to your Sponge server'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
