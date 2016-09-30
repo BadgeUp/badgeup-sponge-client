@@ -12,6 +12,10 @@ In certain cases, extra commonly-used information is appended to the end of even
   - Ex: `changeblock:break:minecraft:dirt`
  * `useitemstack:finish:<item type>`: When using an item stack, the item's ID is appended to the key to allow you to easily keep track of item usage metrics on a per-item basis.
   - Ex: `useitemsack:finish:minecraft:mutton`
+ * `dropitem:dispense:<item type>`: When dropping an item, the item's ID is appended to the key to allow you to easily keep track of item drop metrics on a per-item basis.
+  - Ex: `dropitem:dispense:minecraft:gold_ingot`
+ * `changeinventory:pickup:<item type>`: When picking up an item, the item's ID is appended to the key to allow you to easily keep track of item collection metrics on a per-item basis.
+  - Ex: `changeinventory:pickup:minecraft:gold_ingot`
 
 ## Disabled Events
 
