@@ -506,6 +506,18 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			Preconditions.checkArgument(placeSaplingCritResponse.getStatus() == 201);
 			final String placeSaplingCritId = placeSaplingCritResponse.getBody().getObject().getString(ID);
 			
+			HttpResponse<JsonNode> rainbowSheepAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "Rainbow Sheep")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "entity")
+									.put("entityType", "minecraft:sheep")
+									.put("position", new JSONObject().put("x", "~").put("y", "~").put("z", "~"))
+									.put("displayName", "jeb_")))
+					.asJson();
+			Preconditions.checkArgument(rainbowSheepAwardResponse.getStatus() == 201);
+			final String rainbowSheepAwardId = rainbowSheepAwardResponse.getBody().getObject().getString(ID);
+			
 			// Create the achievement
 			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
 					.body(new JSONObject()
@@ -517,6 +529,8 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 											.put(new JSONObject().put(ID, placeSaplingCritId)))
 									.put(TYPE, GROUP)
 									.put(GROUPS, new JSONArray()))
+							.put(AWARDS, new JSONArray()
+									.put(new JSONObject().put(ID, rainbowSheepAwardId)))
 							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
