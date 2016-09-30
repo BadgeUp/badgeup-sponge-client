@@ -78,11 +78,11 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			try {
 				vegematicAchievement();
 			} catch (JSONException | UnirestException e) {
-				src.sendMessage(Text.of(TextColors.RED, "Failed to create Veggematic achievement."));
+				src.sendMessage(Text.of(TextColors.RED, "Failed to create Vegematic achievement."));
 				src.sendMessage(contactSupportMsg);
 				e.printStackTrace();
 			}
-			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Veggematic achievement."));
+			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Vegematic achievement."));
 			
 			try {
 				greenThumbAchievement();
@@ -119,6 +119,15 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 				e.printStackTrace();
 			}
 			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Moneybags achievement."));
+			
+			try {
+				oneMansTrashAchievement();
+			} catch (JSONException | UnirestException e) {
+				src.sendMessage(Text.of(TextColors.RED, "Failed to create One Man's Trash achievement."));
+				src.sendMessage(contactSupportMsg);
+				e.printStackTrace();
+			}
+			src.sendMessage(Text.of(TextColors.GREEN, "Successfully created One Man's Trash achievement."));
 		}
 
 		private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
@@ -691,7 +700,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
 					.body(new JSONObject()
 							.put(NAME, "Moneybags")
-							.put(DESC, "'I can help you with that!'")
+							.put(DESC, "'Let me get that for you!'")
 							.put(EVAL_TREE, new JSONObject()
 									.put(CONDITION, AND)
 									.put(CRITERIA, new JSONArray()
@@ -700,6 +709,52 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 									.put(GROUPS, new JSONArray()))
 							.put(AWARDS, new JSONArray()
 									.put(new JSONObject().put(ID, moneyAwardId)))
+							)
+					.asJson();
+			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+
+		}
+		
+		private void oneMansTrashAchievement() throws JSONException, UnirestException, IllegalStateException {
+			final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+			final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
+
+			HttpResponse<JsonNode> pickupRottenFleshCritResponse = Unirest.post(baseURL + appId + "/criteria")
+					.body(new JSONObject()
+							.put(NAME, "Pickup Rotten Flesh")
+							.put(DESC, "Pick up 100 Rotten Flesh")
+							.put(KEY, "changeinventory:pickup:minecraft:rotten_flesh")
+							.put(OPERATOR, "@gte")
+							.put(THRESHOLD, 100))
+					.asJson();
+			Preconditions.checkArgument(pickupRottenFleshCritResponse.getStatus() == 201);
+			final String pickupFleshCritId = pickupRottenFleshCritResponse.getBody().getObject().getString(ID);
+
+			HttpResponse<JsonNode> zombieSkullAwardResponse = Unirest.post(baseURL + appId + "/awards")
+					.body(new JSONObject()
+							.put(NAME, "Zombie Skull")
+							.put(DATA, new JSONObject()
+									.put(TYPE, "item")
+									.put("itemType", "minecraft:skull")
+									.put("skullType", "zombie")
+								))
+					.asJson();
+			Preconditions.checkArgument(zombieSkullAwardResponse.getStatus() == 201);
+			final String zombieSkullAwardId = zombieSkullAwardResponse.getBody().getObject().getString(ID);
+			
+			// Create the achievement
+			HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+					.body(new JSONObject()
+							.put(NAME, "One Man's Trash")
+							.put(DESC, "Never know when you might need it!")
+							.put(EVAL_TREE, new JSONObject()
+									.put(CONDITION, AND)
+									.put(CRITERIA, new JSONArray()
+											.put(new JSONObject().put(ID, pickupFleshCritId)))
+									.put(TYPE, GROUP)
+									.put(GROUPS, new JSONArray()))
+							.put(AWARDS, new JSONArray()
+									.put(new JSONObject().put(ID, zombieSkullAwardId)))
 							)
 					.asJson();
 			Preconditions.checkArgument(achievementResponse.getStatus() == 201);
