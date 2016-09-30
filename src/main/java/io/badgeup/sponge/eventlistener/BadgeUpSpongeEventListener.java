@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -19,12 +20,14 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
+import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeClientSettingsEvent;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
@@ -74,13 +77,27 @@ public class BadgeUpSpongeEventListener {
 		for (Method m : event.getClass().getMethods()) {
 			final String methodName = m.getName();
 			if (methodName.startsWith("get")) {
-				Object result = m.invoke(event, (Object[]) null);
-				// Substring to index 3 to remove "get"
-				newEvent.addDataEntry(methodName.substring(3), result);
+				// To catch weird stuff such as getting entity snapshots from DropItemEvent after Order.PRE, which can't be done
+				try {
+					Object result = m.invoke(event, (Object[]) null);
+					// Substring to index 3 to remove "get"
+					newEvent.addDataEntry(methodName.substring(3), result);
+				} catch(Exception e) {
+					continue;
+				}
+				
 			}
 		}
 
 		send(newEvent);
+	}
+	
+	@Listener(order = Order.POST)
+	public void dropItem(DropItemEvent.Dispense event, @Root EntitySpawnCause cause) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		if(!(cause.getEntity() instanceof Player)) {
+			return;
+		}
+		event(event, (Player) cause.getEntity());
 	}
 
 	@Listener(order = Order.POST)
@@ -198,6 +215,14 @@ public class BadgeUpSpongeEventListener {
 			@Override
 			public String provide(UseItemStackEvent event) {
 				return getDefault(event) + ":" + event.getItemStackInUse().getType().getId();
+			}
+		});
+		
+		this.keyProviders.put(DropItemEvent.Dispense.class, new EventKeyProvider<DropItemEvent.Dispense>() {
+			@Override
+			public String provide(DropItemEvent.Dispense event) {
+				Item item = (Item) event.getEntities().get(0);
+				return getDefault(event) + ":" + item.getItemType().getId();
 			}
 		});
 	}
