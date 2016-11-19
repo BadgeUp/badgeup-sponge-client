@@ -33,6 +33,7 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -89,7 +90,7 @@ public class BadgeUpSponge {
         Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
 
         for (int i = 1; i <= 8; i++) {
-            Sponge.getScheduler().createTaskBuilder().async().execute(new PostEventsRunnable(this))
+            Task.builder().async().execute(new PostEventsRunnable(this))
                     .name("BadgeUp - Event Posting Thread #" + i).submit(this);
         }
 
