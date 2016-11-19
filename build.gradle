@@ -38,6 +38,8 @@ dependencies {
 }
 
 shadowJar {
+	// Relocate apache packages because of Forge
+	relocate 'org.apache', 'relocated.org.apache'
     dependencies {
         exclude(dependency('org.spongepowered:spongeapi:5.0.0-SNAPSHOT'))
     }
