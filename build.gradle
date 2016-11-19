@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.spongepowered:spongeapi:5.0.0-SNAPSHOT'
+	compile 'org.spongepowered:spongeapi:5.0.0'
 	compile 'ninja.leaping.configurate:configurate-json:3.2'
 	compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile 'org.json:json:20160212'
@@ -41,7 +41,7 @@ shadowJar {
 	// Relocate apache packages because of Forge
 	relocate 'org.apache', 'relocated.org.apache'
     dependencies {
-        exclude(dependency('org.spongepowered:spongeapi:5.0.0-SNAPSHOT'))
+        exclude(dependency('org.spongepowered:spongeapi:5.0.0'))
     }
 }
 
