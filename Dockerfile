@@ -1,7 +1,7 @@
 # BadgeUp Sponge Client Dockerfile
 
 # Sponge requires Java 8
-FROM java:8
+FROM openjdk:8u111-jre
 
 MAINTAINER Robert Herhold <robert@badgeup.io>
 
@@ -18,8 +18,18 @@ RUN mkdir mods && wget -q -O mods/badgeup-sponge-client-${BUP_CLIENT_VERSION}.ja
 # Accept Minecraft EULA
 RUN echo eula=true > eula.txt
 
+# Add API Key to config
+RUN mkdir -p config/badgeup-sponge-client && echo " \
+badgeup {\n \
+    api-key=\"REPLACE_ME\"\n \
+    region=useast1\n \
+    base-api-url=\"https://api-stage.useast1.badgeup.io/v1/apps/\"\n \
+}\n \
+broadcast-achievements=true \
+" > config/badgeup-sponge-client/badgeup-sponge-client.conf
+
 # Expose the port the Sponge server is running on
-EXPOSE 25567
+EXPOSE 25565
 
 # Start the server
-CMD java -jar spongevanilla-${SPONGE_VERSION}.jar
+CMD java -Xmx1024M -Xms1024M -jar spongevanilla-${SPONGE_VERSION}.jar

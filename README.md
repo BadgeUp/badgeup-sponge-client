@@ -5,7 +5,7 @@
 
 ## Install & Run
 
-To run the BadgeUp Sponge Client on your server, follow the [quickstart instructions](https://docs.badgeup.io/#/sponge-client/quickstart) on the BadgeUp documentation site. 
+To run the BadgeUp Sponge Client on your server, follow the [quickstart instructions](https://docs.badgeup.io/#/sponge-client/quickstart) on the BadgeUp documentation site.
 
 ## Development
 
@@ -22,6 +22,12 @@ See the [BadgeUp Docs](https://docs.badgeup.io/#/sponge-client/configuration) fo
 ### Documentation
 
 To generate documentation needed for [docs.badgeup.io](https://docs.badgeup.io/), run `node docs/doc.js`. The rendered HTML will reside in `docs/build/`.
+
+## Docker
+
+To build the Docker image: `docker build -t badgeup-sponge-server:1.0.2 .`
+
+To run the server: `docker run -p 127.0.0.1:25565:25565 --interactive badgeup-sponge-server:1.0.2`
 
 ## Disclaimer
 
