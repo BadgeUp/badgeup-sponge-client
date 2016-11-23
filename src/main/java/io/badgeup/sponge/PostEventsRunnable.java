@@ -80,7 +80,7 @@ public class PostEventsRunnable implements Runnable {
                                 .provide(AwardPersistenceService.class).get();
                         List<String> awardIds = new ArrayList<>();
                         achievement.getJSONArray("awards")
-                                .forEach(award -> awardIds.add(((JSONObject) award).getString("id")));
+                                .forEach(awardId -> awardIds.add((String) awardId));
 
                         for (String awardId : awardIds) {
                             final JSONObject award = Unirest.get(baseURL + appId + "/awards/" + awardId).asJson()
