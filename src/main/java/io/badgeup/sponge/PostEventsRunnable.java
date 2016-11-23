@@ -59,8 +59,7 @@ public class PostEventsRunnable implements Runnable {
                     List<JSONObject> completedAchievements = new ArrayList<>();
                     body.getJSONArray("progress").forEach(progressObj -> {
                         JSONObject record = (JSONObject) progressObj;
-                        if (record.getBoolean("isComplete")) { // &&
-                                                               // record.getBoolean("isNew")
+                        if (record.getBoolean("isComplete") && record.getBoolean("isNew")) {
                             completedAchievements.add(record);
                         }
                     });
