@@ -7,7 +7,6 @@ import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.command.executor.BadgeUpInitCommandExecutor;
 import io.badgeup.sponge.command.executor.ListAwardsCommandExecutor;
 import io.badgeup.sponge.command.executor.RedeemAwardCommandExecutor;
-import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.eventlistener.BadgeUpSpongeEventListener;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
@@ -33,7 +32,6 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -51,8 +49,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.SSLContext;
@@ -61,7 +57,6 @@ import javax.net.ssl.TrustManager;
 @Plugin(id = "badgeup-sponge-client")
 public class BadgeUpSponge {
 
-    private static BlockingQueue<BadgeUpEvent> eventQueue;
     private static Config config;
 
     @Inject @ConfigDir(sharedRoot = false) private Path configDir;
@@ -74,8 +69,6 @@ public class BadgeUpSponge {
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
-        eventQueue = new ArrayBlockingQueue<>(10000);
-
         setupConfig();
         validateConfig();
 
@@ -88,11 +81,6 @@ public class BadgeUpSponge {
         }
 
         Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
-
-        for (int i = 1; i <= 8; i++) {
-            Task.builder().async().execute(new PostEventsRunnable(this))
-                    .name("BadgeUp - Event Posting Thread #" + i).submit(this);
-        }
 
         Sponge.getServiceManager().setProvider(this, AchievementPersistenceService.class,
                 new FlatfileAchievementPersistenceService(this.configDir));
@@ -228,10 +216,6 @@ public class BadgeUpSponge {
         } catch (IOException exception) {
             this.logger.warn("The default configuration could not be created!");
         }
-    }
-
-    public static BlockingQueue<BadgeUpEvent> getEventQueue() {
-        return eventQueue;
     }
 
     public static Config getConfig() {

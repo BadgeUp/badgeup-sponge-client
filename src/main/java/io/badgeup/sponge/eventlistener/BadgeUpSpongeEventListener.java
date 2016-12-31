@@ -2,6 +2,7 @@ package io.badgeup.sponge.eventlistener;
 
 import com.flowpowered.math.vector.Vector3i;
 import io.badgeup.sponge.BadgeUpSponge;
+import io.badgeup.sponge.PostEventRunnable;
 import io.badgeup.sponge.Util;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
@@ -31,6 +32,7 @@ import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.scheduler.Task;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -241,17 +243,7 @@ public class BadgeUpSpongeEventListener {
     }
 
     private void send(BadgeUpEvent event) {
-        boolean success = true;
-        try {
-            success = BadgeUpSponge.getEventQueue().add(event);
-        } catch (IllegalStateException e) {
-            success = false;
-        }
-
-        if (!success) {
-            this.plugin.getLogger().warn("Could not add another event to the event queue. Discarding event.");
-            // TODO try to re-add somehow
-        }
+        Task.builder().async().execute(new PostEventRunnable(this.plugin, event)).submit(this.plugin);
     }
 
 }
