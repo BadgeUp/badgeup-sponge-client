@@ -121,14 +121,9 @@ public class BadgeUpSpongeEventListener {
         playerPath.addPoint(position);
 
         if (playerPath.size() >= 20) {
-            BadgeUpEvent pathEvent = new BadgeUpEvent("playerpath", player.getUniqueId(),
-                    new Modifier(ModifierOperation.INC, 1));
-            pathEvent.addDataEntry("path", playerPath);
-
-            send(pathEvent);
-
             BadgeUpEvent distanceEvent = new BadgeUpEvent("distance", player.getUniqueId(),
                     new Modifier(ModifierOperation.INC, playerPath.getDistance()));
+            distanceEvent.addDataEntry("path", playerPath);
 
             send(distanceEvent);
 

@@ -27,9 +27,9 @@ There are several Sponge events that do not directly result in a BadgeUp event b
 
 There are several events we provide for convenience or in substitution for a disabled Sponge event.
 
-### `playerpath`
+### `distance`
 
-Tracks the path a player takes through the world.
+Tracks distance in blocks traveled by a player.
 
 **Sample Event Data**:
 
@@ -50,7 +50,3 @@ Tracks the path a player takes through the world.
     ]
 }
 ```
-
-### `distance`
-
-Tracks distance in blocks traveled by a player.
