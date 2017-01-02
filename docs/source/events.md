@@ -21,7 +21,7 @@ In certain cases, extra commonly-used information is appended to the end of even
 
 There are several Sponge events that do not directly result in a BadgeUp event being produced in the interest of reducing redundancy or increasing performance:
 
-* `MoveEntityEvent`: Since this event can be fired several times in quick succession, it is not automatically sent to BadgeUp. Instead, the [`playerpath`](#-playerpath-) and [`distance`](#-distance-) events described below should be used instead to track player movement.
+* `MoveEntityEvent`: Since this event can be fired several times in quick succession, it is not automatically sent to BadgeUp. Instead, the [`distance`](#-distance-) event described below should be used instead to track player movement.
 
 ## Auxiliary Events
 
