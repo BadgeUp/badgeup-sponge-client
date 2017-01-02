@@ -120,6 +120,7 @@ public class BadgeUpSpongeEventListener {
         Vector3i position = player.getLocation().getBlockPosition();
         playerPath.addPoint(position);
 
+        // Send the event every 20 blocks moved
         if (playerPath.size() >= 20) {
             BadgeUpEvent distanceEvent = new BadgeUpEvent("distance", player.getUniqueId(),
                     new Modifier(ModifierOperation.INC, playerPath.getDistance()));
