@@ -6,6 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
+import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -42,17 +43,24 @@ public class PostEventRunnable implements Runnable {
 
         String appId = Util.parseAppIdFromAPIKey(config.getBadgeUpConfig().getAPIKey()).get();
 
-        this.plugin.getLogger().info("Posting BadgeUp event");
-
         this.event.setDiscardable(true);
 
         try {
             HttpResponse<JsonNode> response = Unirest.post(baseURL + appId + "/events").body(this.event.build())
                     .asJson();
-            if (response.getStatus() == 413) {
-                System.out.println("Event too large: " + this.event.build().getString("key"));
+
+            // If status code is 413, log that the event was too big (to be
+            // looked at and slimmed down later)
+            if (response.getStatus() == HttpStatus.SC_REQUEST_TOO_LONG) {
+                this.plugin.getLogger().error("Event too large: " + this.event.build().getString("key"));
+                return;
+            } else if (response.getStatus() != HttpStatus.SC_CREATED) {
+                // If not 201, log the error
+                this.plugin.getLogger().error("Non-201 status code response from BadgeUp. Response code: " + response.getStatus()
+                        + ". Response body: " + response.getBody().toString());
                 return;
             }
+
             final JSONObject body = response.getBody().getObject();
 
             List<JSONObject> completedAchievements = new ArrayList<>();
@@ -104,11 +112,10 @@ public class PostEventRunnable implements Runnable {
                     BadgeUpSponge.presentAchievement(subjectOpt.get(), achievement);
                 }
             }
-
         } catch (Exception e) {
+            this.plugin.getLogger().error("There was an error posting events!");
+            this.plugin.getLogger().error(e.getMessage());
             e.printStackTrace();
-            System.out.println(e.getMessage());
-            this.plugin.getLogger().error("Could not connect to BadgeUp API!");
         }
 
     }
