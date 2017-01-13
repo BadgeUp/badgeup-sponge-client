@@ -72,12 +72,7 @@ public class PostEventRunnable implements Runnable {
             });
 
             for (JSONObject record : completedAchievements) {
-                final String earnedAchievementId = record.getString("earnedAchievementId");
-                final JSONObject earnedAchievementRecord = Unirest
-                        .get(baseURL + appId + "/earnedachievements/" + earnedAchievementId).asJson().getBody()
-                        .getObject();
-
-                final String achievementId = earnedAchievementRecord.getString("achievementId");
+                final String achievementId = record.getString("achievementId");
                 final JSONObject achievement = Unirest.get(baseURL + appId + "/achievements/" + achievementId)
                         .asJson().getBody().getObject();
 

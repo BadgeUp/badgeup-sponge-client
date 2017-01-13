@@ -9,7 +9,6 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 1. Create a new BadgeUp API key with the following scopes:
  - `event:create`
  - `achievement:read`
- - `earnedachievement:read`
  - `award:read`
  - `award:create`
  - `criterion:create`
@@ -37,7 +36,7 @@ Eat one of each of the following foods:
  * Raw Mutton or Cooked Mutton
  * Raw Beef or Steak
  * Raw Rabbit or Cooked Rabbit
- 
+
 #### Awards
 * 64 Steak
 
@@ -51,7 +50,7 @@ Eat one of each of the following foods:
  * Carrot or Golden Carrot
  * Potato or Baked Potato or Poisonous Potato
  * Beetroot or Beetroot Soup
- 
+
 #### Awards
  * Golden Apple
  * Golden Carrot
@@ -60,7 +59,7 @@ Eat one of each of the following foods:
 
 #### How to obtain
 Plant 10 saplings
- 
+
 #### Awards
  * Rainbow Sheep
 
@@ -68,11 +67,11 @@ Plant 10 saplings
 
 #### How to obtain
 Light a fire
- 
+
 #### Awards
  * 10 TNT
  * Resistance Potion Effect for 2 minutes
- 
+
 ### Lumberjack
 
 #### How to obtain
@@ -81,8 +80,8 @@ Chop 50 logs
 #### Awards
 * "Chainsaw" Diamond Axe
  - Efficiency 5
- - Unbreaking 3 
- 
+ - Unbreaking 3
+
 ### Moneybags
 
 #### How to obtain
