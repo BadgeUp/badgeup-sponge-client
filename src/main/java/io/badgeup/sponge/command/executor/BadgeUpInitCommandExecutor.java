@@ -62,6 +62,8 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
         @Override
         public void run() {
+            this.src.sendMessage(Text.of(TextColors.GREEN, "Creating demo achievements..."));
+            
             final Text contactSupportMsg = Text.of("Please contact BadgeUp Support at support@badgeup.io with the error log in the console.");
 
             try {
