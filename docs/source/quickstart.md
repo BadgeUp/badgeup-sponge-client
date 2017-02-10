@@ -1,6 +1,6 @@
 # Quickstart
 
-The BadgeUp Sponge client is [hosted on GitHub](https://github.com/BadgeUp/sponge-client). If you encounter any problems or find any bugs, please [submit an issue](https://github.com/BadgeUp/sponge-client/issues/new).
+The BadgeUp Sponge client is [hosted on GitHub](https://github.com/BadgeUp/sponge-client). If you encounter any problems, find any bugs, or would like a feature, please [submit an issue](https://github.com/BadgeUp/sponge-client/issues/new).
 
 The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a compatible version of Sponge.
 
@@ -20,7 +20,7 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 1. Place the `badgeup-sponge-client.jar` file in the `mods` directory of your server.
 1. Start the server to let configuration files generate. The BadgeUp Sponge Client configuration file is at `config/badgeup-sponge-client/badgeup-sponge-client.conf`.
 1. Copy the BadgeUp API key (created above) to the `api-key` field of the configuration file.
-1. Restart the server.
+1. Reload the server (`/sponge plugins reload`).
 
 Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
 
