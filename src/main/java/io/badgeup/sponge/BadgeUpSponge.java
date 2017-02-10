@@ -119,7 +119,7 @@ public class BadgeUpSponge {
                 .setSSLHostnameVerifier(new InsecureHostnameVerifier())
                 .setSSLContext(sslcontext)
                 .setDefaultHeaders(Lists.newArrayList(
-                        new BasicHeader("User-Agent", "BadgeUp_SpongeClient v1.0.0"),
+                        new BasicHeader("User-Agent", "BadgeUp_SpongeClient v" + getContainer().getVersion().orElse("Unknown")),
                         new BasicHeader("Authorization", authHeader)))
                 .build();
 
