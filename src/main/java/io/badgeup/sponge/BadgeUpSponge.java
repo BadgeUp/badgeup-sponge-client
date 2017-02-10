@@ -185,6 +185,9 @@ public class BadgeUpSponge {
     }
 
     private void validateConfig() {
+        final String region = config.getBadgeUpConfig().getRegion();
+        Preconditions.checkArgument(!region.isEmpty(), "Region must not be empty");
+        
         final String apiKey = config.getBadgeUpConfig().getAPIKey();
         Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
 
