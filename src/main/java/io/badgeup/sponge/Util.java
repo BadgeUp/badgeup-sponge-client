@@ -18,6 +18,23 @@ import java.util.List;
 import java.util.Optional;
 
 public class Util {
+    
+    public static String getApiUrl() {
+        Config config = BadgeUpSponge.getConfig();
+
+        // build the base API URL
+        String baseURL = "";
+
+        if (!config.getBadgeUpConfig().getBaseAPIURL().isEmpty()) {
+            // override other config settings with this base URL
+            baseURL = config.getBadgeUpConfig().getBaseAPIURL();
+        } else {
+            // region provided
+            baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io/v1/apps/";
+        }
+        
+        return baseURL;
+    }
 
     public static Optional<String> parseAppIdFromAPIKey(String apiKey) {
         try {

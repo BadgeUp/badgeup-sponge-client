@@ -129,7 +129,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+            final String baseURL = Util.getApiUrl();
             final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
             HttpResponse<JsonNode> rawPorkCritResponse = Unirest.post(baseURL + appId + "/criteria")
@@ -306,7 +306,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void vegematicAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+            final String baseURL = Util.getApiUrl();
             final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
             HttpResponse<JsonNode> appleCritResponse = Unirest.post(baseURL + appId + "/criteria")
@@ -502,7 +502,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void greenThumbAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+            final String baseURL = Util.getApiUrl();
             final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
             HttpResponse<JsonNode> placeSaplingCritResponse = Unirest.post(baseURL + appId + "/criteria")
@@ -547,7 +547,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void pyroAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+            final String baseURL = Util.getApiUrl();
             final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
             HttpResponse<JsonNode> lightFireCritResponse = Unirest.post(baseURL + appId + "/criteria")
@@ -604,7 +604,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void lumberjackAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+            final String baseURL = Util.getApiUrl();
             final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
             HttpResponse<JsonNode> chopLogsCritResponse = Unirest.post(baseURL + appId + "/criteria")
@@ -655,7 +655,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void moneybagsAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+            final String baseURL = Util.getApiUrl();
             final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
             HttpResponse<JsonNode> dropGoldCritResponse = Unirest.post(baseURL + appId + "/criteria")
@@ -699,7 +699,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void oneMansTrashAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = BadgeUpSponge.getConfig().getBadgeUpConfig().getBaseAPIURL();
+            final String baseURL = Util.getApiUrl();
             final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
 
             HttpResponse<JsonNode> pickupRottenFleshCritResponse = Unirest.post(baseURL + appId + "/criteria")

@@ -27,26 +27,14 @@ public class PostEventRunnable implements Runnable {
 
     @Override
     public void run() {
-
         Config config = BadgeUpSponge.getConfig();
-
-        // build the base API URL
-        String baseURL = "";
-
-        if (!config.getBadgeUpConfig().getBaseAPIURL().isEmpty()) {
-            // override other config settings with this base URL
-            baseURL = config.getBadgeUpConfig().getBaseAPIURL();
-        } else {
-            // region provided
-            baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io/v1/apps/";
-        }
 
         String appId = Util.parseAppIdFromAPIKey(config.getBadgeUpConfig().getAPIKey()).get();
 
         this.event.setDiscardable(true);
 
         try {
-            HttpResponse<JsonNode> response = Unirest.post(baseURL + appId + "/events").body(this.event.build())
+            HttpResponse<JsonNode> response = Unirest.post(Util.getApiUrl() + appId + "/events").body(this.event.build())
                     .asJson();
 
             // If status code is 413, log that the event was too big (to be
@@ -73,7 +61,7 @@ public class PostEventRunnable implements Runnable {
 
             for (JSONObject record : completedAchievements) {
                 final String achievementId = record.getString("achievementId");
-                final JSONObject achievement = Unirest.get(baseURL + appId + "/achievements/" + achievementId)
+                final JSONObject achievement = Unirest.get(Util.getApiUrl() + appId + "/achievements/" + achievementId)
                         .asJson().getBody().getObject();
 
                 final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(this.event.getSubject());
@@ -85,7 +73,7 @@ public class PostEventRunnable implements Runnable {
                         .forEach(awardId -> awardIds.add((String) awardId));
 
                 for (String awardId : awardIds) {
-                    final JSONObject award = Unirest.get(baseURL + appId + "/awards/" + awardId).asJson()
+                    final JSONObject award = Unirest.get(Util.getApiUrl() + appId + "/awards/" + awardId).asJson()
                             .getBody().getObject();
                     awardPS.addPendingAward(this.event.getSubject(), award);
 
