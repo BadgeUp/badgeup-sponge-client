@@ -29,9 +29,11 @@ import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -69,14 +71,16 @@ public class BadgeUpSponge {
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
+        logger.info("Initializing " + getContainer().getName());
         setupConfig();
         validateConfig();
 
         try {
             setupRestClient();
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            this.logger.error("Could not initialize the REST client with TLS enabled. Stopping initialization.");
+            this.logger.error("Could not initialize the REST client with TLS enabled. Disabling plugin.");
             e.printStackTrace();
+            disable();
             return;
         }
 
@@ -105,7 +109,22 @@ public class BadgeUpSponge {
 
         Sponge.getCommandManager().register(this, CommandSpec.builder().children(subCommands).build(), "badgeup");
     }
+    
+    @Listener
+    public void reload(GameReloadEvent event) {
+        logger.info("Reloading " + getContainer().getName());
+        setupConfig();
+        validateConfig();
 
+        try {
+            setupRestClient();
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
+            this.logger.error("Could not initialize the REST client with TLS enabled. Disabling Plugin.");
+            e.printStackTrace();
+            disable();
+        }
+    }
+    
     private void setupRestClient() throws NoSuchAlgorithmException, KeyManagementException {
         SSLContext sslcontext = SSLContext.getInstance("TLSv1");
         System.setProperty("https.protocols", "TLSv1");
@@ -216,6 +235,12 @@ public class BadgeUpSponge {
         } catch (IOException exception) {
             this.logger.warn("The default configuration could not be created!");
         }
+    }
+    
+    private void disable() {
+        Sponge.getGame().getEventManager().unregisterPluginListeners(this);
+        Sponge.getGame().getCommandManager().getOwnedBy(this).forEach(Sponge.getGame().getCommandManager()::removeMapping);
+        Sponge.getGame().getScheduler().getScheduledTasks(this).forEach(Task::cancel);
     }
 
     public static Config getConfig() {
