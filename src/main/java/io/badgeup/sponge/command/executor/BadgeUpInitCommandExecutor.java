@@ -62,11 +62,11 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
         @Override
         public void run() {
-            final Text contactSupportMsg = Text.of("Please contact BadgeUp Support at support@badgeup.io with the following error log:");
+            final Text contactSupportMsg = Text.of("Please contact BadgeUp Support at support@badgeup.io with the error log in the console.");
 
             try {
                 meatLoverAchievement();
-            } catch (JSONException | UnirestException e) {
+            } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Meat Lover achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
@@ -75,7 +75,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
             try {
                 vegematicAchievement();
-            } catch (JSONException | UnirestException e) {
+            } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Vegematic achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
@@ -84,7 +84,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
             try {
                 greenThumbAchievement();
-            } catch (JSONException | UnirestException e) {
+            } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Green Thumb achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
@@ -93,7 +93,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
             try {
                 pyroAchievement();
-            } catch (JSONException | UnirestException e) {
+            } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Pyro achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
@@ -102,7 +102,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
             try {
                 lumberjackAchievement();
-            } catch (JSONException | UnirestException e) {
+            } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Lumberjack achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
@@ -111,7 +111,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
             try {
                 moneybagsAchievement();
-            } catch (JSONException | UnirestException e) {
+            } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Moneybags achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
@@ -120,7 +120,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
             try {
                 oneMansTrashAchievement();
-            } catch (JSONException | UnirestException e) {
+            } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create One Man's Trash achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
