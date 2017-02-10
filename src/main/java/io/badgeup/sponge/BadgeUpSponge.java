@@ -75,9 +75,9 @@ public class BadgeUpSponge {
         try {
             setupRestClient();
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            this.logger.error("Could not initialize the REST client with TLS enabled. Shutting down.");
+            this.logger.error("Could not initialize the REST client with TLS enabled. Stopping initialization.");
             e.printStackTrace();
-            Sponge.getServer().shutdown();
+            return;
         }
 
         Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
