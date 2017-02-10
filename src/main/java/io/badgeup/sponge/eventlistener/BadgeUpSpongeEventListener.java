@@ -30,6 +30,7 @@ import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeCli
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -60,7 +61,7 @@ public class BadgeUpSpongeEventListener {
             ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, UseItemStackEvent.Replace.class,
             UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class,
             UseItemStackEvent.Stop.class, ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class,
-            PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class, AnimateHandEvent.class})
+            PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class, AnimateHandEvent.class, ClickInventoryEvent.class})
     public void event(Event event, @Root Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
