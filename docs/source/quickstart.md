@@ -18,7 +18,7 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 1. Set up a Sponge server as detailed [here](https://docs.spongepowered.org/master/en/server/getting-started/implementations/index.html).
 1. Download the latest version of the BadgeUp Sponge Client [here](https://github.com/BadgeUp/sponge-client/releases/latest).
 1. Place the `badgeup-sponge-client.jar` file in the `mods` directory of your server.
-1. Start the server to let configuration files generate. The BadgeUp Sponge Client configuration file is at `config/badgeup-sponge-client/badgeup-sponge-client.conf`.
+1. Start the server to let configuration files generate. The BadgeUp Sponge Client configuration file is at `config/badgeup/badgeup.conf`.
 1. Copy the BadgeUp API key (created above) to the `api-key` field of the configuration file.
 1. Reload the server (`/sponge plugins reload`).
 

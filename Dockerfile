@@ -19,14 +19,14 @@ RUN mkdir mods && wget -q -O mods/badgeup-sponge-client-${BUP_CLIENT_VERSION}.ja
 RUN echo eula=true > eula.txt
 
 # Add API Key to config
-RUN mkdir -p config/badgeup-sponge-client && echo " \
+RUN mkdir -p config/badgeup && echo " \
 badgeup {\n \
     api-key=\"REPLACE_ME\"\n \
     region=useast1\n \
     base-api-url=\"https://api-stage.useast1.badgeup.io/v1/apps/\"\n \
 }\n \
 broadcast-achievements=true \
-" > config/badgeup-sponge-client/badgeup-sponge-client.conf
+" > config/badgeup/badgeup.conf
 
 # Expose the port the Sponge server is running on
 EXPOSE 25565

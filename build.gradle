@@ -7,7 +7,7 @@ plugins {
 
 sponge {
     plugin {
-        id = 'badgeup-sponge-client'
+        id = 'badgeup'
 		meta {
 			name = 'BadgeUp Sponge Client'
 			url = 'https://www.badgeup.io/'

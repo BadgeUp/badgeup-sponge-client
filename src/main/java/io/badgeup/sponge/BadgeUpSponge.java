@@ -56,7 +56,7 @@ import java.util.concurrent.ExecutionException;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 
-@Plugin(id = "badgeup-sponge-client")
+@Plugin(id = Constants.PLUGIN_ID)
 public class BadgeUpSponge {
 
     private static Config config;
@@ -253,8 +253,8 @@ public class BadgeUpSponge {
         return this.logger;
     }
 
-    public PluginContainer getContainer() {
-        return Sponge.getPluginManager().getPlugin("badgeup-sponge-client").get();
+    public static PluginContainer getContainer() {
+        return Sponge.getPluginManager().getPlugin(Constants.PLUGIN_ID).get();
     }
 
 }

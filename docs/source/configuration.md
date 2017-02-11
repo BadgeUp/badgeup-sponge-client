@@ -4,7 +4,7 @@ The BadgeUp Sponge client provides many configurable properties to tweak various
 
 ## Default Configuration
 
-This is the default configuration generated in `config/badgeup-sponge-client/badgeup-sponge-client.conf`:
+This is the default configuration generated in `config/badgeup/badgeup.conf`:
 
 ```hocon
 badgeup {

@@ -65,7 +65,7 @@ public class MonetaryAward extends Award {
         }
         // TODO add more stuff to the cause chain
         TransactionResult result = playerAccount.deposit(currencyOpt.get(), amountOpt.get(),
-                Cause.source(this.plugin.getContainer()).build());
+                Cause.source(BadgeUpSponge.getContainer()).build());
         return result.getResult().equals(ResultType.SUCCESS);
     }
 
