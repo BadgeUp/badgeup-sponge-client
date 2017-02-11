@@ -5,7 +5,7 @@
 
 ## Install & Run
 
-To run the BadgeUp Sponge Client on your server, follow the [quickstart instructions](https://docs.badgeup.io/#/sponge-client/quickstart) on the BadgeUp documentation site.
+To run the BadgeUp Sponge Client on your server, follow the [quickstart instructions](https://docs.badgeup.io/sponge-client/quickstart) on the BadgeUp documentation site.
 
 ## Development
 
@@ -15,7 +15,7 @@ To build the client jar, run `gradlew build`. This will output the built jar to 
 
 ### Configuration
 
-See the [BadgeUp Docs](https://docs.badgeup.io/#/sponge-client/configuration) for standard configuration documentation.
+See the [BadgeUp Docs](https://docs.badgeup.io/sponge-client/configuration) for standard configuration documentation.
 
 * `badgeup`/`base-api-url`: to be used in development to target a BadgeUp API other than the standard production URL.
 

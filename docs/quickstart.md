@@ -22,7 +22,7 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 1. Copy the BadgeUp API key (created above) to the `api-key` field of the configuration file.
 1. Reload the server (`/sponge plugins reload`).
 
-Read the complete configuration documentation [here](https://docs.badgeup.io/#/sponge-client/configuration).
+Read the complete configuration documentation [here](https://docs.badgeup.io/sponge-client/configuration).
 
 ## Demo Achievements
 Once the server is started, run `/badgeup init` (requires the `badgeup.admin.init` permission) to pre-load your application with Sponge achievements.
