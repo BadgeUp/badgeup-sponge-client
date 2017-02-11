@@ -129,7 +129,7 @@ This type of award gives a particular potion effect to the player. The award dat
 * `duration`: Required. This is the time in ticks (20 ticks = 1 second); must be a positive integer.
 * `amplifier`: Optional (defaults to 1). Must be a positive integer.
 
-### Example Entity Award Data
+### Example Potion Effect Award Data
 
 ```json
 {
