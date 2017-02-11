@@ -31,7 +31,7 @@ public class PostEventRunnable implements Runnable {
 
         String appId = Util.parseAppIdFromAPIKey(config.getBadgeUpConfig().getAPIKey()).get();
 
-        this.event.setDiscardable(true);
+        this.event.setDiscardable(false);
 
         try {
             HttpResponse<JsonNode> response = Unirest.post(Util.getApiUrl() + appId + "/events").body(this.event.build())
