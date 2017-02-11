@@ -529,6 +529,16 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .asJson();
             Preconditions.checkArgument(rainbowSheepAwardResponse.getStatus() == 201);
             final String rainbowSheepAwardId = rainbowSheepAwardResponse.getBody().getObject().getString(ID);
+            
+            HttpResponse<JsonNode> timeMachineAwardResponse = Unirest.post(baseURL + appId + "/awards")
+                    .body(new JSONObject()
+                            .put(NAME, "Time Machine")
+                            .put(DATA, new JSONObject()
+                                    .put(TYPE, "command")
+                                    .put("command", "time set day")))
+                    .asJson();
+            Preconditions.checkArgument(timeMachineAwardResponse.getStatus() == 201);
+            final String timeMachineAwardId = timeMachineAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
             HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
@@ -542,7 +552,8 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(TYPE, GROUP)
                                     .put(GROUPS, new JSONArray()))
                             .put(AWARDS, new JSONArray()
-                                    .put(rainbowSheepAwardId)))
+                                    .put(rainbowSheepAwardId)
+                                    .put(timeMachineAwardId)))
                     .asJson();
             Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 

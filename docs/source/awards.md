@@ -6,6 +6,7 @@ The BadgeUp Sponge client has the ability to interpret and grant four different 
 2. [Monetary Awards](#monetary-awards)
 3. [Entity Awards](#entity-awards)
 4. [Potion Effect Awards](#potion-effect-awards)
+5. [Command Awards](#command-awards)
 
 Every award's data includes at least the following fields:
 
@@ -137,5 +138,23 @@ This type of award gives a particular potion effect to the player. The award dat
     "potionEffectType": "minecraft:speed",
     "duration": 30000,
     "amplifier": 2
+}
+```
+
+## Command Awards
+
+This type of award executes an arbitrary command as the console. As such, it is executed with all of the permissions that the console has.
+
+* `type`: `command`
+* `command`: Required. This is a template that can be filled (using `${}`) with several values:
+ * `playerName`: The username of the player
+ * `playerId`: The UUID of the player
+
+### Example Command Award Data
+
+```json
+{
+    "type": "command",
+    "command": "smite ${playerName}"
 }
 ```

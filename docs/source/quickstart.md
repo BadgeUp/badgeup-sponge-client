@@ -62,6 +62,7 @@ Plant 10 saplings
 
 #### Awards
  * Rainbow Sheep
+ * Time Machine (sets time to day)
 
 ### Pyro
 

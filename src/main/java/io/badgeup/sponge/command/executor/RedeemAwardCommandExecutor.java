@@ -2,6 +2,7 @@ package io.badgeup.sponge.command.executor;
 
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.award.Award;
+import io.badgeup.sponge.award.CommandAward;
 import io.badgeup.sponge.award.EntityAward;
 import io.badgeup.sponge.award.ItemAward;
 import io.badgeup.sponge.award.MonetaryAward;
@@ -90,13 +91,16 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
             case "potion":
                 awardOpt = Optional.of(new PotionEffectAward(this.plugin, awardJSON));
                 break;
+            case "command":
+                awardOpt = Optional.of(new CommandAward(this.plugin, awardJSON));
+                break;
             default:
                 awardOpt = Optional.empty();
                 break;
         }
 
         if (!awardOpt.isPresent()) {
-            this.plugin.getLogger().warn("Could not parse award for type " + awardType);
+            this.plugin.getLogger().warn("Could not parse award for type \"" + awardType + "\"");
         }
 
         return awardOpt;
