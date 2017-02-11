@@ -68,66 +68,66 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
 
             try {
                 meatLoverAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Meat Lover achievement."));
             } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Meat Lover achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Meat Lover achievement."));
 
             try {
                 vegematicAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Vegematic achievement."));
             } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Vegematic achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Vegematic achievement."));
 
             try {
                 greenThumbAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Green Thumb achievement."));
             } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Green Thumb achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Green Thumb achievement."));
 
             try {
                 pyroAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Pyro achievement."));
             } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Pyro achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Pyro achievement."));
 
             try {
                 lumberjackAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Lumberjack achievement."));
             } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Lumberjack achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Lumberjack achievement."));
 
             try {
                 moneybagsAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Moneybags achievement."));
             } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Moneybags achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Moneybags achievement."));
-
+            
             try {
                 oneMansTrashAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created One Man's Trash achievement."));
             } catch (Exception e) {
                 this.src.sendMessage(Text.of(TextColors.RED, "Failed to create One Man's Trash achievement."));
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created One Man's Trash achievement."));
         }
 
         private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
