@@ -27,8 +27,8 @@ This type of award gives the player an `ItemStack` defined by the following awar
 * `displayName`: Optional. Must be of the format [described above](#text-formatting).
 * `lore`: Optional. This is an array of text of the format [described above](#text-formatting).
 * `enchantments`: Optional. This is an array of objects following the following schema:
- * `id`: Required. Must be of the form `minecraft:enchantment` and be one of the enchantments [listed here](http://minecraft.gamepedia.com/Enchanting/ID).
- * `level`: Required. Must be a positive integer.
+  * `id`: Required. Must be of the form `minecraft:enchantment` and be one of the enchantments [listed here](http://minecraft.gamepedia.com/Enchanting/ID).
+  * `level`: Required. Must be a positive integer.
 * `durability`: Optional. Must be an integer.
 * `color`: Optional. Must be one of: `white`, `orange`, `magenta`, `light_blue`, `yellow`, `lime`, `pink`, `gray`, `silver`, `cyan`, `purple`, `blue`, `brown`, `green`, `red`, or `black`.
 * `skullType`: Optional (only used with the `minecraft:skull` item type; defaults to `skeleton`). Must be one of: `skeleton`, `zombie`, `wither_skeleton`, `creeper`, `ender_dragon`.
@@ -147,8 +147,8 @@ This type of award executes an arbitrary command as the console. As such, it is 
 
 * `type`: `command`
 * `command`: Required. This is a template that can be filled (using `${}`) with several values:
- * `playerName`: The username of the player
- * `playerId`: The UUID of the player
+  * `playerName`: The username of the player
+  * `playerId`: The UUID of the player
 
 ### Example Command Award Data
 

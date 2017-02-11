@@ -9,13 +9,13 @@ Event keys are derived from the class name of the Sponge event causing the event
 In certain cases, extra commonly-used information is appended to the end of event keys for convenience:
 
  * `changeblock:<break|place>:<block type>`: When breaking or placing blocks, the block's ID is appended to the key to allow you to easily keep track of block change metrics on a per-block basis.
-  - Ex: `changeblock:break:minecraft:dirt`
+  * Ex: `changeblock:break:minecraft:dirt`
  * `useitemstack:finish:<item type>`: When using an item stack, the item's ID is appended to the key to allow you to easily keep track of item usage metrics on a per-item basis.
-  - Ex: `useitemsack:finish:minecraft:mutton`
+  * Ex: `useitemsack:finish:minecraft:mutton`
  * `dropitem:dispense:<item type>`: When dropping an item, the item's ID is appended to the key to allow you to easily keep track of item drop metrics on a per-item basis.
-  - Ex: `dropitem:dispense:minecraft:gold_ingot`
+  * Ex: `dropitem:dispense:minecraft:gold_ingot`
  * `changeinventory:pickup:<item type>`: When picking up an item, the item's ID is appended to the key to allow you to easily keep track of item collection metrics on a per-item basis.
-  - Ex: `changeinventory:pickup:minecraft:gold_ingot`
+  * Ex: `changeinventory:pickup:minecraft:gold_ingot`
 
 ## Disabled Events
 
