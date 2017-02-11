@@ -38,6 +38,10 @@ dependencies {
 }
 
 shadowJar {
+    baseName = 'badgeup-sponge-client'
+    classifier = null
+    version = 'v' + version
+
 	// Relocate apache packages because of Forge
 	relocate 'org.apache', 'relocated.org.apache'
     dependencies {
