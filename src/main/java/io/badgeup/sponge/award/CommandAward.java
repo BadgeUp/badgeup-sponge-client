@@ -25,15 +25,15 @@ public class CommandAward extends Award {
             this.plugin.getLogger().error("No command specified. Aborting.");
             return false;
         }
-        
-        Map<String, String> valuesMap = new HashMap<String, String>();
+
+        Map<String, String> valuesMap = new HashMap<>();
         valuesMap.put("playerName", player.getName());
         valuesMap.put("playerId", player.getUniqueId().toString());
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         String command = sub.replace(commandTemplateOpt.get());
-        
+
         this.plugin.getLogger().info("Executing command award as console: " + command);
-        
+
         CommandResult result = Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command);
 
         return result.getSuccessCount().orElse(0) > 0;

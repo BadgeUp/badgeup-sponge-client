@@ -68,25 +68,26 @@ public class BadgeUpSponge {
     @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
 
     @Inject private Logger logger;
-    
+
     private BadgeUpSpongeEventListener eventListener = new BadgeUpSpongeEventListener(this);
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
-        logger.info("Initializing " + getContainer().getName());
+        this.logger.info("Initializing " + getContainer().getName());
         setup();
     }
-    
+
     @Listener
     public void reload(GameReloadEvent event) {
-        logger.info("Reloading " + getContainer().getName());
+        this.logger.info("Reloading " + getContainer().getName());
         setup();
     }
-    
+
     public void setup() {
-        // Make sure all commands & event listeners are disabled so there won't be any conflicts
+        // Make sure all commands & event listeners are disabled so there won't
+        // be any conflicts
         disable();
-        
+
         setupConfig();
         validateConfig();
 
@@ -98,7 +99,7 @@ public class BadgeUpSponge {
             return;
         }
 
-        Sponge.getEventManager().registerListeners(this, eventListener);
+        Sponge.getEventManager().registerListeners(this, this.eventListener);
 
         Sponge.getServiceManager().setProvider(this, AchievementPersistenceService.class,
                 new FlatfileAchievementPersistenceService(this.configDir));
@@ -123,7 +124,7 @@ public class BadgeUpSponge {
 
         Sponge.getCommandManager().register(this, CommandSpec.builder().children(subCommands).build(), "badgeup");
     }
-    
+
     private void setupRestClient() throws NoSuchAlgorithmException, KeyManagementException {
         SSLContext sslcontext = SSLContext.getInstance("TLSv1");
         System.setProperty("https.protocols", "TLSv1");
@@ -186,7 +187,7 @@ public class BadgeUpSponge {
     private void validateConfig() {
         final String region = config.getBadgeUpConfig().getRegion();
         Preconditions.checkArgument(!region.isEmpty(), "Region must not be empty");
-        
+
         final String apiKey = config.getBadgeUpConfig().getAPIKey();
         Preconditions.checkArgument(!apiKey.isEmpty(), "API key must not be empty");
 
@@ -238,9 +239,9 @@ public class BadgeUpSponge {
             this.logger.warn("The default configuration could not be created!");
         }
     }
-    
+
     private void disable() {
-        Sponge.getEventManager().unregisterListeners(eventListener);
+        Sponge.getEventManager().unregisterListeners(this.eventListener);
         Sponge.getCommandManager().getOwnedBy(this).forEach(Sponge.getGame().getCommandManager()::removeMapping);
         Sponge.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
     }

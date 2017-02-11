@@ -29,7 +29,7 @@ public class BadgeUpEvent {
 
     /**
      * Constructor for a BadgeUp event
-     * 
+     *
      * @param key the identifying string for this type of event
      * @param subject the subject string identifying the user that caused this
      *        event
@@ -53,7 +53,7 @@ public class BadgeUpEvent {
 
     /**
      * Add a custom key/value data pair
-     * 
+     *
      * @param key
      * @param value
      */

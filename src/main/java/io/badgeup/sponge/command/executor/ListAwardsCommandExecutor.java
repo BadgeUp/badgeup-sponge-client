@@ -52,7 +52,7 @@ public class ListAwardsCommandExecutor implements CommandExecutor {
             PaginationService pagination = Sponge.getServiceManager().provide(PaginationService.class).get();
             pagination.builder().contents(awardTexts).title(Text.of(TextColors.BLUE, "Awards")).padding(Text.of('-'))
                     .linesPerPage(10).sendTo(player); // 10 lines = 8 awards +
-                                                     // header + footer
+                                                      // header + footer
         });
         return CommandResult.success();
     }
