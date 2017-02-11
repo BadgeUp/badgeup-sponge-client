@@ -2,7 +2,6 @@ package io.badgeup.sponge;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
@@ -27,14 +26,10 @@ public class PostEventRunnable implements Runnable {
 
     @Override
     public void run() {
-        Config config = BadgeUpSponge.getConfig();
-
-        String appId = Util.parseAppIdFromAPIKey(config.getBadgeUpConfig().getAPIKey()).get();
-
         this.event.setDiscardable(false);
 
         try {
-            HttpResponse<JsonNode> response = Unirest.post(Util.getApiUrl() + appId + "/events").body(this.event.build())
+            HttpResponse<JsonNode> response = HttpUtils.post("/events").body(this.event.build())
                     .asJson();
 
             // If status code is 413, log that the event was too big (to be
@@ -61,7 +56,7 @@ public class PostEventRunnable implements Runnable {
 
             for (JSONObject record : completedAchievements) {
                 final String achievementId = record.getString("achievementId");
-                final JSONObject achievement = Unirest.get(Util.getApiUrl() + appId + "/achievements/" + achievementId)
+                final JSONObject achievement = HttpUtils.get("/achievements/" + achievementId)
                         .asJson().getBody().getObject();
 
                 final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(this.event.getSubject());
@@ -73,7 +68,7 @@ public class PostEventRunnable implements Runnable {
                         .forEach(awardId -> awardIds.add((String) awardId));
 
                 for (String awardId : awardIds) {
-                    final JSONObject award = Unirest.get(Util.getApiUrl() + appId + "/awards/" + awardId).asJson()
+                    final JSONObject award = HttpUtils.get("/awards/" + awardId).asJson()
                             .getBody().getObject();
                     awardPS.addPendingAward(this.event.getSubject(), award);
 

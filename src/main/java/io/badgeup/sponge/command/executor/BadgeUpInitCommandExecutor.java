@@ -3,10 +3,9 @@ package io.badgeup.sponge.command.executor;
 import com.google.common.base.Preconditions;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.badgeup.sponge.BadgeUpSponge;
-import io.badgeup.sponge.Util;
+import io.badgeup.sponge.HttpUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -131,10 +130,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = Util.getApiUrl();
-            final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
-
-            HttpResponse<JsonNode> rawPorkCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> rawPorkCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Raw Porkchop")
                             .put(DESC, "Eat 1 Raw Porkchop")
@@ -145,7 +141,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(rawPorkCritResponse.getStatus() == 201);
             final String rawPorkCritId = rawPorkCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> cookedPorkCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> cookedPorkCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Cooked Porkchop")
                             .put(DESC, "Eat 1 Cooked Porkchop")
@@ -156,7 +152,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(cookedPorkCritResponse.getStatus() == 201);
             final String cookedPorkCritId = cookedPorkCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> rawChickenCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> rawChickenCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Raw Chicken")
                             .put(DESC, "Eat 1 Raw Chicken")
@@ -167,7 +163,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(rawChickenCritResponse.getStatus() == 201);
             final String rawChickenCritId = rawChickenCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> cookedChickenCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> cookedChickenCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Cooked Chicken")
                             .put(DESC, "Eat 1 Cooked Chicken")
@@ -178,7 +174,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(cookedChickenCritResponse.getStatus() == 201);
             final String cookedChickenCritId = cookedChickenCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> rawMuttonCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> rawMuttonCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Raw Mutton")
                             .put(DESC, "Eat 1 Raw Mutton")
@@ -189,7 +185,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(rawMuttonCritResponse.getStatus() == 201);
             final String rawMuttonCritId = rawMuttonCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> cookedMuttonCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> cookedMuttonCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Cooked Mutton")
                             .put(DESC, "Eat 1 Cooked Mutton")
@@ -200,7 +196,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(cookedMuttonCritResponse.getStatus() == 201);
             final String cookedMuttonCritId = cookedMuttonCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> rawBeefCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> rawBeefCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Raw Beef")
                             .put(DESC, "Eat 1 Raw Beef")
@@ -211,7 +207,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(rawBeefCritResponse.getStatus() == 201);
             final String rawBeefCritId = rawBeefCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> cookedBeefCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> cookedBeefCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Cooked Beef")
                             .put(DESC, "Eat 1 Cooked Beef")
@@ -222,7 +218,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(cookedBeefCritResponse.getStatus() == 201);
             final String cookedBeefCritId = cookedBeefCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> rawRabbitCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> rawRabbitCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Raw Rabbit")
                             .put(DESC, "Eat 1 Raw Rabbit")
@@ -233,7 +229,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(rawRabbitCritResponse.getStatus() == 201);
             final String rawRabbitCritId = rawRabbitCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> cookedRabbitCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> cookedRabbitCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Cooked Rabbit")
                             .put(DESC, "Eat 1 Cooked Rabbit")
@@ -244,7 +240,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(cookedRabbitCritResponse.getStatus() == 201);
             final String cookedRabbitCritId = cookedRabbitCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> steakAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> steakAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Where's the Meat?")
                             .put(DESC, "A feast to behold!")
@@ -257,7 +253,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             final String steakAwardId = steakAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
-            HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
                             .put(NAME, "Meat Lover")
                             .put(DESC, "Gotta get that protein!")
@@ -308,10 +304,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void vegematicAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = Util.getApiUrl();
-            final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
-
-            HttpResponse<JsonNode> appleCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> appleCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Apple")
                             .put(DESC, "Eat 1 Apple")
@@ -322,7 +315,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(appleCritResponse.getStatus() == 201);
             final String appleCritId = appleCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> goldenAppleCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> goldenAppleCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Golden Apple")
                             .put(DESC, "Eat 1 Golden Apple")
@@ -333,7 +326,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(goldenAppleCritResponse.getStatus() == 201);
             final String goldenAppleCritId = goldenAppleCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> mushroomStewCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> mushroomStewCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Mushroom Stew")
                             .put(DESC, "Eat 1 Mushroom Stew")
@@ -344,7 +337,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(mushroomStewCritResponse.getStatus() == 201);
             final String mushroomStewCritId = mushroomStewCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> melonCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> melonCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Melon")
                             .put(DESC, "Eat 1 Melon")
@@ -355,7 +348,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(melonCritResponse.getStatus() == 201);
             final String melonCritId = melonCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> carrotCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> carrotCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Carrot")
                             .put(DESC, "Eat 1 Carrot")
@@ -366,7 +359,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(carrotCritResponse.getStatus() == 201);
             final String carrotCritId = carrotCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> goldenCarrotCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> goldenCarrotCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Golden Carrot")
                             .put(DESC, "Eat 1 Golden Carrot")
@@ -377,7 +370,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(goldenCarrotCritResponse.getStatus() == 201);
             final String goldenCarrotCritId = goldenCarrotCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> rawPotatoCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> rawPotatoCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Raw Potato")
                             .put(DESC, "Eat 1 Raw Potato")
@@ -388,7 +381,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(rawPotatoCritResponse.getStatus() == 201);
             final String rawPotatoCritId = rawPotatoCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> bakedPotatoCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> bakedPotatoCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Baked Potato")
                             .put(DESC, "Eat 1 Baked Mutton")
@@ -399,7 +392,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(bakedPotatoCritResponse.getStatus() == 201);
             final String bakedPotatoCritId = bakedPotatoCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> poisonousPotatoCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> poisonousPotatoCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Poisonous Potato")
                             .put(DESC, "Eat 1 Poisonous Potato")
@@ -410,7 +403,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(poisonousPotatoCritResponse.getStatus() == 201);
             final String poisonousPotatoCritId = poisonousPotatoCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> beetrootCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> beetrootCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Beetroot")
                             .put(DESC, "Eat 1 Beetroot")
@@ -421,7 +414,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(beetrootCritResponse.getStatus() == 201);
             final String beetrootCritId = beetrootCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> beetrootSoupCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> beetrootSoupCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Beetroot Soup")
                             .put(DESC, "Eat 1 Beetroot Soup")
@@ -432,7 +425,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(beetrootSoupCritResponse.getStatus() == 201);
             final String beetrootSoupCritId = beetrootSoupCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> goldenAppleAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> goldenAppleAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Golden Apple")
                             .put(DATA, new JSONObject()
@@ -443,7 +436,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(goldenAppleAwardResponse.getStatus() == 201);
             final String goldenAppleAwardId = goldenAppleAwardResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> goldenCarrotAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> goldenCarrotAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Golden Carrot")
                             .put(DATA, new JSONObject()
@@ -455,7 +448,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             final String goldenCarrotAwardId = goldenCarrotAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
-            HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
                             .put(NAME, "Vegematic")
                             .put(DESC, "Is that a leaf growing from your head?")
@@ -504,10 +497,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void greenThumbAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = Util.getApiUrl();
-            final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
-
-            HttpResponse<JsonNode> placeSaplingCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> placeSaplingCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Place Saplings")
                             .put(DESC, "Place 10 Saplings")
@@ -518,7 +508,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(placeSaplingCritResponse.getStatus() == 201);
             final String placeSaplingCritId = placeSaplingCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> rainbowSheepAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> rainbowSheepAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Rainbow Sheep")
                             .put(DATA, new JSONObject()
@@ -529,8 +519,8 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .asJson();
             Preconditions.checkArgument(rainbowSheepAwardResponse.getStatus() == 201);
             final String rainbowSheepAwardId = rainbowSheepAwardResponse.getBody().getObject().getString(ID);
-            
-            HttpResponse<JsonNode> timeMachineAwardResponse = Unirest.post(baseURL + appId + "/awards")
+
+            HttpResponse<JsonNode> timeMachineAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Time Machine")
                             .put(DATA, new JSONObject()
@@ -541,7 +531,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             final String timeMachineAwardId = timeMachineAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
-            HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
                             .put(NAME, "Green Thumb")
                             .put(DESC, "That deep-rooted desire")
@@ -560,10 +550,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void pyroAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = Util.getApiUrl();
-            final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
-
-            HttpResponse<JsonNode> lightFireCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> lightFireCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Light Fires")
                             .put(DESC, "Light a fire")
@@ -574,7 +561,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(lightFireCritResponse.getStatus() == 201);
             final String lightFireCritId = lightFireCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> tntAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> tntAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "TNT")
                             .put(DATA, new JSONObject()
@@ -585,7 +572,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(tntAwardResponse.getStatus() == 201);
             final String tntAwardId = tntAwardResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> resistanceEffectAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> resistanceEffectAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Resistance Potion Effect")
                             .put(DATA, new JSONObject()
@@ -598,7 +585,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             final String resistanceEffectAwardId = resistanceEffectAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
-            HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
                             .put(NAME, "Pyro")
                             .put(DESC, "Some people just want to watch the world burn")
@@ -617,10 +604,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void lumberjackAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = Util.getApiUrl();
-            final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
-
-            HttpResponse<JsonNode> chopLogsCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> chopLogsCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Chop Trees")
                             .put(DESC, "Chop 50 Logs")
@@ -631,7 +615,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(chopLogsCritResponse.getStatus() == 201);
             final String chopLogsCritId = chopLogsCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> axeAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> axeAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Chainsaw")
                             .put(DATA, new JSONObject()
@@ -650,7 +634,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             final String axeAwardId = axeAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
-            HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
                             .put(NAME, "Lumberjack")
                             .put(DESC, "Haven't you heard of email?")
@@ -668,10 +652,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void moneybagsAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = Util.getApiUrl();
-            final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
-
-            HttpResponse<JsonNode> dropGoldCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> dropGoldCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Drop Gold")
                             .put(DESC, "Drop a Gold Ingot")
@@ -682,7 +663,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(dropGoldCritResponse.getStatus() == 201);
             final String dropGoldCritId = dropGoldCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> moneyAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> moneyAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "100 Grand")
                             .put(DESC, "Better than the candy bar!")
@@ -694,7 +675,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             final String moneyAwardId = moneyAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
-            HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
                             .put(NAME, "Moneybags")
                             .put(DESC, "'Let me get that for you!'")
@@ -712,10 +693,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void oneMansTrashAchievement() throws JSONException, UnirestException, IllegalStateException {
-            final String baseURL = Util.getApiUrl();
-            final String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
-
-            HttpResponse<JsonNode> pickupRottenFleshCritResponse = Unirest.post(baseURL + appId + "/criteria")
+            HttpResponse<JsonNode> pickupRottenFleshCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
                             .put(NAME, "Pickup Rotten Flesh")
                             .put(DESC, "Pick up 100 Rotten Flesh")
@@ -726,7 +704,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(pickupRottenFleshCritResponse.getStatus() == 201);
             final String pickupFleshCritId = pickupRottenFleshCritResponse.getBody().getObject().getString(ID);
 
-            HttpResponse<JsonNode> zombieSkullAwardResponse = Unirest.post(baseURL + appId + "/awards")
+            HttpResponse<JsonNode> zombieSkullAwardResponse = HttpUtils.post("/awards")
                     .body(new JSONObject()
                             .put(NAME, "Zombie Skull")
                             .put(DATA, new JSONObject()
@@ -738,7 +716,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             final String zombieSkullAwardId = zombieSkullAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
-            HttpResponse<JsonNode> achievementResponse = Unirest.post(baseURL + appId + "/achievements")
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
                             .put(NAME, "One Man's Trash")
                             .put(DESC, "Never know when you might need it!")
