@@ -68,10 +68,25 @@ public class BadgeUpSponge {
     @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
 
     @Inject private Logger logger;
+    
+    private BadgeUpSpongeEventListener eventListener = new BadgeUpSpongeEventListener(this);
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
         logger.info("Initializing " + getContainer().getName());
+        setup();
+    }
+    
+    @Listener
+    public void reload(GameReloadEvent event) {
+        logger.info("Reloading " + getContainer().getName());
+        setup();
+    }
+    
+    public void setup() {
+        // Make sure all commands & event listeners are disabled so there won't be any conflicts
+        disable();
+        
         setupConfig();
         validateConfig();
 
@@ -80,11 +95,10 @@ public class BadgeUpSponge {
         } catch (KeyManagementException | NoSuchAlgorithmException e) {
             this.logger.error("Could not initialize the REST client with TLS enabled. Disabling plugin.");
             e.printStackTrace();
-            disable();
             return;
         }
 
-        Sponge.getEventManager().registerListeners(this, new BadgeUpSpongeEventListener(this));
+        Sponge.getEventManager().registerListeners(this, eventListener);
 
         Sponge.getServiceManager().setProvider(this, AchievementPersistenceService.class,
                 new FlatfileAchievementPersistenceService(this.configDir));
@@ -108,21 +122,6 @@ public class BadgeUpSponge {
                         .permission("badgeup.admin.init").executor(new BadgeUpInitCommandExecutor(this)).build());
 
         Sponge.getCommandManager().register(this, CommandSpec.builder().children(subCommands).build(), "badgeup");
-    }
-    
-    @Listener
-    public void reload(GameReloadEvent event) {
-        logger.info("Reloading " + getContainer().getName());
-        setupConfig();
-        validateConfig();
-
-        try {
-            setupRestClient();
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            this.logger.error("Could not initialize the REST client with TLS enabled. Disabling Plugin.");
-            e.printStackTrace();
-            disable();
-        }
     }
     
     private void setupRestClient() throws NoSuchAlgorithmException, KeyManagementException {
@@ -241,9 +240,9 @@ public class BadgeUpSponge {
     }
     
     private void disable() {
-        Sponge.getGame().getEventManager().unregisterPluginListeners(this);
-        Sponge.getGame().getCommandManager().getOwnedBy(this).forEach(Sponge.getGame().getCommandManager()::removeMapping);
-        Sponge.getGame().getScheduler().getScheduledTasks(this).forEach(Task::cancel);
+        Sponge.getEventManager().unregisterListeners(eventListener);
+        Sponge.getCommandManager().getOwnedBy(this).forEach(Sponge.getGame().getCommandManager()::removeMapping);
+        Sponge.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
     }
 
     public static Config getConfig() {
