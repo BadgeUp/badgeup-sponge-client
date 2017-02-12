@@ -23,6 +23,7 @@ import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
+import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.AnimateHandEvent;
@@ -33,6 +34,7 @@ import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
+import org.spongepowered.api.event.network.ChannelRegistrationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.scheduler.Task;
 
@@ -61,7 +63,8 @@ public class BadgeUpSpongeEventListener {
             ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, UseItemStackEvent.Replace.class,
             UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class,
             UseItemStackEvent.Stop.class, ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class,
-            PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class, AnimateHandEvent.class, ClickInventoryEvent.class})
+            PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class, AnimateHandEvent.class, ClickInventoryEvent.class,
+            ChannelRegistrationEvent.class, TabCompleteEvent.class})
     public void event(Event event, @Root Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
