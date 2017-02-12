@@ -108,9 +108,26 @@ public class BadgeUpSpongeEventListener {
     }
 
     @Listener(order = Order.POST)
-    @Exclude({MoveEntityEvent.Teleport.class})
-    public void event(MoveEntityEvent event, @Root Player player) {
-        if (event.isCancelled()) {
+    public void move(MoveEntityEvent event) {
+        if (event.isCancelled() || !(event.getTargetEntity() instanceof Player)) {
+            return;
+        }
+
+        Player player = (Player) event.getTargetEntity();
+
+        // If the player teleported, just send the distance event (not including
+        // their new location) and remove their player path
+        if (event instanceof MoveEntityEvent.Teleport) {
+            if (this.playerPaths.containsKey(player.getUniqueId())) {
+                PlayerPath playerPath = this.playerPaths.get(player.getUniqueId());
+                BadgeUpEvent distanceEvent = new BadgeUpEvent("distance", player.getUniqueId(),
+                        new Modifier(ModifierOperation.INC, playerPath.getDistance()));
+                distanceEvent.addDataEntry("path", playerPath);
+
+                send(distanceEvent);
+
+                this.playerPaths.remove(player.getUniqueId());
+            }
             return;
         }
 
