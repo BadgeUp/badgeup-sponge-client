@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
@@ -39,16 +40,7 @@ public class MoveEventListener extends BadgeUpEventListener {
         // If the player teleported, just send the distance event (not including
         // their new location) and remove their player path
         if (event instanceof MoveEntityEvent.Teleport) {
-            if (this.playerPaths.containsKey(player.getUniqueId())) {
-                PlayerPath playerPath = this.playerPaths.get(player.getUniqueId());
-                BadgeUpEvent distanceEvent = new BadgeUpEvent("distance", player.getUniqueId(),
-                        new Modifier(ModifierOperation.INC, playerPath.getDistance()));
-                distanceEvent.addDataEntry("path", playerPath);
-
-                send(distanceEvent);
-
-                this.playerPaths.remove(player.getUniqueId());
-            }
+            sendAndRemove(player.getUniqueId());
             return;
         }
 
@@ -65,21 +57,42 @@ public class MoveEventListener extends BadgeUpEventListener {
 
         // Send the event every 20 blocks moved
         if (playerPath.size() >= 20) {
-            BadgeUpEvent distanceEvent = new BadgeUpEvent("distance", player.getUniqueId(),
-                    new Modifier(ModifierOperation.INC, playerPath.getDistance()));
-            distanceEvent.addDataEntry("path", playerPath);
-
-            send(distanceEvent);
-
-            this.playerPaths.remove(player.getUniqueId());
+            sendAndRemove(player.getUniqueId());
         }
 
     }
 
     @Listener
-    public void playerJoin(ClientConnectionEvent.Join event) {
+    public void playerLeave(ClientConnectionEvent.Disconnect event) {
         Player player = event.getTargetEntity();
+        sendAndRemove(player.getUniqueId());
+    }
+    
+    @Listener
+    public void playerDeath(DestructEntityEvent.Death event) {
+        if (!(event.getTargetEntity() instanceof Player)) {
+            return;
+        }
+        
+        Player player = (Player) event.getTargetEntity();
+        sendAndRemove(player.getUniqueId());
+    }
+    
+    // Sends the "distance" event and removes the player from the path map
+    private void sendAndRemove(UUID playerUUID) {
+        if (!this.playerPaths.containsKey(playerUUID)) {
+            return;
+        }
+        
+        PlayerPath playerPath = this.playerPaths.get(playerUUID);
+        
+        BadgeUpEvent distanceEvent = new BadgeUpEvent("distance", playerUUID,
+                new Modifier(ModifierOperation.INC, playerPath.getDistance()));
+        distanceEvent.addDataEntry("path", playerPath);
 
+        send(distanceEvent);
+
+        this.playerPaths.remove(playerUUID);
     }
 
     class PlayerPath implements JSONSerializable {
