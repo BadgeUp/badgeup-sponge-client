@@ -1,12 +1,15 @@
 package io.badgeup.sponge;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.command.executor.BadgeUpInitCommandExecutor;
 import io.badgeup.sponge.command.executor.ListAwardsCommandExecutor;
 import io.badgeup.sponge.command.executor.RedeemAwardCommandExecutor;
-import io.badgeup.sponge.eventlistener.BadgeUpSpongeEventListener;
+import io.badgeup.sponge.eventlistener.BadgeUpEventListener;
+import io.badgeup.sponge.eventlistener.GeneralEventListener;
+import io.badgeup.sponge.eventlistener.MoveEventListener;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
 import io.badgeup.sponge.service.FlatfileAchievementPersistenceService;
@@ -66,7 +69,7 @@ public class BadgeUpSponge {
 
     @Inject private Logger logger;
 
-    private BadgeUpSpongeEventListener eventListener = new BadgeUpSpongeEventListener(this);
+    private List<BadgeUpEventListener> eventListeners = Lists.newArrayList(new GeneralEventListener(this), new MoveEventListener());
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
@@ -96,7 +99,7 @@ public class BadgeUpSponge {
             return;
         }
 
-        Sponge.getEventManager().registerListeners(this, this.eventListener);
+        this.eventListeners.forEach(listener -> Sponge.getEventManager().registerListeners(this, listener));
 
         Sponge.getServiceManager().setProvider(this, AchievementPersistenceService.class,
                 new FlatfileAchievementPersistenceService(this.configDir));
@@ -232,7 +235,7 @@ public class BadgeUpSponge {
     }
 
     private void disable() {
-        Sponge.getEventManager().unregisterListeners(this.eventListener);
+        this.eventListeners.forEach(Sponge.getEventManager()::unregisterListeners);
         Sponge.getCommandManager().getOwnedBy(this).forEach(Sponge.getGame().getCommandManager()::removeMapping);
         Sponge.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
     }
