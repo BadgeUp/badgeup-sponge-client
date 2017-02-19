@@ -69,7 +69,7 @@ public class BadgeUpSponge {
 
     @Inject private Logger logger;
 
-    private List<BadgeUpEventListener> eventListeners = Lists.newArrayList(new GeneralEventListener(this), new MoveEventListener());
+    private List<BadgeUpEventListener> eventListeners = Lists.newArrayList(new GeneralEventListener(this), new MoveEventListener(this));
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {

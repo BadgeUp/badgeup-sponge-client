@@ -38,11 +38,9 @@ import java.util.UUID;
 
 public class GeneralEventListener extends BadgeUpEventListener {
 
-    private BadgeUpSponge plugin;
 
     public GeneralEventListener(BadgeUpSponge plugin) {
-        super();
-        this.plugin = plugin;
+        super(plugin);
     }
 
     @Listener(order = Order.POST)

@@ -1,6 +1,7 @@
 package io.badgeup.sponge.eventlistener;
 
 import com.flowpowered.math.vector.Vector3i;
+import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.JSONSerializable;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
@@ -24,8 +25,8 @@ public class MoveEventListener extends BadgeUpEventListener {
 
     private Map<UUID, PlayerPath> playerPaths;
 
-    public MoveEventListener() {
-        super();
+    public MoveEventListener(BadgeUpSponge plugin) {
+        super(plugin);
         this.playerPaths = new HashMap<>();
     }
 
@@ -67,25 +68,25 @@ public class MoveEventListener extends BadgeUpEventListener {
         Player player = event.getTargetEntity();
         sendAndRemove(player.getUniqueId());
     }
-    
+
     @Listener
     public void playerDeath(DestructEntityEvent.Death event) {
         if (!(event.getTargetEntity() instanceof Player)) {
             return;
         }
-        
+
         Player player = (Player) event.getTargetEntity();
         sendAndRemove(player.getUniqueId());
     }
-    
+
     // Sends the "distance" event and removes the player from the path map
     private void sendAndRemove(UUID playerUUID) {
         if (!this.playerPaths.containsKey(playerUUID)) {
             return;
         }
-        
+
         PlayerPath playerPath = this.playerPaths.get(playerUUID);
-        
+
         BadgeUpEvent distanceEvent = new BadgeUpEvent("distance", playerUUID,
                 new Modifier(ModifierOperation.INC, playerPath.getDistance()));
         distanceEvent.addDataEntry("path", playerPath);

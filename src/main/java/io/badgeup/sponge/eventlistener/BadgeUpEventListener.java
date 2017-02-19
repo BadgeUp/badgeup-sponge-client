@@ -22,8 +22,9 @@ public abstract class BadgeUpEventListener {
     private BadgeUpSponge plugin;
     private Map<Class<? extends Event>, EventKeyProvider> keyProviders;
 
-    public BadgeUpEventListener() {
+    public BadgeUpEventListener(BadgeUpSponge plugin) {
         this.keyProviders = new HashMap<>();
+        this.plugin = plugin;
         registerKeyProviders();
     }
 
