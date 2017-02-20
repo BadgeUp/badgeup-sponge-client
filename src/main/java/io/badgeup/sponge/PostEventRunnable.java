@@ -35,7 +35,8 @@ public class PostEventRunnable implements Runnable {
             // If status code is 413, log that the event was too big (to be
             // looked at and slimmed down later)
             if (response.getStatus() == HttpStatus.SC_REQUEST_TOO_LONG) {
-                this.plugin.getLogger().error("Event too large: " + this.event.build().getString("key"));
+                this.plugin.getLogger().warn("Event too large: " + this.event.build().getString("key"));
+                this.plugin.getLogger().debug(this.event.build().toString());
                 return;
             } else if (response.getStatus() != HttpStatus.SC_CREATED) {
                 // If not 201, log the error
