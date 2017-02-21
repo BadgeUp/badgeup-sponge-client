@@ -43,6 +43,10 @@ public class BadgeUpEvent {
         this.options = new JSONObject();
     }
 
+    public String getKey() {
+        return this.key;
+    }
+
     public void setKey(String key) {
         this.key = key;
     }

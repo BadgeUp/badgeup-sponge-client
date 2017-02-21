@@ -2,6 +2,7 @@ package io.badgeup.sponge;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
+import io.badgeup.sponge.command.executor.DebugCommandExecutor;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
@@ -9,6 +10,9 @@ import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,19 @@ public class PostEventRunnable implements Runnable {
         this.event = event;
     }
 
+    public Text constructEventText(BadgeUpEvent event, int responseCode) {
+        String playerName = "N/A";
+        Optional<Player> playerOpt = Sponge.getServer().getPlayer(event.getSubject());
+        if (playerOpt.isPresent()) {
+            playerName = playerOpt.get().getName();
+        }
+
+        return Text.of(
+                "<", playerName, "> ",
+                Text.builder(event.getKey()).onHover(TextActions.showText(Text.of(event.build().toString(4)))).build(),
+                " (Response: " + responseCode + ")");
+    }
+
     @Override
     public void run() {
         this.event.setDiscardable(false);
@@ -37,13 +54,20 @@ public class PostEventRunnable implements Runnable {
             if (response.getStatus() == HttpStatus.SC_REQUEST_TOO_LONG) {
                 this.plugin.getLogger().warn("Event too large: " + this.event.build().getString("key"));
                 this.plugin.getLogger().debug(this.event.build().toString());
+                DebugCommandExecutor.getDebugMessageChannelForPlayer(this.event.getSubject())
+                        .send(Text.of(TextColors.RED, constructEventText(this.event, response.getStatus())));
                 return;
             } else if (response.getStatus() != HttpStatus.SC_CREATED) {
                 // If not 201, log the error
                 this.plugin.getLogger().error("Non-201 status code response from BadgeUp. Response code: " + response.getStatus()
                         + ". Response body: " + response.getBody().toString());
+                DebugCommandExecutor.getDebugMessageChannelForPlayer(this.event.getSubject())
+                        .send(Text.of(TextColors.RED, constructEventText(this.event, response.getStatus())));
                 return;
             }
+
+            DebugCommandExecutor.getDebugMessageChannelForPlayer(this.event.getSubject())
+                    .send(Text.of(TextColors.GREEN, constructEventText(this.event, response.getStatus())));
 
             final JSONObject body = response.getBody().getObject();
 
