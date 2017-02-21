@@ -9,6 +9,8 @@ import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockSnapshot;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -38,7 +40,6 @@ import java.util.UUID;
 
 public class GeneralEventListener extends BadgeUpEventListener {
 
-
     public GeneralEventListener(BadgeUpSponge plugin) {
         super(plugin);
     }
@@ -47,7 +48,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
     @Exclude({NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class,
             ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, UseItemStackEvent.Replace.class,
             UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class,
-            UseItemStackEvent.Stop.class, ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class,
+            UseItemStackEvent.Stop.class, ChangeBlockEvent.class,
             PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class, AnimateHandEvent.class, ClickInventoryEvent.class,
             ChannelRegistrationEvent.class, TabCompleteEvent.class})
     public void event(Event event, @Root Player player)
@@ -90,6 +91,35 @@ public class GeneralEventListener extends BadgeUpEventListener {
             return;
         }
         event(event, (Player) cause.getEntity());
+    }
+
+    @Listener(order = Order.POST)
+    @Exclude({ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class})
+    public void changeBlock(ChangeBlockEvent event, @Root Player player) {
+        if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+            return;
+        }
+
+        // Just get the default key provider
+        EventKeyProvider<Event> keyProvider = resolveKeyProvider(Event.class);
+
+        final UUID uuid = player.getUniqueId();
+        final int increment = 1;
+
+        for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+            String key = keyProvider.provide(event);
+            if (event instanceof ChangeBlockEvent.Place || event instanceof ChangeBlockEvent.Modify) {
+                key += ":" + transaction.getFinal().getState().getType().getId();
+            } else if (event instanceof ChangeBlockEvent.Break) {
+                key += ":" + transaction.getOriginal().getState().getType().getId();
+            } else {
+                continue;
+            }
+            
+            BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
+            newEvent.addDataEntry("Transaction", transaction);
+            send(newEvent);
+        }
     }
 
     @Listener
