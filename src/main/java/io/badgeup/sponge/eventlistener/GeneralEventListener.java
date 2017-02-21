@@ -19,6 +19,7 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
+import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
@@ -29,7 +30,6 @@ import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
-import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ChannelRegistrationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -85,12 +85,21 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    public void dropItem(DropItemEvent.Dispense event, @Root EntitySpawnCause cause)
+    public void spawnEntity(Event event, @Root EntitySpawnCause cause)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (!(cause.getEntity() instanceof Player)) {
             return;
         }
         event(event, (Player) cause.getEntity());
+    }
+
+    @Listener(order = Order.POST)
+    public void damageEntity(Event event, @Root EntityDamageSource cause)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        if (!(cause.getSource() instanceof Player)) {
+            return;
+        }
+        event(event, (Player) cause.getSource());
     }
 
     @Listener(order = Order.POST)
@@ -115,7 +124,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             } else {
                 continue;
             }
-            
+
             BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
             newEvent.addDataEntry("Transaction", transaction);
             send(newEvent);
