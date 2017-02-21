@@ -28,7 +28,7 @@ public abstract class BadgeUpEventListener {
         if (this.keyProviders.containsKey(eventClass)) {
             return this.keyProviders.get(eventClass);
         }
-        
+
         for (Class interfaceClass : eventClass.getInterfaces()) {
             if (this.keyProviders.containsKey(interfaceClass)) {
                 return this.keyProviders.get(interfaceClass);
@@ -54,8 +54,9 @@ public abstract class BadgeUpEventListener {
                 return getDefault(event);
             }
         });
-        
-        // WARNING: Don't make a key provider for any ChangeBlockEvent classes, as it will break the custom
+
+        // WARNING: Don't make a key provider for any ChangeBlockEvent classes,
+        // as it will break the custom
         // event handling for those events
 
         this.keyProviders.put(UseItemStackEvent.class, new EventKeyProvider<UseItemStackEvent>() {
