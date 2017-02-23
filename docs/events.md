@@ -16,6 +16,8 @@ In certain cases, extra commonly-used information is appended to the end of even
   * Ex: `dropitem:dispense:minecraft:gold_ingot`
  * `changeinventory:pickup:<item type>`: When picking up an item, the item's ID is appended to the key to allow you to easily keep track of item collection metrics on a per-item basis.
   * Ex: `changeinventory:pickup:minecraft:gold_ingot`
+ * `destructentity:death:<entity category>:<entity ID>`: When killing entities, their category ("player", "boss", "hostile", or "passive") as well as their ID (UUID for players, `minecraft:*` for all others) will be appended to the event key.
+  * Ex: `destructentity:death:passive:minecraft:chicken`
 
 ## Disabled Events
 

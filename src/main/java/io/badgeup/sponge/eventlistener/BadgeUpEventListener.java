@@ -3,8 +3,13 @@ package io.badgeup.sponge.eventlistener;
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.PostEventRunnable;
 import io.badgeup.sponge.event.BadgeUpEvent;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Item;
+import org.spongepowered.api.entity.living.Hostile;
+import org.spongepowered.api.entity.living.monster.Boss;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
@@ -81,6 +86,34 @@ public abstract class BadgeUpEventListener {
             @Override
             public String provide(ChangeInventoryEvent.Pickup event) {
                 return getDefault(event) + ":" + event.getTargetEntity().getItemType().getId();
+            }
+        });
+
+        this.keyProviders.put(DestructEntityEvent.Death.class, new EventKeyProvider<DestructEntityEvent.Death>() {
+
+            @Override
+            public String provide(DestructEntityEvent.Death event) {
+                Entity entity = event.getTargetEntity();
+
+                String entityCategory = "";
+                if (entity instanceof Player) {
+                    entityCategory = "player";
+                } else if (entity instanceof Boss) {
+                    entityCategory = "boss";
+                } else if (entity instanceof Hostile) {
+                    entityCategory = "hostile";
+                } else {
+                    entityCategory = "passive";
+                }
+
+                String id = "";
+                if (entity instanceof Player) {
+                    id = ((Player) entity).getUniqueId().toString();
+                } else {
+                    id = entity.getType().getId();
+                }
+
+                return getDefault(event) + ":" + entityCategory + ":" + id;
             }
         });
     }
