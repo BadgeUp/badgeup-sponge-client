@@ -129,6 +129,15 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
+            
+            try {
+                baneOfUndeadAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Bane of the Undead achievement."));
+            } catch (Exception e) {
+                this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Bane of the Undead achievement."));
+                this.src.sendMessage(contactSupportMsg);
+                e.printStackTrace();
+            }
         }
 
         private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
@@ -704,6 +713,50 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(GROUPS, new JSONArray()))
                             .put(AWARDS, new JSONArray()
                                     .put(zombieSkullAwardId)))
+                    .asJson();
+            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+
+        }
+        
+        private void baneOfUndeadAchievement() throws JSONException, UnirestException, IllegalStateException {
+            HttpResponse<JsonNode> killMonstersCritResponse = HttpUtils.post("/criteria")
+                    .body(new JSONObject()
+                            .put(NAME, "Undead killer")
+                            .put(DESC, "Slay 10 Skeletons or Zombies")
+                            .put(KEY, "destructentity:death:hostile:minecraft:(zombie|skeleton)")
+                            .put(EVALUATION, standardEvalBlock("@gte", 10)))
+                    .asJson();
+            Preconditions.checkArgument(killMonstersCritResponse.getStatus() == 201);
+            final String killMonstersCritId = killMonstersCritResponse.getBody().getObject().getString(ID);
+
+            HttpResponse<JsonNode> swordAwardResponse = HttpUtils.post("/awards")
+                    .body(new JSONObject()
+                            .put(NAME, "Zombie Ripper")
+                            .put(DATA, new JSONObject()
+                                    .put(TYPE, "item")
+                                    .put("itemType", "minecraft:diamond_sword")
+                                    .put("displayName", "&cZombie Ripper")
+                                    .put("enchantments", new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put(ID, "minecraft:smite")
+                                                    .put("level", 5)))))
+                    .asJson();
+            Preconditions.checkArgument(swordAwardResponse.getStatus() == 201);
+            final String swordAwardId = swordAwardResponse.getBody().getObject().getString(ID);
+
+            // Create the achievement
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
+                    .body(new JSONObject()
+                            .put(NAME, "Bane of the Undead")
+                            .put(DESC, "Negan's got nothing on you!")
+                            .put(EVAL_TREE, new JSONObject()
+                                    .put(CONDITION, AND)
+                                    .put(CRITERIA, new JSONArray()
+                                            .put(killMonstersCritId))
+                                    .put(TYPE, GROUP)
+                                    .put(GROUPS, new JSONArray()))
+                            .put(AWARDS, new JSONArray()
+                                    .put(swordAwardId)))
                     .asJson();
             Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 

@@ -98,3 +98,12 @@ Pick up 100 rotten flesh
 
 #### Awards
 * Zombie Head
+
+### Bane of the Undead
+
+#### How to obtain
+Kill any combination of 10 skeletons and zombies
+
+#### Awards
+* "Zombie Ripper" Diamond Sword
+ - Smite 5
