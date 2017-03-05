@@ -7,12 +7,13 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 ## BadgeUp Setup
 1. [Create a BadgeUp account](https://www.badgeup.io/)
 1. Create a new BadgeUp API key with the following scopes:
- - `event:create`
- - `achievement:read`
- - `award:read`
- - `award:create`
- - `criterion:create`
- - `achievement:create`
+
+* `event:create`
+* `achievement:read`
+* `award:read`
+* `award:create`
+* `criterion:create`
+* `achievement:create`
 
 ## Installation
 1. Set up a Sponge server as detailed [here](https://docs.spongepowered.org/master/en/server/getting-started/implementations/index.html).
@@ -31,11 +32,11 @@ Once the server is started, run `/badgeup init` (requires the `badgeup.admin.ini
 
 #### How to obtain
 Eat one of each of the following foods:
- * Raw Porkchop or Cooked Porkchop
- * Raw Chicken or Cooked Chicken
- * Raw Mutton or Cooked Mutton
- * Raw Beef or Steak
- * Raw Rabbit or Cooked Rabbit
+* Raw Porkchop or Cooked Porkchop
+* Raw Chicken or Cooked Chicken
+* Raw Mutton or Cooked Mutton
+* Raw Beef or Steak
+* Raw Rabbit or Cooked Rabbit
 
 #### Awards
 * 64 Steak
@@ -44,16 +45,16 @@ Eat one of each of the following foods:
 
 #### How to obtain
 Eat one of each of the following foods:
- * Apple or Golden Apple
- * Mushroom Stew
- * Melon
- * Carrot or Golden Carrot
- * Potato or Baked Potato or Poisonous Potato
- * Beetroot or Beetroot Soup
+* Apple or Golden Apple
+* Mushroom Stew
+* Melon
+* Carrot or Golden Carrot
+* Potato or Baked Potato or Poisonous Potato
+* Beetroot or Beetroot Soup
 
 #### Awards
- * Golden Apple
- * Golden Carrot
+* Golden Apple
+* Golden Carrot
 
 ### Green Thumb
 
@@ -61,8 +62,8 @@ Eat one of each of the following foods:
 Plant 10 saplings
 
 #### Awards
- * Rainbow Sheep
- * Time Machine (sets time to day)
+* Rainbow Sheep
+* Time Machine (sets time to day)
 
 ### Pyro
 
@@ -70,8 +71,8 @@ Plant 10 saplings
 Light a fire
 
 #### Awards
- * 10 TNT
- * Resistance Potion Effect for 2 minutes
+* 10 TNT
+* Resistance Potion Effect for 2 minutes
 
 ### Lumberjack
 
@@ -80,8 +81,8 @@ Chop 50 logs
 
 #### Awards
 * "Chainsaw" Diamond Axe
- - Efficiency 5
- - Unbreaking 3
+  * Efficiency 5
+  * Unbreaking 3
 
 ### Moneybags
 
@@ -106,4 +107,4 @@ Kill any combination of 10 skeletons and zombies
 
 #### Awards
 * "Zombie Ripper" Diamond Sword
- - Smite 5
+  * Smite 5
