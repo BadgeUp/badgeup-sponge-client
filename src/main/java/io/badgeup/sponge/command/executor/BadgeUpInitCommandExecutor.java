@@ -136,7 +136,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Raw Porkchop")
                             .put(DESC, "Eat 1 Raw Porkchop")
-                            .put(KEY, "useitemstack:finish:minecraft:porkchop")
+                            .put(KEY, "^useitemstack:finish:minecraft:porkchop$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(rawPorkCritResponse.getStatus() == 201);
@@ -146,7 +146,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Cooked Porkchop")
                             .put(DESC, "Eat 1 Cooked Porkchop")
-                            .put(KEY, "useitemstack:finish:minecraft:cooked_porkchop")
+                            .put(KEY, "^useitemstack:finish:minecraft:cooked_porkchop$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(cookedPorkCritResponse.getStatus() == 201);
@@ -156,7 +156,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Raw Chicken")
                             .put(DESC, "Eat 1 Raw Chicken")
-                            .put(KEY, "useitemstack:finish:minecraft:chicken")
+                            .put(KEY, "^useitemstack:finish:minecraft:chicken$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(rawChickenCritResponse.getStatus() == 201);
@@ -166,7 +166,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Cooked Chicken")
                             .put(DESC, "Eat 1 Cooked Chicken")
-                            .put(KEY, "useitemstack:finish:minecraft:cooked_chicken")
+                            .put(KEY, "^useitemstack:finish:minecraft:cooked_chicken$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(cookedChickenCritResponse.getStatus() == 201);
@@ -176,7 +176,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Raw Mutton")
                             .put(DESC, "Eat 1 Raw Mutton")
-                            .put(KEY, "useitemstack:finish:minecraft:mutton")
+                            .put(KEY, "^useitemstack:finish:minecraft:mutton$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(rawMuttonCritResponse.getStatus() == 201);
@@ -186,7 +186,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Cooked Mutton")
                             .put(DESC, "Eat 1 Cooked Mutton")
-                            .put(KEY, "useitemstack:finish:minecraft:cooked_mutton")
+                            .put(KEY, "^useitemstack:finish:minecraft:cooked_mutton$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(cookedMuttonCritResponse.getStatus() == 201);
@@ -196,7 +196,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Raw Beef")
                             .put(DESC, "Eat 1 Raw Beef")
-                            .put(KEY, "useitemstack:finish:minecraft:beef")
+                            .put(KEY, "^useitemstack:finish:minecraft:beef$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(rawBeefCritResponse.getStatus() == 201);
@@ -206,7 +206,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Cooked Beef")
                             .put(DESC, "Eat 1 Cooked Beef")
-                            .put(KEY, "useitemstack:finish:minecraft:cooked_beef")
+                            .put(KEY, "^useitemstack:finish:minecraft:cooked_beef$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(cookedBeefCritResponse.getStatus() == 201);
@@ -216,7 +216,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Raw Rabbit")
                             .put(DESC, "Eat 1 Raw Rabbit")
-                            .put(KEY, "useitemstack:finish:minecraft:rabbit")
+                            .put(KEY, "^useitemstack:finish:minecraft:rabbit$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(rawRabbitCritResponse.getStatus() == 201);
@@ -226,7 +226,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Cooked Rabbit")
                             .put(DESC, "Eat 1 Cooked Rabbit")
-                            .put(KEY, "useitemstack:finish:minecraft:cooked_rabbit")
+                            .put(KEY, "^useitemstack:finish:minecraft:cooked_rabbit$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(cookedRabbitCritResponse.getStatus() == 201);
@@ -300,7 +300,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Apple")
                             .put(DESC, "Eat 1 Apple")
-                            .put(KEY, "useitemstack:finish:minecraft:apple")
+                            .put(KEY, "^useitemstack:finish:minecraft:apple$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(appleCritResponse.getStatus() == 201);
@@ -310,7 +310,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Golden Apple")
                             .put(DESC, "Eat 1 Golden Apple")
-                            .put(KEY, "useitemstack:finish:minecraft:golden_apple")
+                            .put(KEY, "^useitemstack:finish:minecraft:golden_apple$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(goldenAppleCritResponse.getStatus() == 201);
@@ -320,7 +320,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Mushroom Stew")
                             .put(DESC, "Eat 1 Mushroom Stew")
-                            .put(KEY, "useitemstack:finish:minecraft:mushroom_stew")
+                            .put(KEY, "^useitemstack:finish:minecraft:mushroom_stew$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(mushroomStewCritResponse.getStatus() == 201);
@@ -330,7 +330,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Melon")
                             .put(DESC, "Eat 1 Melon")
-                            .put(KEY, "useitemstack:finish:minecraft:melon")
+                            .put(KEY, "^useitemstack:finish:minecraft:melon$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(melonCritResponse.getStatus() == 201);
@@ -340,7 +340,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Carrot")
                             .put(DESC, "Eat 1 Carrot")
-                            .put(KEY, "useitemstack:finish:minecraft:carrot")
+                            .put(KEY, "^useitemstack:finish:minecraft:carrot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(carrotCritResponse.getStatus() == 201);
@@ -350,7 +350,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Golden Carrot")
                             .put(DESC, "Eat 1 Golden Carrot")
-                            .put(KEY, "useitemstack:finish:minecraft:golden_carrot")
+                            .put(KEY, "^useitemstack:finish:minecraft:golden_carrot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(goldenCarrotCritResponse.getStatus() == 201);
@@ -360,7 +360,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Raw Potato")
                             .put(DESC, "Eat 1 Raw Potato")
-                            .put(KEY, "useitemstack:finish:minecraft:potato")
+                            .put(KEY, "^useitemstack:finish:minecraft:potato$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(rawPotatoCritResponse.getStatus() == 201);
@@ -370,7 +370,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Baked Potato")
                             .put(DESC, "Eat 1 Baked Mutton")
-                            .put(KEY, "useitemstack:finish:minecraft:baked_potato")
+                            .put(KEY, "^useitemstack:finish:minecraft:baked_potato$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(bakedPotatoCritResponse.getStatus() == 201);
@@ -380,7 +380,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Poisonous Potato")
                             .put(DESC, "Eat 1 Poisonous Potato")
-                            .put(KEY, "useitemstack:finish:minecraft:poisonous_potato")
+                            .put(KEY, "^useitemstack:finish:minecraft:poisonous_potato$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(poisonousPotatoCritResponse.getStatus() == 201);
@@ -390,7 +390,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Beetroot")
                             .put(DESC, "Eat 1 Beetroot")
-                            .put(KEY, "useitemstack:finish:minecraft:beetroot")
+                            .put(KEY, "^useitemstack:finish:minecraft:beetroot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(beetrootCritResponse.getStatus() == 201);
@@ -400,7 +400,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Beetroot Soup")
                             .put(DESC, "Eat 1 Beetroot Soup")
-                            .put(KEY, "useitemstack:finish:minecraft:beetroot_soup")
+                            .put(KEY, "^useitemstack:finish:minecraft:beetroot_soup$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(beetrootSoupCritResponse.getStatus() == 201);
@@ -482,7 +482,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Place Saplings")
                             .put(DESC, "Place 10 Saplings")
-                            .put(KEY, "changeblock:place:minecraft:sapling")
+                            .put(KEY, "^changeblock:place:minecraft:sapling$")
                             .put(EVALUATION, standardEvalBlock("@gte", 10)))
                     .asJson();
             Preconditions.checkArgument(placeSaplingCritResponse.getStatus() == 201);
@@ -534,7 +534,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Light Fires")
                             .put(DESC, "Light a fire")
-                            .put(KEY, "changeblock:place:minecraft:fire")
+                            .put(KEY, "^changeblock:place:minecraft:fire$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(lightFireCritResponse.getStatus() == 201);
@@ -587,7 +587,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Chop Trees")
                             .put(DESC, "Chop 50 Logs")
-                            .put(KEY, "changeblock:break:minecraft:log")
+                            .put(KEY, "^changeblock:break:minecraft:log$")
                             .put(EVALUATION, standardEvalBlock("@gte", 50)))
                     .asJson();
             Preconditions.checkArgument(chopLogsCritResponse.getStatus() == 201);
@@ -634,7 +634,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Drop Gold")
                             .put(DESC, "Drop a Gold Ingot")
-                            .put(KEY, "dropitem:dispense:minecraft:gold_ingot")
+                            .put(KEY, "^dropitem:dispense:minecraft:gold_ingot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
             Preconditions.checkArgument(dropGoldCritResponse.getStatus() == 201);
@@ -674,7 +674,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .body(new JSONObject()
                             .put(NAME, "Pickup Rotten Flesh")
                             .put(DESC, "Pick up 100 Rotten Flesh")
-                            .put(KEY, "changeinventory:pickup:minecraft:rotten_flesh")
+                            .put(KEY, "^changeinventory:pickup:minecraft:rotten_flesh$")
                             .put(EVALUATION, standardEvalBlock("@gte", 100)))
                     .asJson();
             Preconditions.checkArgument(pickupRottenFleshCritResponse.getStatus() == 201);
