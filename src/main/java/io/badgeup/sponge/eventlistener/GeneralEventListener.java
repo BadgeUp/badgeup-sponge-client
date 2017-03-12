@@ -16,6 +16,7 @@ import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
@@ -23,6 +24,7 @@ import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
+import org.spongepowered.api.event.entity.ConstructEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.AnimateHandEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeClientSettingsEvent;
@@ -30,9 +32,11 @@ import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ChannelRegistrationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.event.statistic.ChangeStatisticEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,12 +49,24 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    @Exclude({NotifyNeighborBlockEvent.class, MoveEntityEvent.class, CollideBlockEvent.class, CollideEntityEvent.class,
-            ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class, UseItemStackEvent.Replace.class,
-            UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class,
-            UseItemStackEvent.Stop.class, ChangeBlockEvent.class,
-            PlayerChangeClientSettingsEvent.class, ChangeInventoryEvent.Held.class, AnimateHandEvent.class, ClickInventoryEvent.class,
-            ChannelRegistrationEvent.class, TabCompleteEvent.class})
+    @Exclude({
+            AnimateHandEvent.class,
+            ChangeBlockEvent.class, // handled below by changeBlock
+            ChangeInventoryEvent.Held.class,
+            ChangeStatisticEvent.class,
+            ChannelRegistrationEvent.class,
+            ClickInventoryEvent.class,
+            ClientConnectionEvent.Auth.class, ClientConnectionEvent.Login.class,
+            CollideBlockEvent.class,
+            CollideEntityEvent.class,
+            ConstructEntityEvent.class,
+            MoveEntityEvent.class, // handled in MoveEventListener
+            NotifyNeighborBlockEvent.class,
+            PlayerChangeClientSettingsEvent.class,
+            SleepingEvent.Pre.class, SleepingEvent.Tick.class, SleepingEvent.Post.class,
+            TabCompleteEvent.class,
+            UseItemStackEvent.Replace.class, UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Stop.class, UseItemStackEvent.Tick.class
+        })
     public void event(Event event, @Root Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
@@ -85,6 +101,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
+    @Exclude({DropItemEvent.Pre.class})
     public void spawnEntity(Event event, @Root EntitySpawnCause cause)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (!(cause.getEntity() instanceof Player)) {
