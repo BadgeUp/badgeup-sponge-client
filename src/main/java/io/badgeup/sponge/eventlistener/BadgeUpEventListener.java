@@ -9,6 +9,7 @@ import org.spongepowered.api.entity.living.Hostile;
 import org.spongepowered.api.entity.living.monster.Boss;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
+import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
@@ -114,6 +115,14 @@ public abstract class BadgeUpEventListener {
                 }
 
                 return getDefault(event) + ":" + entityCategory + ":" + id;
+            }
+        });
+        
+        this.keyProviders.put(GrantAchievementEvent.class, new EventKeyProvider<GrantAchievementEvent>() {
+
+            @Override
+            public String provide(GrantAchievementEvent event) {
+                return "grantachievement:" + event.getAchievement().getId();
             }
         });
     }

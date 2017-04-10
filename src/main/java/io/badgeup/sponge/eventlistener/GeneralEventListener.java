@@ -16,6 +16,7 @@ import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
@@ -37,6 +38,7 @@ import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ChannelRegistrationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.statistic.ChangeStatisticEvent;
+import org.spongepowered.api.statistic.achievement.Achievement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -60,6 +62,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             CollideBlockEvent.class,
             CollideEntityEvent.class,
             ConstructEntityEvent.class,
+            GrantAchievementEvent.class, // handled below by grantAchievement
             MoveEntityEvent.class, // handled in MoveEventListener
             NotifyNeighborBlockEvent.class,
             PlayerChangeClientSettingsEvent.class,
@@ -146,6 +149,23 @@ public class GeneralEventListener extends BadgeUpEventListener {
             newEvent.addDataEntry("Transaction", transaction);
             send(newEvent);
         }
+    }
+    
+    @Listener
+    public void grantAchievement(GrantAchievementEvent.TargetPlayer event) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
+            return;
+        }
+        
+        Player player = event.getTargetEntity();
+        for (Achievement earnedAchievement : player.getAchievementData().achievements().get()) {
+            if (earnedAchievement.getId().equals(event.getAchievement().getId())) {
+                // Player has already earned the achievement -> do nothing
+                return;
+            }
+        }
+        
+        event(event, player);
     }
 
     @Listener
