@@ -12,7 +12,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -72,10 +71,6 @@ public class GeneralEventListener extends BadgeUpEventListener {
         })
     public void event(Event event, @Root Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
-            return;
-        }
-
         EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
         final String key = keyProvider.provide(event);
 
@@ -125,10 +120,6 @@ public class GeneralEventListener extends BadgeUpEventListener {
     @Listener(order = Order.POST)
     @Exclude({ChangeBlockEvent.Post.class, ChangeBlockEvent.Pre.class})
     public void changeBlock(ChangeBlockEvent event, @Root Player player) {
-        if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
-            return;
-        }
-
         // Just get the default key provider
         EventKeyProvider<Event> keyProvider = resolveKeyProvider(Event.class);
 
@@ -153,10 +144,6 @@ public class GeneralEventListener extends BadgeUpEventListener {
     
     @Listener
     public void grantAchievement(GrantAchievementEvent.TargetPlayer event) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) {
-            return;
-        }
-        
         Player player = event.getTargetEntity();
         for (Achievement earnedAchievement : player.getAchievementData().achievements().get()) {
             if (earnedAchievement.getId().equals(event.getAchievement().getId())) {
