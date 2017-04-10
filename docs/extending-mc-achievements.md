@@ -4,7 +4,7 @@ Vanilla Minecraft has its own achievement tree, where one achievement is only un
 
 When a *vanilla Minecraft* achievement is granted to a player, the BadgeUp plugin sends an event with this key: `grantachievement:<achievement id>`. Because of this, you can simply make the completion of a specific *vanilla Minecraft* a *criterion* for your BadgeUp achievement:
 
-![Minecraft achievement criterion](./mc-achievement-criterion.png "Minecraft achievement criterion")
+![Minecraft achievement criterion](https://raw.githubusercontent.com/BadgeUp/sponge-client/928dbd16dd55f062a9eafc0dd79e3e47af907fd4/docs/mc-achievement-criterion.png "Minecraft achievement criterion")
 
 For reference, the table below contains the IDs of all vanilla Minecraft achievements
 
