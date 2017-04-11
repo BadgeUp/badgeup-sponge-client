@@ -6,6 +6,8 @@ When a *vanilla Minecraft* achievement is granted to a player, the BadgeUp plugi
 
 ![Minecraft achievement criterion](https://raw.githubusercontent.com/BadgeUp/sponge-client/c7625732b3874e1c4f1e1a23adb1c8ce82b6e17a/docs/mc-achievement-criterion.png "Minecraft achievement criterion")
 
+Note that this is only supported for Sponge servers running Minecraft 1.11.2+, since the underlying implementation for this feature is not available pre-1.11.2
+
 For reference, the table below contains the IDs of all vanilla Minecraft achievements
 
 | Name                 | Description                                                         | ID                   |
