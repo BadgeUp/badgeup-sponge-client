@@ -67,7 +67,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             PlayerChangeClientSettingsEvent.class,
             SleepingEvent.Pre.class, SleepingEvent.Tick.class, SleepingEvent.Post.class,
             TabCompleteEvent.class,
-            UseItemStackEvent.Replace.class, UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Stop.class, UseItemStackEvent.Tick.class
+            UseItemStackEvent.Replace.class, UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class // Don't exclude UseItemStackEvent.Stop (which bows use)
         })
     public void event(Event event, @Root Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
