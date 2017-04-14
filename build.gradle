@@ -44,6 +44,8 @@ shadowJar {
 
 	// Relocate apache packages because of Forge
 	relocate 'org.apache', 'relocated.org.apache'
+	// Relocate JSON lib because of incompatibilities with modpacks like FTB Beyond
+	relocate 'org.json', 'relocated.org.json'
     dependencies {
         exclude(dependency('org.spongepowered:spongeapi:5.0.0'))
     }
