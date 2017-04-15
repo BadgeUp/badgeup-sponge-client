@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.BadgeUp:sponge-client-services:v1.0.0'
+    compile 'com.github.badgeup:sponge-client:v2.0.8' // Replace "v2.0.8" with the latest version
 }
 ```
 
@@ -28,8 +28,8 @@ Maven:
 
 <dependency>
     <groupId>com.github.BadgeUp</groupId>
-    <artifactId>sponge-client-services</artifactId>
-    <version>v1.0.0</version>
+    <artifactId>sponge-client</artifactId>
+    <version>v2.0.8</version> <!-- Replace "v2.0.8" with the latest version -->
 </dependency>
 ```
 

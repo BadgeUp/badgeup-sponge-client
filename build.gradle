@@ -34,7 +34,6 @@ dependencies {
 	compile 'ninja.leaping.configurate:configurate-json:3.2'
 	compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile 'org.json:json:20160212'
-    compile 'com.github.BadgeUp:sponge-client-services:v1.0.0'
 }
 
 shadowJar {
