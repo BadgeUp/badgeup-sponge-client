@@ -1,5 +1,6 @@
 package io.badgeup.sponge.service;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -7,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
@@ -24,6 +26,7 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
 
         if (this.awardsFile.exists()) {
             this.pendingAwards = readFromFile();
+            attemptMigration();
         } else {
             this.pendingAwards = new JSONObject();
         }
@@ -85,6 +88,34 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
             }
         }
 
+        saveToFile();
+    }
+    
+    // Migrate from storing the whole award object to just the award ID mapped to count
+    private void attemptMigration() {
+        for (String playerId : this.pendingAwards.keySet()) {
+            JSONArray awardsArray = this.pendingAwards.optJSONArray(playerId); 
+            if (awardsArray == null) {
+                continue;
+            }
+            
+            JSONObject awardsCount = new JSONObject();
+            
+            Iterator<Object> i = awardsArray.iterator();
+            while(i.hasNext()) {
+                JSONObject awardObj = (JSONObject) i.next();
+                String awardId = awardObj.getString("id");
+                
+                if (awardsCount.has(awardId)) {
+                    awardsCount.put(awardId, awardsCount.getInt(awardId) + 1);
+                } else {
+                    awardsCount.put(awardId, 1);
+                }
+            }
+            
+            this.pendingAwards.put(playerId, awardsCount);
+        }
+        
         saveToFile();
     }
 
