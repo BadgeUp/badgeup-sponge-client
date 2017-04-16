@@ -21,7 +21,7 @@ import java.util.Map;
 
 public abstract class BadgeUpEventListener {
 
-    private BadgeUpSponge plugin;
+    protected BadgeUpSponge plugin;
     private Map<Class<? extends Event>, EventKeyProvider> keyProviders;
 
     public BadgeUpEventListener(BadgeUpSponge plugin) {
@@ -117,7 +117,7 @@ public abstract class BadgeUpEventListener {
                 return getDefault(event) + ":" + entityCategory + ":" + id;
             }
         });
-        
+
         this.keyProviders.put(GrantAchievementEvent.class, new EventKeyProvider<GrantAchievementEvent>() {
 
             @Override

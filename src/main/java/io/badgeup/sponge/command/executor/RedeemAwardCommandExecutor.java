@@ -20,6 +20,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class RedeemAwardCommandExecutor implements CommandExecutor {
 
@@ -40,37 +41,33 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
         String awardID = args.getOne("id").get().toString();
 
         AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
-        awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
-            Optional<JSONObject> awardJSONOpt = Optional.empty();
+        awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awardIds -> {
 
-            for (JSONObject tmpAward : awards) {
-                if (tmpAward.getString("id").equals(awardID)) {
-                    awardJSONOpt = Optional.of(tmpAward);
-                }
-            }
-
-            if (!awardJSONOpt.isPresent()) {
+            if (!awardIds.contains(awardID)) {
                 player.sendMessage(Text.of(TextColors.RED, "Invalid award."));
                 return;
             }
 
-            JSONObject awardJSON = awardJSONOpt.get();
-            Optional<Award> awardOpt = processAward(awardJSON);
-            if (!awardOpt.isPresent()) {
-                player.sendMessage(Text.of(TextColors.RED, "Failed to process award data."));
-                return;
-            }
-
-            Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                boolean success = awardOpt.get().awardPlayer(player);
-                if (success) {
-                    awardOpt.get().notifyPlayer(player);
-                    awardPS.removePendingAwardByID(player.getUniqueId(), awardID);
-                } else {
-                    player.sendMessage(Text.of(TextColors.RED, "Unable to redeem award."));
+            try {
+                JSONObject awardJSON = this.plugin.getResourceCache().getAwardById(awardID).get();
+                Optional<Award> awardOpt = processAward(awardJSON);
+                if (!awardOpt.isPresent()) {
+                    player.sendMessage(Text.of(TextColors.RED, "Failed to process award data."));
+                    return;
                 }
-            }).submit(this.plugin);
 
+                Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                    boolean success = awardOpt.get().awardPlayer(player);
+                    if (success) {
+                        awardOpt.get().notifyPlayer(player);
+                        awardPS.removePendingAwardByID(player.getUniqueId(), awardID);
+                    } else {
+                        player.sendMessage(Text.of(TextColors.RED, "Unable to redeem award."));
+                    }
+                }).submit(this.plugin);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         });
         return CommandResult.success();
     }

@@ -129,7 +129,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            
+
             try {
                 baneOfUndeadAchievement();
                 this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Bane of the Undead achievement."));
@@ -717,7 +717,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
         }
-        
+
         private void baneOfUndeadAchievement() throws JSONException, UnirestException, IllegalStateException {
             HttpResponse<JsonNode> killMonstersCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()

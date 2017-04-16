@@ -42,6 +42,7 @@ import org.spongepowered.api.statistic.achievement.Achievement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class GeneralEventListener extends BadgeUpEventListener {
 
@@ -67,8 +68,9 @@ public class GeneralEventListener extends BadgeUpEventListener {
             PlayerChangeClientSettingsEvent.class,
             SleepingEvent.Pre.class, SleepingEvent.Tick.class, SleepingEvent.Post.class,
             TabCompleteEvent.class,
-            UseItemStackEvent.Replace.class, UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class // Don't exclude UseItemStackEvent.Stop (which bows use)
-        })
+            // Don't exclude UseItemStackEvent.Stop (which bows use)
+            UseItemStackEvent.Replace.class, UseItemStackEvent.Reset.class, UseItemStackEvent.Start.class, UseItemStackEvent.Tick.class
+    })
     public void event(Event event, @Root Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
@@ -141,9 +143,10 @@ public class GeneralEventListener extends BadgeUpEventListener {
             send(newEvent);
         }
     }
-    
+
     @Listener
-    public void grantAchievement(GrantAchievementEvent.TargetPlayer event) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void grantAchievement(GrantAchievementEvent.TargetPlayer event)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Player player = event.getTargetEntity();
         for (Achievement earnedAchievement : player.getAchievementData().achievements().get()) {
             if (earnedAchievement.getId().equals(event.getAchievement().getId())) {
@@ -151,7 +154,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
                 return;
             }
         }
-        
+
         event(event, player);
     }
 
@@ -161,19 +164,30 @@ public class GeneralEventListener extends BadgeUpEventListener {
         AchievementPersistenceService achPS = Sponge.getServiceManager().provide(AchievementPersistenceService.class)
                 .get();
         achPS.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
-            for (JSONObject achievement : achievements) {
-                BadgeUpSponge.presentAchievement(player, achievement);
-                achPS.removeAchievementByID(player.getUniqueId(), achievement.getString("id"));
+            for (String achievementId : achievements) {
+                try {
+                    this.plugin.presentAchievement(player, achievementId);
+                    achPS.removeAchievementByID(player.getUniqueId(), achievementId);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
         awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
-            for (JSONObject award : awards) {
-                // Check if award is auto-redeemable. If so, redeem it
-                if (Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false)) {
-                    Sponge.getCommandManager().process(player, "redeem " + award.getString("id"));
+            for (String awardId : awards) {
+                try {
+                    JSONObject award = this.plugin.getResourceCache().getAwardById(awardId).get();
+
+                    // Check if award is auto-redeemable. If so, redeem it
+                    if (Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false)) {
+                        Sponge.getCommandManager().process(player, "redeem " + awardId);
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
+
             }
         });
 

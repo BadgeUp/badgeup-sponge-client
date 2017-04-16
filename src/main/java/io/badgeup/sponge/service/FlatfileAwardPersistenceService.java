@@ -1,6 +1,5 @@
 package io.badgeup.sponge.service;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -32,47 +31,60 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
     }
 
     @Override
-    public CompletableFuture<List<JSONObject>> getPendingAwardsForPlayer(UUID playerID) {
+    public CompletableFuture<List<String>> getPendingAwardsForPlayer(UUID playerID) {
         return CompletableFuture.supplyAsync(() -> {
-            List<JSONObject> playerAchievements = new ArrayList<>();
+            List<String> playerAwardIds = new ArrayList<>();
 
             if (this.pendingAwards.has(playerID.toString())) {
-                this.pendingAwards.getJSONArray(playerID.toString()).forEach(obj -> {
-                    playerAchievements.add((JSONObject) obj);
-                });
+                JSONObject playerAwards = this.pendingAwards.getJSONObject(playerID.toString());
+                for (String awardId : playerAwards.keySet()) {
+                    for (int i = 0; i < playerAwards.getInt(awardId); i++) {
+                        playerAwardIds.add(awardId);
+                    }
+                }
             }
 
-            return playerAchievements;
+            return playerAwardIds;
         });
 
     }
 
     @Override
-    public void addPendingAward(UUID playerID, JSONObject achievement) {
-        // TODO validate award data before saving
+    public void addPendingAward(UUID playerID, String awardId) {
         if (this.pendingAwards.has(playerID.toString())) {
-            JSONArray playerAchievements = this.pendingAwards.getJSONArray(playerID.toString());
-            playerAchievements.put(achievement);
+            JSONObject playerAwards = this.pendingAwards.getJSONObject(playerID.toString());
+            if (playerAwards.has(awardId)) {
+                playerAwards.put(awardId, playerAwards.getInt(awardId) + 1);
+            } else {
+                playerAwards.put(awardId, 1);
+            }
         } else {
-            JSONArray playerAchievements = new JSONArray();
-            playerAchievements.put(achievement);
-            this.pendingAwards.put(playerID.toString(), playerAchievements);
+            JSONObject playerAwards = new JSONObject();
+            playerAwards.put(awardId, 1);
+            this.pendingAwards.put(playerID.toString(), playerAwards);
         }
+
         saveToFile();
     }
 
     @Override
-    public void removePendingAwardByID(UUID playerID, String achievementID) {
+    public void removePendingAwardByID(UUID playerID, String awardId) {
         if (!this.pendingAwards.has(playerID.toString())) {
             throw new IllegalStateException("Player " + playerID + " has no pending awards to remove");
         }
-        JSONArray playerAchievements = this.pendingAwards.getJSONArray(playerID.toString());
-        for (int i = 0; i < playerAchievements.length(); i++) {
-            if (playerAchievements.getJSONObject(i).getString("id").equals(achievementID)) {
-                playerAchievements.remove(i);
-                break;
+
+        JSONObject playerAwards = this.pendingAwards.getJSONObject(playerID.toString());
+        if (!playerAwards.has(awardId)) {
+            throw new IllegalStateException("Player " + playerID + " does not have the award " + awardId + " to remove");
+        } else {
+            int newValue = playerAwards.getInt(awardId) - 1;
+            if (newValue <= 0) {
+                playerAwards.remove(awardId);
+            } else {
+                playerAwards.put(awardId, newValue);
             }
         }
+
         saveToFile();
     }
 

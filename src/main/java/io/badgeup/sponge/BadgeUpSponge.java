@@ -72,6 +72,8 @@ public class BadgeUpSponge {
 
     private List<BadgeUpEventListener> eventListeners = Lists.newArrayList(new GeneralEventListener(this), new MoveEventListener(this));
 
+    private ResourceCache resourceCache;
+
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
         this.logger.info("Initializing " + getContainer().getName());
@@ -107,9 +109,11 @@ public class BadgeUpSponge {
         Sponge.getServiceManager().setProvider(this, AwardPersistenceService.class,
                 new FlatfileAwardPersistenceService(this.configDir));
 
+        this.resourceCache = new ResourceCache(this.logger);
+
         Sponge.getCommandManager().register(this,
                 CommandSpec.builder().description(Text.of("Displays pending awards to the player"))
-                        .permission("badgeup.awards.list").executor(new ListAwardsCommandExecutor()).build(),
+                        .permission("badgeup.awards.list").executor(new ListAwardsCommandExecutor(this)).build(),
                 "awards", "rewards");
 
         Sponge.getCommandManager().register(this,
@@ -145,7 +149,9 @@ public class BadgeUpSponge {
     }
 
     // Run asynchronously
-    public static void presentAchievement(Player player, JSONObject achievement) {
+    public void presentAchievement(Player player, String achievementId) throws InterruptedException, ExecutionException {
+        JSONObject achievement = this.resourceCache.getAchievementyId(achievementId).get();
+
         Text.Builder achTextBuilder = Text.builder(achievement.getString("name")).color(TextColors.GOLD);
         if (!achievement.isNull("description")) {
             achTextBuilder
@@ -161,7 +167,7 @@ public class BadgeUpSponge {
         }
 
         AwardPersistenceService aps = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
-        List<JSONObject> playerAwards;
+        List<String> playerAwards;
         try {
             // This is already not on the main thread, so OK to wait
             playerAwards = aps.getPendingAwardsForPlayer(player.getUniqueId()).get();
@@ -255,6 +261,10 @@ public class BadgeUpSponge {
 
     public static PluginContainer getContainer() {
         return Sponge.getPluginManager().getPlugin(Constants.PLUGIN_ID).get();
+    }
+
+    public ResourceCache getResourceCache() {
+        return this.resourceCache;
     }
 
 }

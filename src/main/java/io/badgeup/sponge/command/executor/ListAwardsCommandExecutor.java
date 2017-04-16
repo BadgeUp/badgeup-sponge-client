@@ -1,6 +1,8 @@
 package io.badgeup.sponge.command.executor;
 
+import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.service.AwardPersistenceService;
+import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -15,8 +17,15 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ListAwardsCommandExecutor implements CommandExecutor {
+
+    private BadgeUpSponge plugin;
+
+    public ListAwardsCommandExecutor(BadgeUpSponge plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
@@ -34,19 +43,24 @@ public class ListAwardsCommandExecutor implements CommandExecutor {
             }
 
             List<Text> awardTexts = new ArrayList<>();
-            awards.forEach(award -> {
-                Text.Builder awardTextBuilder = Text.builder(award.getString("name")).color(TextColors.GOLD);
+            awards.forEach(awardId -> {
+                try {
+                    JSONObject award = this.plugin.getResourceCache().getAwardById(awardId).get();
+                    Text.Builder awardTextBuilder = Text.builder(award.getString("name")).color(TextColors.GOLD);
 
-                if (!award.isNull("description")) {
-                    awardTextBuilder
-                            .onHover(TextActions.showText(Text.of(TextColors.GOLD, award.getString("description"))));
+                    if (!award.isNull("description")) {
+                        awardTextBuilder
+                                .onHover(TextActions.showText(Text.of(TextColors.GOLD, award.getString("description"))));
+                    }
+
+                    Text redeemText = Text.builder("[Redeem]").color(TextColors.GREEN)
+                            .onHover(TextActions.showText(Text.of(TextColors.GREEN, "Redeem award")))
+                            .onClick(TextActions.runCommand("/redeem " + award.getString("id"))).build();
+
+                    awardTexts.add(Text.of(awardTextBuilder.build(), TextColors.RESET, " - ", redeemText));
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
-
-                Text redeemText = Text.builder("[Redeem]").color(TextColors.GREEN)
-                        .onHover(TextActions.showText(Text.of(TextColors.GREEN, "Redeem award")))
-                        .onClick(TextActions.runCommand("/redeem " + award.getString("id"))).build();
-
-                awardTexts.add(Text.of(awardTextBuilder.build(), TextColors.RESET, " - ", redeemText));
             });
 
             PaginationService pagination = Sponge.getServiceManager().provide(PaginationService.class).get();
