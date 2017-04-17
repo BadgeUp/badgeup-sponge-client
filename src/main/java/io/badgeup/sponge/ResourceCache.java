@@ -37,7 +37,7 @@ public class ResourceCache {
         return this.awardsCache.get(awardId);
     }
 
-    public CompletableFuture<JSONObject> getAchievementyId(String awardId) {
+    public CompletableFuture<JSONObject> getAchievementById(String awardId) {
         return this.achievementsCache.get(awardId);
     }
 

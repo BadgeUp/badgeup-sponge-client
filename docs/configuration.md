@@ -22,6 +22,7 @@ Before using the BadgeUp Sponge client, you **must** fill in the `api-key` field
 * `event:create`
 * `achievement:read`
 * `award:read`
+* `progress:read`
 
 The following scopes are optional, but you must have them if you run the `/badgeup init` command (with the `badgeup.admin.init` permission) to initialize your BadgeUp account with demo Minecraft achievements.
 

@@ -90,32 +90,33 @@ public class FlatfileAchievementPersistenceService implements AchievementPersist
 
         saveToFile();
     }
-    
-    // Migrate from storing the whole achievement object to just the achievement ID mapped to count 
+
+    // Migrate from storing the whole achievement object to just the achievement
+    // ID mapped to count
     private void attemptMigration() {
         for (String playerId : this.unpresentedAchievements.keySet()) {
-            JSONArray achievementsArray = this.unpresentedAchievements.optJSONArray(playerId); 
+            JSONArray achievementsArray = this.unpresentedAchievements.optJSONArray(playerId);
             if (achievementsArray == null) {
                 continue;
             }
-            
+
             JSONObject achievementsCount = new JSONObject();
-            
+
             Iterator<Object> i = achievementsArray.iterator();
-            while(i.hasNext()) {
+            while (i.hasNext()) {
                 JSONObject achObj = (JSONObject) i.next();
                 String achievementId = achObj.getString("id");
-                
+
                 if (achievementsCount.has(achievementId)) {
                     achievementsCount.put(achievementId, achievementsCount.getInt(achievementId) + 1);
                 } else {
                     achievementsCount.put(achievementId, 1);
                 }
             }
-            
+
             this.unpresentedAchievements.put(playerId, achievementsCount);
         }
-        
+
         saveToFile();
     }
 

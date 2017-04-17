@@ -15,11 +15,15 @@ public class HttpUtils {
     private static Map<String, String> headers = getHeaders();
 
     public static HttpRequestWithBody post(String url) {
-        return Unirest.post(baseUrl + appId + url).headers(headers);
+        return Unirest.post(baseUrl + "/v1/apps/" + appId + url).headers(headers);
+    }
+
+    public static GetRequest getRaw(String url) {
+        return Unirest.get(baseUrl + url).headers(headers);
     }
 
     public static GetRequest get(String url) {
-        return Unirest.get(baseUrl + appId + url).headers(headers);
+        return Unirest.get(baseUrl + "/v1/apps/" + appId + url).headers(headers);
     }
 
     private static Map<String, String> getHeaders() {
@@ -45,7 +49,7 @@ public class HttpUtils {
             baseURL = config.getBadgeUpConfig().getBaseAPIURL();
         } else {
             // region provided
-            baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io/v1/apps/";
+            baseURL = "https://api." + config.getBadgeUpConfig().getRegion() + ".badgeup.io";
         }
 
         return baseURL;

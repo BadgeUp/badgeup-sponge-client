@@ -14,6 +14,7 @@ The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a 
 * `award:create`
 * `criterion:create`
 * `achievement:create`
+* `progress:read`
 
 ## Installation
 1. Set up a Sponge server as detailed [here](https://docs.spongepowered.org/master/en/server/getting-started/implementations/index.html).

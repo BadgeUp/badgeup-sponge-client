@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.command.executor.BadgeUpInitCommandExecutor;
 import io.badgeup.sponge.command.executor.DebugCommandExecutor;
+import io.badgeup.sponge.command.executor.ListAchievementsCommandExecutor;
 import io.badgeup.sponge.command.executor.ListAwardsCommandExecutor;
 import io.badgeup.sponge.command.executor.RedeemAwardCommandExecutor;
 import io.badgeup.sponge.eventlistener.BadgeUpEventListener;
@@ -122,6 +123,11 @@ public class BadgeUpSponge {
                         .executor(new RedeemAwardCommandExecutor(this)).build(),
                 "redeem");
 
+        Sponge.getCommandManager().register(this,
+                CommandSpec.builder().description(Text.of("Displays achievement progress to the player"))
+                        .permission("badgeup.progress").executor(new ListAchievementsCommandExecutor(this)).build(),
+                "progress", "achievements");
+
         Map<List<String>, CommandSpec> subCommands = new HashMap<>();
         subCommands.put(Arrays.asList("init"),
                 CommandSpec.builder().description(Text.of("Initialize your BadgeUp account with demo achievements"))
@@ -150,7 +156,7 @@ public class BadgeUpSponge {
 
     // Run asynchronously
     public void presentAchievement(Player player, String achievementId) throws InterruptedException, ExecutionException {
-        JSONObject achievement = this.resourceCache.getAchievementyId(achievementId).get();
+        JSONObject achievement = this.resourceCache.getAchievementById(achievementId).get();
 
         Text.Builder achTextBuilder = Text.builder(achievement.getString("name")).color(TextColors.GOLD);
         if (!achievement.isNull("description")) {
