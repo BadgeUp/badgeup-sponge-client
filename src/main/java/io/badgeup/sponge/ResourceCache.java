@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
@@ -44,7 +45,7 @@ public class ResourceCache {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 HttpResponse<JsonNode> response = HttpUtils.get("/awards/" + key).asJson();
-                if (response.getStatus() != 200) {
+                if (response.getStatus() != HttpStatus.SC_OK) {
                     this.logger.error("Got " + response.getStatus() + " response getting the award \"" + key + "\"");
                     return new JSONObject();
                 }
@@ -61,7 +62,7 @@ public class ResourceCache {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 HttpResponse<JsonNode> response = HttpUtils.get("/achievements/" + key).asJson();
-                if (response.getStatus() != 200) {
+                if (response.getStatus() != HttpStatus.SC_OK) {
                     this.logger.error("Got " + response.getStatus() + " response getting the achievement \"" + key + "\"");
                     return new JSONObject();
                 }
