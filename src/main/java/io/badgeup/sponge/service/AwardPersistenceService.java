@@ -1,15 +1,17 @@
 package io.badgeup.sponge.service;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface AwardPersistenceService {
 
-    public CompletableFuture<List<String>> getPendingAwardsForPlayer(UUID playerID);
+    public CompletableFuture<Map<String, Integer>> getAllForPlayer(UUID playerID);
 
-    public void addPendingAward(UUID playerID, String awardId);
+    public void increment(UUID playerID, String awardId);
 
-    public void removePendingAwardByID(UUID playerID, String awardId);
+    public void decrement(UUID playerID, String awardId);
+
+    public void remove(String awardId);
 
 }

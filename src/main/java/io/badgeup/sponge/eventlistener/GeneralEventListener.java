@@ -143,7 +143,8 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    public void entityDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player inventory) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public void entityDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player inventory)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         String key = "death";
         Optional<DamageSource> dmgSrcOpt = event.getCause().first(DamageSource.class);
         if (dmgSrcOpt.isPresent()) {
@@ -183,31 +184,34 @@ public class GeneralEventListener extends BadgeUpEventListener {
         Player player = event.getTargetEntity();
         AchievementPersistenceService achPS = Sponge.getServiceManager().provide(AchievementPersistenceService.class)
                 .get();
-        achPS.getUnpresentedAchievementsForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
-            for (String achievementId : achievements) {
-                try {
-                    this.plugin.presentAchievement(player, achievementId);
-                    achPS.removeAchievementByID(player.getUniqueId(), achievementId);
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+        achPS.getAllForPlayer(player.getUniqueId()).thenAcceptAsync(achievements -> {
+            for (String achievementId : achievements.keySet()) {
+                for (int i = 0; i < achievements.get(achievementId).intValue(); i++) {
+                    try {
+                        this.plugin.presentAchievement(player, achievementId);
+                        achPS.decrement(player.getUniqueId(), achievementId);
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
 
         AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
-        awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
-            for (String awardId : awards) {
-                try {
-                    JSONObject award = this.plugin.getResourceCache().getAwardById(awardId).get();
+        awardPS.getAllForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
+            for (String awardId : awards.keySet()) {
+                for (int i = 0; i < awards.get(awardId).intValue(); i++) {
+                    try {
+                        JSONObject award = this.plugin.getResourceCache().getAwardById(awardId).get();
 
-                    // Check if award is auto-redeemable. If so, redeem it
-                    if (Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false)) {
-                        Sponge.getCommandManager().process(player, "redeem " + awardId);
+                        // Check if award is auto-redeemable. If so, redeem it
+                        if (Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false)) {
+                            Sponge.getCommandManager().process(player, "redeem " + awardId);
+                        }
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
                 }
-
             }
         });
 

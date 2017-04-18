@@ -35,36 +35,42 @@ Maven:
 
 ## Implementing Services
 
-Each service supports three basic operations: get, add, and remove. All three methods are assumed to be running asynchronously, so you should not interact with strictly synchronous game operations.
+Each service supports three basic operations: getAllForPlayer, increment, decrement, and remove. All four methods are assumed to be running asynchronously, so you should not interact with strictly synchronous game operations.
 
 ```java
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.common.collect.Maps;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class MyAchievementPersistenceService implements AchievementPersistenceService {
 
-	@Override
-	public CompletableFuture<List<JSONObject>> getUnpresentedAchievementsForPlayer(UUID playerID) {
-		return CompletableFuture.supplyAsync(() -> {
-			List<JSONObject> playerAchievements;
+    @Override
+    public CompletableFuture<Map<String, Integer>> getAllForPlayer(UUID playerID) {
+        return CompletableFuture.supplyAsync(() -> {
+            Map<String, Integer> playerAwardsMap = Maps.newHashMap();
             // Get the achievements
-			return playerAchievements;
-		});
-	}
+            return playerAchievements;
+        });
+    }
 
-	@Override
-	public void addUnpresentedAchievement(UUID playerID, JSONObject achievement) {
-        // Add the achievement to storage
-	}
+    @Override
+    public void increment(UUID playerID, String achievementId) {
+        // Increment the count for the achievement in storage
+    }
 
-	@Override
-	public void removeAchievementByID(UUID playerID, String achievementID) {
-        // Remove the achievement from storage
-	}
+    @Override
+    public void decrement(UUID playerID, String achievementId) {
+        // Decrement the count for the achievement in storage
+    }
+
+    @Override
+    public void remove(String achievementId) {
+        // Completely remove this achievement from storage
+    }
 }
 ```
 

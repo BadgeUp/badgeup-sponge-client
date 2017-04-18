@@ -1,5 +1,6 @@
 package io.badgeup.sponge.service;
 
+import com.google.common.collect.Maps;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -7,9 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -34,26 +34,24 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
     }
 
     @Override
-    public CompletableFuture<List<String>> getPendingAwardsForPlayer(UUID playerID) {
+    public CompletableFuture<Map<String, Integer>> getAllForPlayer(UUID playerID) {
         return CompletableFuture.supplyAsync(() -> {
-            List<String> playerAwardIds = new ArrayList<>();
+            Map<String, Integer> playerAwardsMap = Maps.newHashMap();
 
             if (this.pendingAwards.has(playerID.toString())) {
                 JSONObject playerAwards = this.pendingAwards.getJSONObject(playerID.toString());
                 for (String awardId : playerAwards.keySet()) {
-                    for (int i = 0; i < playerAwards.getInt(awardId); i++) {
-                        playerAwardIds.add(awardId);
-                    }
+                    playerAwardsMap.put(awardId, playerAwards.getInt(awardId));
                 }
             }
 
-            return playerAwardIds;
+            return playerAwardsMap;
         });
 
     }
 
     @Override
-    public void addPendingAward(UUID playerID, String awardId) {
+    public void increment(UUID playerID, String awardId) {
         if (this.pendingAwards.has(playerID.toString())) {
             JSONObject playerAwards = this.pendingAwards.getJSONObject(playerID.toString());
             if (playerAwards.has(awardId)) {
@@ -71,14 +69,14 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
     }
 
     @Override
-    public void removePendingAwardByID(UUID playerID, String awardId) {
+    public void decrement(UUID playerID, String awardId) {
         if (!this.pendingAwards.has(playerID.toString())) {
-            throw new IllegalStateException("Player " + playerID + " has no pending awards to remove");
+            throw new IllegalStateException("Player " + playerID + " has no pending awards to decrement");
         }
 
         JSONObject playerAwards = this.pendingAwards.getJSONObject(playerID.toString());
         if (!playerAwards.has(awardId)) {
-            throw new IllegalStateException("Player " + playerID + " does not have the award " + awardId + " to remove");
+            throw new IllegalStateException("Player " + playerID + " does not have the award " + awardId + " to decrement");
         } else {
             int newValue = playerAwards.getInt(awardId) - 1;
             if (newValue <= 0) {
@@ -89,6 +87,13 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
         }
 
         saveToFile();
+    }
+
+    @Override
+    public void remove(String awardId) {
+        for (String playerId : this.pendingAwards.keySet()) {
+            this.pendingAwards.getJSONObject(playerId).remove(awardId);
+        }
     }
 
     // Migrate from storing the whole award object to just the award ID mapped

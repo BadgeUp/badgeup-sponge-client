@@ -2,6 +2,7 @@ package io.badgeup.sponge;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.command.executor.BadgeUpInitCommandExecutor;
@@ -47,7 +48,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -173,16 +173,18 @@ public class BadgeUpSponge {
         }
 
         AwardPersistenceService aps = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
-        List<String> playerAwards;
+        Map<String, Integer> playerAwards;
         try {
             // This is already not on the main thread, so OK to wait
-            playerAwards = aps.getPendingAwardsForPlayer(player.getUniqueId()).get();
+            playerAwards = aps.getAllForPlayer(player.getUniqueId()).get();
         } catch (InterruptedException | ExecutionException e) {
-            playerAwards = new ArrayList<>();
+            playerAwards = Maps.newHashMap();
         }
 
-        if (playerAwards.size() > 0) {
-            player.sendMessage(Text.of(TextColors.GREEN, "You have ", TextColors.GOLD, playerAwards.size(),
+        int totalCount = playerAwards.values().stream().mapToInt(Integer::intValue).sum();
+
+        if (totalCount > 0) {
+            player.sendMessage(Text.of(TextColors.GREEN, "You have ", TextColors.GOLD, totalCount,
                     TextColors.GREEN, " pending award(s). Type '/awards' to claim!"));
         }
     }

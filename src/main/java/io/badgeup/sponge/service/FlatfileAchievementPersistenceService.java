@@ -1,5 +1,6 @@
 package io.badgeup.sponge.service;
 
+import com.google.common.collect.Maps;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -7,9 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -34,26 +34,24 @@ public class FlatfileAchievementPersistenceService implements AchievementPersist
     }
 
     @Override
-    public CompletableFuture<List<String>> getUnpresentedAchievementsForPlayer(UUID playerID) {
+    public CompletableFuture<Map<String, Integer>> getAllForPlayer(UUID playerID) {
         return CompletableFuture.supplyAsync(() -> {
-            List<String> playerAchievementIds = new ArrayList<>();
+            Map<String, Integer> playerAchievementsMap = Maps.newHashMap();
 
             if (this.unpresentedAchievements.has(playerID.toString())) {
                 JSONObject playerAchievements = this.unpresentedAchievements.getJSONObject(playerID.toString());
-                for (String awardId : playerAchievements.keySet()) {
-                    for (int i = 0; i < playerAchievements.getInt(awardId); i++) {
-                        playerAchievementIds.add(awardId);
-                    }
+                for (String achievementId : playerAchievements.keySet()) {
+                    playerAchievementsMap.put(achievementId, playerAchievements.getInt(achievementId));
                 }
             }
 
-            return playerAchievementIds;
+            return playerAchievementsMap;
         });
 
     }
 
     @Override
-    public void addUnpresentedAchievement(UUID playerID, String achievementId) {
+    public void increment(UUID playerID, String achievementId) {
         if (this.unpresentedAchievements.has(playerID.toString())) {
             JSONObject playerAchievements = this.unpresentedAchievements.getJSONObject(playerID.toString());
             if (playerAchievements.has(achievementId)) {
@@ -71,14 +69,14 @@ public class FlatfileAchievementPersistenceService implements AchievementPersist
     }
 
     @Override
-    public void removeAchievementByID(UUID playerID, String achievementId) {
+    public void decrement(UUID playerID, String achievementId) {
         if (!this.unpresentedAchievements.has(playerID.toString())) {
-            throw new IllegalStateException("Player " + playerID + " has no unpresented achievements to remove");
+            throw new IllegalStateException("Player " + playerID + " has no unpresented achievements to decrement");
         }
 
         JSONObject playerAchievements = this.unpresentedAchievements.getJSONObject(playerID.toString());
         if (!playerAchievements.has(achievementId)) {
-            throw new IllegalStateException("Player " + playerID + " does not have the achievement " + achievementId + " to remove");
+            throw new IllegalStateException("Player " + playerID + " does not have the achievement " + achievementId + " to decrement");
         } else {
             int newValue = playerAchievements.getInt(achievementId) - 1;
             if (newValue <= 0) {
@@ -89,6 +87,13 @@ public class FlatfileAchievementPersistenceService implements AchievementPersist
         }
 
         saveToFile();
+    }
+
+    @Override
+    public void remove(String achievementId) {
+        for (String playerId : this.unpresentedAchievements.keySet()) {
+            this.unpresentedAchievements.getJSONObject(playerId).remove(achievementId);
+        }
     }
 
     // Migrate from storing the whole achievement object to just the achievement

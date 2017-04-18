@@ -36,14 +36,14 @@ public class ListAwardsCommandExecutor implements CommandExecutor {
         Player player = (Player) src;
 
         AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
-        awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
+        awardPS.getAllForPlayer(player.getUniqueId()).thenAcceptAsync(awards -> {
             if (awards.size() == 0) {
                 player.sendMessage(Text.of(TextColors.GREEN, "You have no awards to claim."));
                 return;
             }
 
             List<Text> awardTexts = new ArrayList<>();
-            awards.forEach(awardId -> {
+            for (String awardId : awards.keySet()) {
                 try {
                     JSONObject award = this.plugin.getResourceCache().getAwardById(awardId).get();
                     Text.Builder awardTextBuilder = Text.builder(award.getString("name")).color(TextColors.GOLD);
@@ -57,11 +57,12 @@ public class ListAwardsCommandExecutor implements CommandExecutor {
                             .onHover(TextActions.showText(Text.of(TextColors.GREEN, "Redeem award")))
                             .onClick(TextActions.runCommand("/redeem " + award.getString("id"))).build();
 
-                    awardTexts.add(Text.of(awardTextBuilder.build(), TextColors.RESET, " - ", redeemText));
+                    awardTexts.add(Text.of(awardTextBuilder.build(), TextColors.GREEN, " (x" + awards.get(awardId).intValue() + ")", TextColors.RESET,
+                            " - ", redeemText));
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
-            });
+            }
 
             PaginationService pagination = Sponge.getServiceManager().provide(PaginationService.class).get();
             pagination.builder().contents(awardTexts).title(Text.of(TextColors.BLUE, "Awards")).padding(Text.of('-'))

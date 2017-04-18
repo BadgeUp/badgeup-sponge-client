@@ -95,7 +95,7 @@ public class PostEventRunnable implements Runnable {
                 for (String awardId : awardIds) {
                     final JSONObject award = HttpUtils.get("/awards/" + awardId).asJson()
                             .getBody().getObject();
-                    awardPS.addPendingAward(this.event.getSubject(), award.getString("id"));
+                    awardPS.increment(this.event.getSubject(), award.getString("id"));
 
                     boolean autoRedeem = Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false);
                     if (subjectOpt.isPresent() && autoRedeem) {
@@ -109,7 +109,7 @@ public class PostEventRunnable implements Runnable {
                     // Store the achievement to be presented later
                     AchievementPersistenceService achPS = Sponge.getServiceManager()
                             .provide(AchievementPersistenceService.class).get();
-                    achPS.addUnpresentedAchievement(this.event.getSubject(), achievement.getString("id"));
+                    achPS.increment(this.event.getSubject(), achievement.getString("id"));
                 } else {
                     // Present the achievement to the player
                     this.plugin.presentAchievement(subjectOpt.get(), achievement.getString("id"));

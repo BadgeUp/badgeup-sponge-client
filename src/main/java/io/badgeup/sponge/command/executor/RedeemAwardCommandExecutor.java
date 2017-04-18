@@ -41,9 +41,9 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
         String awardID = args.getOne("id").get().toString();
 
         AwardPersistenceService awardPS = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
-        awardPS.getPendingAwardsForPlayer(player.getUniqueId()).thenAcceptAsync(awardIds -> {
+        awardPS.getAllForPlayer(player.getUniqueId()).thenAcceptAsync(awardIds -> {
 
-            if (!awardIds.contains(awardID)) {
+            if (!awardIds.containsKey(awardID) || awardIds.get(awardID).intValue() <= 0) {
                 player.sendMessage(Text.of(TextColors.RED, "Invalid award."));
                 return;
             }
@@ -60,7 +60,7 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
                     boolean success = awardOpt.get().awardPlayer(player);
                     if (success) {
                         awardOpt.get().notifyPlayer(player);
-                        awardPS.removePendingAwardByID(player.getUniqueId(), awardID);
+                        awardPS.decrement(player.getUniqueId(), awardID);
                     } else {
                         player.sendMessage(Text.of(TextColors.RED, "Unable to redeem award."));
                     }

@@ -5,9 +5,12 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import io.badgeup.sponge.service.AchievementPersistenceService;
+import io.badgeup.sponge.service.AwardPersistenceService;
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -47,7 +50,13 @@ public class ResourceCache {
                 HttpResponse<JsonNode> response = HttpUtils.get("/awards/" + key).asJson();
                 if (response.getStatus() != HttpStatus.SC_OK) {
                     this.logger.error("Got " + response.getStatus() + " response getting the award \"" + key + "\"");
-                    return new JSONObject();
+
+                    if (response.getStatus() == HttpStatus.SC_NOT_FOUND) {
+                        this.logger.info("Got 404 for award \"" + key + "\". Removing from storage");
+                        AwardPersistenceService aps = Sponge.getServiceManager().provideUnchecked(AwardPersistenceService.class);
+                        aps.remove(key);
+                    }
+                    return null;
                 }
 
                 return response.getBody().getObject();
@@ -64,7 +73,13 @@ public class ResourceCache {
                 HttpResponse<JsonNode> response = HttpUtils.get("/achievements/" + key).asJson();
                 if (response.getStatus() != HttpStatus.SC_OK) {
                     this.logger.error("Got " + response.getStatus() + " response getting the achievement \"" + key + "\"");
-                    return new JSONObject();
+
+                    if (response.getStatus() == HttpStatus.SC_NOT_FOUND) {
+                        this.logger.info("Got 404 for award \"" + key + "\". Removing from storage");
+                        AchievementPersistenceService aps = Sponge.getServiceManager().provideUnchecked(AchievementPersistenceService.class);
+                        aps.remove(key);
+                    }
+                    return null;
                 }
 
                 return response.getBody().getObject();

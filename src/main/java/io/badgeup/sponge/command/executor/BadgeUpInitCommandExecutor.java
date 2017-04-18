@@ -138,7 +138,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
-            
+
             try {
                 clumsyAchievement();
                 this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Clumsy achievement."));
@@ -770,7 +770,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
         }
-        
+
         private void clumsyAchievement() throws JSONException, UnirestException, IllegalStateException {
             HttpResponse<JsonNode> fallCritResponse = HttpUtils.post("/criteria")
                     .body(new JSONObject()
