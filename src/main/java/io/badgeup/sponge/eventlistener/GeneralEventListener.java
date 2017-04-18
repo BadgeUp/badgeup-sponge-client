@@ -20,14 +20,18 @@ import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
+import org.spongepowered.api.event.cause.entity.damage.DamageType;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.ConstructEntityEvent;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.AnimateHandEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeClientSettingsEvent;
+import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
@@ -41,6 +45,7 @@ import org.spongepowered.api.statistic.achievement.Achievement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -76,28 +81,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
         EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
         final String key = keyProvider.provide(event);
 
-        final UUID uuid = player.getUniqueId();
-        final int increment = 1;
-
-        BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
-
-        for (Method m : event.getClass().getMethods()) {
-            final String methodName = m.getName();
-            if (methodName.startsWith("get")) {
-                // To catch weird stuff such as getting entity snapshots from
-                // DropItemEvent after Order.PRE, which can't be done
-                try {
-                    Object result = m.invoke(event, (Object[]) null);
-                    // Substring to index 3 to remove "get"
-                    newEvent.addDataEntry(methodName.substring(3), result);
-                } catch (Exception e) {
-                    continue;
-                }
-
-            }
-        }
-
-        send(newEvent);
+        event(event, player, key);
     }
 
     @Listener(order = Order.POST)
@@ -144,7 +128,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
         }
     }
 
-    @Listener
+    @Listener(order = Order.POST)
     public void grantAchievement(GrantAchievementEvent.TargetPlayer event)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Player player = event.getTargetEntity();
@@ -156,6 +140,46 @@ public class GeneralEventListener extends BadgeUpEventListener {
         }
 
         event(event, player);
+    }
+
+    @Listener(order = Order.POST)
+    public void entityDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player inventory) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        String key = "death";
+        Optional<DamageSource> dmgSrcOpt = event.getCause().first(DamageSource.class);
+        if (dmgSrcOpt.isPresent()) {
+            key += ":" + dmgSrcOpt.get().getType().getId();
+        }
+        
+        for (DamageType type : Sponge.getRegistry().getAllOf(DamageType.class)) {
+            System.out.println(type.getId());
+        }
+
+        event(event, (Player) event.getTargetEntity(), key);
+    }
+
+    public void event(Event event, Player player, String key) {
+        final UUID uuid = player.getUniqueId();
+        final int increment = 1;
+
+        BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
+
+        for (Method m : event.getClass().getMethods()) {
+            final String methodName = m.getName();
+            if (methodName.startsWith("get")) {
+                // To catch weird stuff such as getting entity snapshots from
+                // DropItemEvent after Order.PRE, which can't be done
+                try {
+                    Object result = m.invoke(event, (Object[]) null);
+                    // Substring to index 3 to remove "get"
+                    newEvent.addDataEntry(methodName.substring(3), result);
+                } catch (Exception e) {
+                    continue;
+                }
+
+            }
+        }
+
+        send(newEvent);
     }
 
     @Listener

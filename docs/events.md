@@ -53,3 +53,22 @@ Tracks distance in blocks traveled by a player.
     ]
 }
 ```
+
+### `death:<damage type>`
+
+Tracks when a player is killed. The event key includes how the player was killed, which can be any of:
+* attack
+* contact
+* custom
+* drown
+* explosive
+* fall
+* fire
+* generic
+* hunger
+* magic
+* projectile
+* suffocate
+* void
+* sweeping_attack
+* magma

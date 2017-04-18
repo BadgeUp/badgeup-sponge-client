@@ -138,6 +138,15 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                 this.src.sendMessage(contactSupportMsg);
                 e.printStackTrace();
             }
+            
+            try {
+                clumsyAchievement();
+                this.src.sendMessage(Text.of(TextColors.GREEN, "Successfully created Clumsy achievement."));
+            } catch (Exception e) {
+                this.src.sendMessage(Text.of(TextColors.RED, "Failed to create Clumsy achievement."));
+                this.src.sendMessage(contactSupportMsg);
+                e.printStackTrace();
+            }
         }
 
         private void meatLoverAchievement() throws JSONException, UnirestException, IllegalStateException {
@@ -760,6 +769,48 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                     .asJson();
             Preconditions.checkArgument(achievementResponse.getStatus() == 201);
 
+        }
+        
+        private void clumsyAchievement() throws JSONException, UnirestException, IllegalStateException {
+            HttpResponse<JsonNode> fallCritResponse = HttpUtils.post("/criteria")
+                    .body(new JSONObject()
+                            .put(NAME, "Clumsy")
+                            .put(DESC, "Fall to your death 3 times")
+                            .put(KEY, "^death:fall$")
+                            .put(EVALUATION, standardEvalBlock("@gte", 3)))
+                    .asJson();
+            Preconditions.checkArgument(fallCritResponse.getStatus() == 201);
+            final String fallCritId = fallCritResponse.getBody().getObject().getString(ID);
+
+            HttpResponse<JsonNode> bootsAwardResponse = HttpUtils.post("/awards")
+                    .body(new JSONObject()
+                            .put(NAME, "Feather Falling Boots")
+                            .put(DATA, new JSONObject()
+                                    .put(TYPE, "item")
+                                    .put("itemType", "minecraft:diamond_boots")
+                                    .put("displayName", "&cSafety Net")
+                                    .put("enchantments", new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put(ID, "feather_falling")
+                                                    .put("level", 4)))))
+                    .asJson();
+            Preconditions.checkArgument(bootsAwardResponse.getStatus() == 201);
+            final String bootsAwardId = bootsAwardResponse.getBody().getObject().getString(ID);
+
+            // Create the achievement
+            HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
+                    .body(new JSONObject()
+                            .put(NAME, "Clumsy")
+                            .put(EVAL_TREE, new JSONObject()
+                                    .put(CONDITION, AND)
+                                    .put(CRITERIA, new JSONArray()
+                                            .put(fallCritId))
+                                    .put(TYPE, GROUP)
+                                    .put(GROUPS, new JSONArray()))
+                            .put(AWARDS, new JSONArray()
+                                    .put(bootsAwardId)))
+                    .asJson();
+            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
         }
 
         private JSONObject standardEvalBlock(String operator, int threshold) {
