@@ -36,10 +36,11 @@ public class MoveEventListener extends BadgeUpEventListener {
         // If the player teleported, just send the distance event (not including
         // their new location) and remove their player path
         if (event instanceof MoveEntityEvent.Teleport) {
+            processEvent(event, player);
             sendAndRemove(player.getUniqueId());
             return;
         }
-
+        
         PlayerPath playerPath;
         if (this.playerPaths.containsKey(player.getUniqueId())) {
             playerPath = this.playerPaths.get(player.getUniqueId());

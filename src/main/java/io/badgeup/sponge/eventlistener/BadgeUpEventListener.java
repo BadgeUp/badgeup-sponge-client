@@ -3,6 +3,8 @@ package io.badgeup.sponge.eventlistener;
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.PostEventRunnable;
 import io.badgeup.sponge.event.BadgeUpEvent;
+import io.badgeup.sponge.event.Modifier;
+import io.badgeup.sponge.event.ModifierOperation;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.Hostile;
@@ -16,8 +18,10 @@ import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.scheduler.Task;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class BadgeUpEventListener {
 
@@ -125,6 +129,38 @@ public abstract class BadgeUpEventListener {
                 return "grantachievement:" + event.getAchievement().getId();
             }
         });
+    }
+
+    public void processEvent(Event event, Player player) {
+        EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
+        final String key = keyProvider.provide(event);
+
+        processEvent(event, player, key);
+    }
+
+    public void processEvent(Event event, Player player, String key) {
+        final UUID uuid = player.getUniqueId();
+        final int increment = 1;
+
+        BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
+
+        for (Method m : event.getClass().getMethods()) {
+            final String methodName = m.getName();
+            if (methodName.startsWith("get")) {
+                // To catch weird stuff such as getting entity snapshots from
+                // DropItemEvent after Order.PRE, which can't be done
+                try {
+                    Object result = m.invoke(event, (Object[]) null);
+                    // Substring to index 3 to remove "get"
+                    newEvent.addDataEntry(methodName.substring(3), result);
+                } catch (Exception e) {
+                    continue;
+                }
+
+            }
+        }
+
+        send(newEvent);
     }
 
     public void send(BadgeUpEvent event) {
