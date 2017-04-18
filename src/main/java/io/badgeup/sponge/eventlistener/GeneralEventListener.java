@@ -149,10 +149,6 @@ public class GeneralEventListener extends BadgeUpEventListener {
         if (dmgSrcOpt.isPresent()) {
             key += ":" + dmgSrcOpt.get().getType().getId();
         }
-        
-        for (DamageType type : Sponge.getRegistry().getAllOf(DamageType.class)) {
-            System.out.println(type.getId());
-        }
 
         event(event, (Player) event.getTargetEntity(), key);
     }
