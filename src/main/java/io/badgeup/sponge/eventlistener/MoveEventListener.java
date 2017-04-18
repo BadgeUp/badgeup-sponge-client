@@ -13,6 +13,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import java.util.ArrayList;
@@ -31,13 +32,7 @@ public class MoveEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    public void move(MoveEntityEvent event) {
-        if (event.isCancelled() || !(event.getTargetEntity() instanceof Player)) {
-            return;
-        }
-
-        Player player = (Player) event.getTargetEntity();
-
+    public void move(MoveEntityEvent event, @Getter("getTargetEntity") Player player) {
         // If the player teleported, just send the distance event (not including
         // their new location) and remove their player path
         if (event instanceof MoveEntityEvent.Teleport) {
@@ -70,12 +65,7 @@ public class MoveEventListener extends BadgeUpEventListener {
     }
 
     @Listener
-    public void playerDeath(DestructEntityEvent.Death event) {
-        if (!(event.getTargetEntity() instanceof Player)) {
-            return;
-        }
-
-        Player player = (Player) event.getTargetEntity();
+    public void playerDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player) {
         sendAndRemove(player.getUniqueId());
     }
 
