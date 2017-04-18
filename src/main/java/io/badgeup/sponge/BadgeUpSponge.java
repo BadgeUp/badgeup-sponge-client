@@ -156,7 +156,13 @@ public class BadgeUpSponge {
 
     // Run asynchronously
     public void presentAchievement(Player player, String achievementId) throws InterruptedException, ExecutionException {
-        JSONObject achievement = this.resourceCache.getAchievementById(achievementId).get();
+        Optional<JSONObject> achievementOpt = this.resourceCache.getAchievementById(achievementId).get();
+        if (!achievementOpt.isPresent()) {
+            this.logger.warn("Failed to get achievement \"" + achievementId + "\" when granting to player \"" + player.getUniqueId() + "\"");
+            return;
+        }
+
+        JSONObject achievement = achievementOpt.get();
 
         Text.Builder achTextBuilder = Text.builder(achievement.getString("name")).color(TextColors.GOLD);
         if (!achievement.isNull("description")) {

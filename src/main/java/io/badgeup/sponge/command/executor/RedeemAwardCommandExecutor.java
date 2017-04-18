@@ -49,8 +49,14 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
             }
 
             try {
-                JSONObject awardJSON = this.plugin.getResourceCache().getAwardById(awardID).get();
-                Optional<Award> awardOpt = processAward(awardJSON);
+                Optional<JSONObject> awardJSONOpt = this.plugin.getResourceCache().getAwardById(awardID).get();
+
+                if (!awardJSONOpt.isPresent()) {
+                    player.sendMessage(Text.of(TextColors.RED, "Failed to retrieve award."));
+                    return;
+                }
+
+                Optional<Award> awardOpt = processAward(awardJSONOpt.get());
                 if (!awardOpt.isPresent()) {
                     player.sendMessage(Text.of(TextColors.RED, "Failed to process award data."));
                     return;

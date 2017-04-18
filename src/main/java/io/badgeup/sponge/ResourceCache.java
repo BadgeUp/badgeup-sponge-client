@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -19,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class ResourceCache {
 
     private Logger logger;
-    private AsyncLoadingCache<String, JSONObject> awardsCache;
-    private AsyncLoadingCache<String, JSONObject> achievementsCache;
+    private AsyncLoadingCache<String, Optional<JSONObject>> awardsCache;
+    private AsyncLoadingCache<String, Optional<JSONObject>> achievementsCache;
 
     protected ResourceCache(Logger logger) {
         this.logger = logger;
@@ -36,15 +37,15 @@ public class ResourceCache {
                 .buildAsync((key, executor) -> getAchievementById(key, executor));
     }
 
-    public CompletableFuture<JSONObject> getAwardById(String awardId) {
+    public CompletableFuture<Optional<JSONObject>> getAwardById(String awardId) {
         return this.awardsCache.get(awardId);
     }
 
-    public CompletableFuture<JSONObject> getAchievementById(String awardId) {
+    public CompletableFuture<Optional<JSONObject>> getAchievementById(String awardId) {
         return this.achievementsCache.get(awardId);
     }
 
-    private CompletableFuture<JSONObject> getAwardById(String key, Executor executor) {
+    private CompletableFuture<Optional<JSONObject>> getAwardById(String key, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 HttpResponse<JsonNode> response = HttpUtils.get("/awards/" + key).asJson();
@@ -56,18 +57,18 @@ public class ResourceCache {
                         AwardPersistenceService aps = Sponge.getServiceManager().provideUnchecked(AwardPersistenceService.class);
                         aps.remove(key);
                     }
-                    return null;
+                    return Optional.empty();
                 }
 
-                return response.getBody().getObject();
+                return Optional.of(response.getBody().getObject());
             } catch (UnirestException e) {
                 e.printStackTrace();
-                return new JSONObject();
+                return Optional.empty();
             }
         }, executor);
     }
 
-    private CompletableFuture<JSONObject> getAchievementById(String key, Executor executor) {
+    private CompletableFuture<Optional<JSONObject>> getAchievementById(String key, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 HttpResponse<JsonNode> response = HttpUtils.get("/achievements/" + key).asJson();
@@ -79,13 +80,13 @@ public class ResourceCache {
                         AchievementPersistenceService aps = Sponge.getServiceManager().provideUnchecked(AchievementPersistenceService.class);
                         aps.remove(key);
                     }
-                    return null;
+                    return Optional.empty();
                 }
 
-                return response.getBody().getObject();
+                return Optional.of(response.getBody().getObject());
             } catch (UnirestException e) {
                 e.printStackTrace();
-                return new JSONObject();
+                return Optional.empty();
             }
         }, executor);
     }

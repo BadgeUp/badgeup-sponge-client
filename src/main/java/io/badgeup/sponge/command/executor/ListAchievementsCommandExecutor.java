@@ -29,12 +29,12 @@ import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class ListAchievementsCommandExecutor implements CommandExecutor {
 
@@ -106,16 +106,17 @@ public class ListAchievementsCommandExecutor implements CommandExecutor {
                 return;
             }
 
-            // Use a Set to prevent duplicate requests
-            Set<String> achievementIds = new HashSet<>(Collections2.transform(progress, progressObj -> progressObj.getString("achievementId")));
-            // Map to a future getting the achievement
-            Collection<CompletableFuture<JSONObject>> achievementFutures =
-                    Collections2.transform(achievementIds, achId -> this.resourceCache.getAchievementById(achId));
+            Collection<CompletableFuture<Optional<JSONObject>>> achievementFutures =
+                    Collections2.transform(progress, progressObj -> progressObj.getString("achievementId")).stream()
+                            .distinct()
+                            .map(achId -> this.resourceCache.getAchievementById(achId))
+                            .collect(Collectors.toList());
 
             List<JSONObject> achievements;
             try {
                 // Get the achievements
-                achievements = Util.sequence(achievementFutures).get();
+                achievements =
+                        Util.sequence(achievementFutures).get().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
                 return;

@@ -201,7 +201,13 @@ public class GeneralEventListener extends BadgeUpEventListener {
             for (String awardId : awards.keySet()) {
                 for (int i = 0; i < awards.get(awardId).intValue(); i++) {
                     try {
-                        JSONObject award = this.plugin.getResourceCache().getAwardById(awardId).get();
+                        Optional<JSONObject> awardOpt = this.plugin.getResourceCache().getAwardById(awardId).get();
+
+                        if (!awardOpt.isPresent()) {
+                            continue;
+                        }
+
+                        JSONObject award = awardOpt.get();
 
                         // Check if award is auto-redeemable. If so, redeem it
                         if (Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false)) {

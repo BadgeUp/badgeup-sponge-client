@@ -17,6 +17,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 public class ListAwardsCommandExecutor implements CommandExecutor {
@@ -45,7 +46,12 @@ public class ListAwardsCommandExecutor implements CommandExecutor {
             List<Text> awardTexts = new ArrayList<>();
             for (String awardId : awards.keySet()) {
                 try {
-                    JSONObject award = this.plugin.getResourceCache().getAwardById(awardId).get();
+                    Optional<JSONObject> awardOpt = this.plugin.getResourceCache().getAwardById(awardId).get();
+                    if (!awardOpt.isPresent()) {
+                        continue;
+                    }
+
+                    JSONObject award = awardOpt.get();
                     Text.Builder awardTextBuilder = Text.builder(award.getString("name")).color(TextColors.GOLD);
 
                     if (!award.isNull("description")) {
