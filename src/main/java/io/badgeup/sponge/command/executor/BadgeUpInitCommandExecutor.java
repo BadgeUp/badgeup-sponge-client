@@ -6,6 +6,7 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.HttpUtils;
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,7 +158,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:porkchop$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(rawPorkCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(rawPorkCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String rawPorkCritId = rawPorkCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> cookedPorkCritResponse = HttpUtils.post("/criteria")
@@ -167,7 +168,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:cooked_porkchop$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(cookedPorkCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(cookedPorkCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String cookedPorkCritId = cookedPorkCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> rawChickenCritResponse = HttpUtils.post("/criteria")
@@ -177,7 +178,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:chicken$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(rawChickenCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(rawChickenCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String rawChickenCritId = rawChickenCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> cookedChickenCritResponse = HttpUtils.post("/criteria")
@@ -187,7 +188,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:cooked_chicken$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(cookedChickenCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(cookedChickenCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String cookedChickenCritId = cookedChickenCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> rawMuttonCritResponse = HttpUtils.post("/criteria")
@@ -197,7 +198,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:mutton$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(rawMuttonCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(rawMuttonCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String rawMuttonCritId = rawMuttonCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> cookedMuttonCritResponse = HttpUtils.post("/criteria")
@@ -207,7 +208,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:cooked_mutton$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(cookedMuttonCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(cookedMuttonCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String cookedMuttonCritId = cookedMuttonCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> rawBeefCritResponse = HttpUtils.post("/criteria")
@@ -217,7 +218,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:beef$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(rawBeefCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(rawBeefCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String rawBeefCritId = rawBeefCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> cookedBeefCritResponse = HttpUtils.post("/criteria")
@@ -227,7 +228,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:cooked_beef$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(cookedBeefCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(cookedBeefCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String cookedBeefCritId = cookedBeefCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> rawRabbitCritResponse = HttpUtils.post("/criteria")
@@ -237,7 +238,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:rabbit$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(rawRabbitCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(rawRabbitCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String rawRabbitCritId = rawRabbitCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> cookedRabbitCritResponse = HttpUtils.post("/criteria")
@@ -247,7 +248,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:cooked_rabbit$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(cookedRabbitCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(cookedRabbitCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String cookedRabbitCritId = cookedRabbitCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> steakAwardResponse = HttpUtils.post("/awards")
@@ -259,7 +260,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put("itemType", "minecraft:cooked_beef")
                                     .put("quantity", 64)))
                     .asJson();
-            Preconditions.checkArgument(steakAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(steakAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String steakAwardId = steakAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -309,7 +310,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                                     .put(TYPE, GROUP))))
                             .put(AWARDS, new JSONArray().put(steakAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -321,7 +322,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:apple$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(appleCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(appleCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String appleCritId = appleCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> goldenAppleCritResponse = HttpUtils.post("/criteria")
@@ -331,7 +332,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:golden_apple$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(goldenAppleCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(goldenAppleCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String goldenAppleCritId = goldenAppleCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> mushroomStewCritResponse = HttpUtils.post("/criteria")
@@ -341,7 +342,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:mushroom_stew$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(mushroomStewCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(mushroomStewCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String mushroomStewCritId = mushroomStewCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> melonCritResponse = HttpUtils.post("/criteria")
@@ -351,7 +352,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:melon$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(melonCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(melonCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String melonCritId = melonCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> carrotCritResponse = HttpUtils.post("/criteria")
@@ -361,7 +362,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:carrot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(carrotCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(carrotCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String carrotCritId = carrotCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> goldenCarrotCritResponse = HttpUtils.post("/criteria")
@@ -371,7 +372,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:golden_carrot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(goldenCarrotCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(goldenCarrotCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String goldenCarrotCritId = goldenCarrotCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> rawPotatoCritResponse = HttpUtils.post("/criteria")
@@ -381,7 +382,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:potato$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(rawPotatoCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(rawPotatoCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String rawPotatoCritId = rawPotatoCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> bakedPotatoCritResponse = HttpUtils.post("/criteria")
@@ -391,7 +392,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:baked_potato$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(bakedPotatoCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(bakedPotatoCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String bakedPotatoCritId = bakedPotatoCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> poisonousPotatoCritResponse = HttpUtils.post("/criteria")
@@ -401,7 +402,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:poisonous_potato$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(poisonousPotatoCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(poisonousPotatoCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String poisonousPotatoCritId = poisonousPotatoCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> beetrootCritResponse = HttpUtils.post("/criteria")
@@ -411,7 +412,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:beetroot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(beetrootCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(beetrootCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String beetrootCritId = beetrootCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> beetrootSoupCritResponse = HttpUtils.post("/criteria")
@@ -421,7 +422,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^useitemstack:finish:minecraft:beetroot_soup$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(beetrootSoupCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(beetrootSoupCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String beetrootSoupCritId = beetrootSoupCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> goldenAppleAwardResponse = HttpUtils.post("/awards")
@@ -432,7 +433,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put("itemType", "minecraft:golden_apple")
                                     .put("quantity", 1)))
                     .asJson();
-            Preconditions.checkArgument(goldenAppleAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(goldenAppleAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String goldenAppleAwardId = goldenAppleAwardResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> goldenCarrotAwardResponse = HttpUtils.post("/awards")
@@ -443,7 +444,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put("itemType", "minecraft:golden_carrot")
                                     .put("quantity", 1)))
                     .asJson();
-            Preconditions.checkArgument(goldenCarrotAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(goldenCarrotAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String goldenCarrotAwardId = goldenCarrotAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -491,7 +492,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(goldenAppleAwardId)
                                     .put(goldenCarrotAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -503,7 +504,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^changeblock:place:minecraft:sapling$")
                             .put(EVALUATION, standardEvalBlock("@gte", 10)))
                     .asJson();
-            Preconditions.checkArgument(placeSaplingCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(placeSaplingCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String placeSaplingCritId = placeSaplingCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> rainbowSheepAwardResponse = HttpUtils.post("/awards")
@@ -515,7 +516,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put("position", new JSONObject().put("x", "~").put("y", "~").put("z", "~"))
                                     .put("displayName", "jeb_")))
                     .asJson();
-            Preconditions.checkArgument(rainbowSheepAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(rainbowSheepAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String rainbowSheepAwardId = rainbowSheepAwardResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> timeMachineAwardResponse = HttpUtils.post("/awards")
@@ -525,7 +526,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(TYPE, "command")
                                     .put("command", "time set day")))
                     .asJson();
-            Preconditions.checkArgument(timeMachineAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(timeMachineAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String timeMachineAwardId = timeMachineAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -543,7 +544,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(rainbowSheepAwardId)
                                     .put(timeMachineAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -555,7 +556,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^changeblock:place:minecraft:fire$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(lightFireCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(lightFireCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String lightFireCritId = lightFireCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> tntAwardResponse = HttpUtils.post("/awards")
@@ -566,7 +567,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put("itemType", "minecraft:tnt")
                                     .put("quantity", 10)))
                     .asJson();
-            Preconditions.checkArgument(tntAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(tntAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String tntAwardId = tntAwardResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> resistanceEffectAwardResponse = HttpUtils.post("/awards")
@@ -578,7 +579,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put("duration", 2400) // 2 minutes
                                     .put("amplifier", 4)))
                     .asJson();
-            Preconditions.checkArgument(resistanceEffectAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(resistanceEffectAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String resistanceEffectAwardId = resistanceEffectAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -596,7 +597,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(tntAwardId)
                                     .put(resistanceEffectAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -608,7 +609,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^changeblock:break:minecraft:log$")
                             .put(EVALUATION, standardEvalBlock("@gte", 50)))
                     .asJson();
-            Preconditions.checkArgument(chopLogsCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(chopLogsCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String chopLogsCritId = chopLogsCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> axeAwardResponse = HttpUtils.post("/awards")
@@ -626,7 +627,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                                     .put(ID, "minecraft:unbreaking")
                                                     .put("level", 3)))))
                     .asJson();
-            Preconditions.checkArgument(axeAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(axeAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String axeAwardId = axeAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -643,7 +644,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(AWARDS, new JSONArray()
                                     .put(axeAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -655,7 +656,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^dropitem:dispense:minecraft:gold_ingot$")
                             .put(EVALUATION, standardEvalBlock("@gte", 1)))
                     .asJson();
-            Preconditions.checkArgument(dropGoldCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(dropGoldCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String dropGoldCritId = dropGoldCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> moneyAwardResponse = HttpUtils.post("/awards")
@@ -666,7 +667,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(TYPE, "monetary")
                                     .put("amount", 100000)))
                     .asJson();
-            Preconditions.checkArgument(moneyAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(moneyAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String moneyAwardId = moneyAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -683,7 +684,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(AWARDS, new JSONArray()
                                     .put(moneyAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -695,7 +696,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^changeinventory:pickup:minecraft:rotten_flesh$")
                             .put(EVALUATION, standardEvalBlock("@gte", 100)))
                     .asJson();
-            Preconditions.checkArgument(pickupRottenFleshCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(pickupRottenFleshCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String pickupFleshCritId = pickupRottenFleshCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> zombieSkullAwardResponse = HttpUtils.post("/awards")
@@ -706,7 +707,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put("itemType", "minecraft:skull")
                                     .put("skullType", "zombie")))
                     .asJson();
-            Preconditions.checkArgument(zombieSkullAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(zombieSkullAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String zombieSkullAwardId = zombieSkullAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -723,7 +724,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(AWARDS, new JSONArray()
                                     .put(zombieSkullAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -735,7 +736,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "destructentity:death:hostile:minecraft:(zombie|skeleton)")
                             .put(EVALUATION, standardEvalBlock("@gte", 10)))
                     .asJson();
-            Preconditions.checkArgument(killMonstersCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(killMonstersCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String killMonstersCritId = killMonstersCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> swordAwardResponse = HttpUtils.post("/awards")
@@ -750,7 +751,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                                     .put(ID, "minecraft:smite")
                                                     .put("level", 5)))))
                     .asJson();
-            Preconditions.checkArgument(swordAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(swordAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String swordAwardId = swordAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -767,7 +768,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(AWARDS, new JSONArray()
                                     .put(swordAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
 
         }
 
@@ -779,7 +780,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(KEY, "^death:fall$")
                             .put(EVALUATION, standardEvalBlock("@gte", 3)))
                     .asJson();
-            Preconditions.checkArgument(fallCritResponse.getStatus() == 201);
+            Preconditions.checkArgument(fallCritResponse.getStatus() == HttpStatus.SC_CREATED);
             final String fallCritId = fallCritResponse.getBody().getObject().getString(ID);
 
             HttpResponse<JsonNode> bootsAwardResponse = HttpUtils.post("/awards")
@@ -794,7 +795,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                                     .put(ID, "feather_falling")
                                                     .put("level", 4)))))
                     .asJson();
-            Preconditions.checkArgument(bootsAwardResponse.getStatus() == 201);
+            Preconditions.checkArgument(bootsAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String bootsAwardId = bootsAwardResponse.getBody().getObject().getString(ID);
 
             // Create the achievement
@@ -810,7 +811,7 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(AWARDS, new JSONArray()
                                     .put(bootsAwardId)))
                     .asJson();
-            Preconditions.checkArgument(achievementResponse.getStatus() == 201);
+            Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
         }
 
         private JSONObject standardEvalBlock(String operator, int threshold) {
