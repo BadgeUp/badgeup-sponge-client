@@ -77,34 +77,32 @@ public class BadgeUpEvent {
             }
         } else if (value instanceof JSONSerializable) {
             value = ((JSONSerializable) value).toJSON();
+        } else if (value instanceof List) {
+            JSONArray array = new JSONArray();
+            for (Object entry : (List) value) {
+                if (!(entry instanceof DataSerializable)) {
+                    return;
+                }
+                JSONObject serializedObject = Util
+                        .dataContainerToJSONObject(((DataSerializable) entry).toContainer());
+                Util.cleanData(serializedObject);
+                array.put(serializedObject);
+            }
+            value = array;
         } else {
-            if (value instanceof List) {
-                JSONArray array = new JSONArray();
-                for (Object entry : (List) value) {
-                    if (!(entry instanceof DataSerializable)) {
-                        return;
-                    }
-                    JSONObject serializedObject = Util
-                            .dataContainerToJSONObject(((DataSerializable) entry).toContainer());
-                    Util.cleanData(serializedObject);
-                    array.put(serializedObject);
-                }
-                value = array;
-            } else {
-                Method toStringMethod;
-                try {
-                    toStringMethod = value.getClass().getMethod("toString");
-                } catch (NoSuchMethodException e) {
-                    // Can't be thrown since every class has a toString method
-                    // through Object
-                    return;
-                }
-                if (toStringMethod.getDeclaringClass() == Object.class) {
-                    // toString has not been implemented and will only produce
-                    // the class name + the object hash
-                    // this is useless, so discard it
-                    return;
-                }
+            Method toStringMethod;
+            try {
+                toStringMethod = value.getClass().getMethod("toString");
+            } catch (NoSuchMethodException e) {
+                // Can't be thrown since every class has a toString method
+                // through Object
+                return;
+            }
+            if (toStringMethod.getDeclaringClass() == Object.class) {
+                // toString has not been implemented and will only produce
+                // the class name + the object hash
+                // this is useless, so discard it
+                return;
             }
         }
         this.data.put(key, value);
