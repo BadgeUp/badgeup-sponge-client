@@ -6,6 +6,8 @@ import io.badgeup.sponge.command.executor.DebugCommandExecutor;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
+import io.badgeup.sponge.util.HttpUtils;
+import io.badgeup.sponge.util.Util;
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;

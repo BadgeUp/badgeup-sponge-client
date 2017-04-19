@@ -1,7 +1,7 @@
 package io.badgeup.sponge.award;
 
 import io.badgeup.sponge.BadgeUpSponge;
-import io.badgeup.sponge.Util;
+import io.badgeup.sponge.util.Util;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;

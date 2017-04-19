@@ -1,4 +1,4 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.util;
 
 public class Constants {
 

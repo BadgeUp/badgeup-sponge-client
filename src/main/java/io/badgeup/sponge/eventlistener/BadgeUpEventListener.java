@@ -147,6 +147,7 @@ public abstract class BadgeUpEventListener {
         for (Method m : event.getClass().getMethods()) {
             final String methodName = m.getName();
             if (methodName.startsWith("get")) {
+                m.setAccessible(true);
                 // To catch weird stuff such as getting entity snapshots from
                 // DropItemEvent after Order.PRE, which can't be done
                 try {

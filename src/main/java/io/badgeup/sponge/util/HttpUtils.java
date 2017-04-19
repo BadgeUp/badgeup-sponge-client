@@ -1,8 +1,10 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.util;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import io.badgeup.sponge.BadgeUpSponge;
+import io.badgeup.sponge.Config;
 
 import java.util.Base64;
 import java.util.HashMap;

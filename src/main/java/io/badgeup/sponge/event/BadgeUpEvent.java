@@ -1,10 +1,11 @@
 package io.badgeup.sponge.event;
 
-import io.badgeup.sponge.JSONSerializable;
-import io.badgeup.sponge.Util;
+import io.badgeup.sponge.util.JSONSerializable;
+import io.badgeup.sponge.util.ObjectSerializers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.data.DataSerializable;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
@@ -67,13 +68,13 @@ public class BadgeUpEvent {
             return;
         }
 
-        if (value instanceof DataSerializable) {
+        if (value instanceof Transform) {
+            value = ObjectSerializers.transformToJSONObject(((Transform) value));
+        } else if (value instanceof DataSerializable) {
             if (value instanceof Text) {
                 value = ((Text) value).toPlain();
             } else {
-                JSONObject serializedObject = Util.dataContainerToJSONObject(((DataSerializable) value).toContainer());
-                Util.cleanData(serializedObject);
-                value = serializedObject;
+                value = ObjectSerializers.dataContainerToJSONObject(((DataSerializable) value).toContainer());
             }
         } else if (value instanceof JSONSerializable) {
             value = ((JSONSerializable) value).toJSON();
@@ -83,10 +84,8 @@ public class BadgeUpEvent {
                 if (!(entry instanceof DataSerializable)) {
                     return;
                 }
-                JSONObject serializedObject = Util
-                        .dataContainerToJSONObject(((DataSerializable) entry).toContainer());
-                Util.cleanData(serializedObject);
-                array.put(serializedObject);
+                array.put(ObjectSerializers
+                        .dataContainerToJSONObject(((DataSerializable) entry).toContainer()));
             }
             value = array;
         } else {

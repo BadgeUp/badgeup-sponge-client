@@ -1,4 +1,4 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.util;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;

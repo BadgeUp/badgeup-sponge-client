@@ -1,4 +1,4 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.util;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

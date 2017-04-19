@@ -1,4 +1,4 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.util;
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -23,7 +23,7 @@ public class ResourceCache {
     private AsyncLoadingCache<String, Optional<JSONObject>> awardsCache;
     private AsyncLoadingCache<String, Optional<JSONObject>> achievementsCache;
 
-    protected ResourceCache(Logger logger) {
+    public ResourceCache(Logger logger) {
         this.logger = logger;
 
         this.awardsCache = Caffeine.newBuilder()

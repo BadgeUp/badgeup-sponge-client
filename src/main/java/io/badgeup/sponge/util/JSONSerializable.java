@@ -1,4 +1,4 @@
-package io.badgeup.sponge;
+package io.badgeup.sponge.util;
 
 import org.json.JSONObject;
 

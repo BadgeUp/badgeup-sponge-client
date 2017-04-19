@@ -2,10 +2,10 @@ package io.badgeup.sponge.eventlistener;
 
 import com.flowpowered.math.vector.Vector3i;
 import io.badgeup.sponge.BadgeUpSponge;
-import io.badgeup.sponge.JSONSerializable;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
+import io.badgeup.sponge.util.JSONSerializable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.entity.living.player.Player;
@@ -40,7 +40,7 @@ public class MoveEventListener extends BadgeUpEventListener {
             sendAndRemove(player.getUniqueId());
             return;
         }
-        
+
         PlayerPath playerPath;
         if (this.playerPaths.containsKey(player.getUniqueId())) {
             playerPath = this.playerPaths.get(player.getUniqueId());

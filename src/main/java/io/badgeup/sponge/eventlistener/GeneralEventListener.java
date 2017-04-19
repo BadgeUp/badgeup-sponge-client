@@ -1,12 +1,12 @@
 package io.badgeup.sponge.eventlistener;
 
 import io.badgeup.sponge.BadgeUpSponge;
-import io.badgeup.sponge.Util;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
+import io.badgeup.sponge.util.Util;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
