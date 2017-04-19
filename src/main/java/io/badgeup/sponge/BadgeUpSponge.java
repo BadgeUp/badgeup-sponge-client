@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.command.executor.BadgeUpInitCommandExecutor;
+import io.badgeup.sponge.command.executor.CreateItemAwardCommandExecutor;
 import io.badgeup.sponge.command.executor.DebugCommandExecutor;
 import io.badgeup.sponge.command.executor.ListAchievementsCommandExecutor;
 import io.badgeup.sponge.command.executor.ListAwardsCommandExecutor;
@@ -118,30 +119,49 @@ public class BadgeUpSponge {
 
         this.resourceCache = new ResourceCache(this.logger);
 
+        // /awards, /rewards
         Sponge.getCommandManager().register(this,
                 CommandSpec.builder().description(Text.of("Displays pending awards to the player"))
                         .permission("badgeup.awards.list").executor(new ListAwardsCommandExecutor(this)).build(),
                 "awards", "rewards");
 
+        // /redeem <award id>
         Sponge.getCommandManager().register(this,
                 CommandSpec.builder().description(Text.of("Redeem a pending award")).permission("badgeup.awards.redeem")
                         .arguments(GenericArguments.string(Text.of("id")))
                         .executor(new RedeemAwardCommandExecutor(this)).build(),
                 "redeem");
 
+        // /progress, /achievements
         Sponge.getCommandManager().register(this,
                 CommandSpec.builder().description(Text.of("Displays achievement progress to the player"))
                         .permission("badgeup.progress").executor(new ListAchievementsCommandExecutor(this)).build(),
                 "progress", "achievements");
 
+        // /badgeup init
         Map<List<String>, CommandSpec> subCommands = new HashMap<>();
         subCommands.put(Arrays.asList("init"),
                 CommandSpec.builder().description(Text.of("Initialize your BadgeUp account with demo achievements"))
                         .permission("badgeup.admin.init").executor(new BadgeUpInitCommandExecutor(this)).build());
 
+        // badgeup debug <player name>
         subCommands.put(Arrays.asList("debug"),
                 CommandSpec.builder().description(Text.of("Monitor player event activity")).arguments(GenericArguments.player(Text.of("player")))
                         .permission("badgeup.admin.debug").executor(new DebugCommandExecutor(this)).build());
+
+        // /badgeup awards
+        Map<List<String>, CommandSpec> awardsSubCommands = new HashMap<>();
+
+        // /badgeup awards create
+        Map<List<String>, CommandSpec> awardsCreateSubCommands = new HashMap<>();
+        // /badgeup awards create inhand
+        awardsCreateSubCommands.put(Arrays.asList("inhand"),
+                CommandSpec.builder().description(Text.of("Create an item award with the item you are currently holding"))
+                        .permission("badgeup.admin.award.create").executor(new CreateItemAwardCommandExecutor(this)).build());
+
+        awardsSubCommands.put(Arrays.asList("create"), CommandSpec.builder().children(awardsCreateSubCommands).build());
+
+        subCommands.put(Arrays.asList("awards"), CommandSpec.builder().children(awardsSubCommands).build());
 
         Sponge.getCommandManager().register(this, CommandSpec.builder().children(subCommands).build(), "badgeup");
     }
