@@ -47,6 +47,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.title.Title;
 
 import java.io.File;
 import java.io.IOException;
@@ -175,12 +176,14 @@ public class BadgeUpSponge {
                     .onHover(TextActions.showText(Text.of(TextColors.BLUE, achievement.getString("description"))));
         }
 
+        player.sendTitle(
+                Title.of(Text.of(TextColors.GREEN, "Achievement Get!"),
+                        Text.of(TextColors.BLUE, "You completed the ", TextColors.GOLD, "\"", achTextBuilder.build(),
+                                "\"", TextColors.BLUE, " achievement!")));
+
         if (config.doBroadcastAchievements()) {
             MessageChannel.TO_ALL.send(Text.of(TextColors.GOLD, player.getDisplayNameData().displayName().get(),
                     TextColors.GREEN, " has just completed ", achTextBuilder.build(), TextColors.GREEN, "!"));
-        } else {
-            player.sendMessage(Text.of(TextColors.GREEN, "You have just completed ", achTextBuilder.build(),
-                    TextColors.GREEN, "!"));
         }
 
         AwardPersistenceService aps = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
