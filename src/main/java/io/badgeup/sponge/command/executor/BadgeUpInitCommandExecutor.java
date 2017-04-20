@@ -798,6 +798,16 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
             Preconditions.checkArgument(bootsAwardResponse.getStatus() == HttpStatus.SC_CREATED);
             final String bootsAwardId = bootsAwardResponse.getBody().getObject().getString(ID);
 
+            HttpResponse<JsonNode> expAwardResponse = HttpUtils.post("/awards")
+                    .body(new JSONObject()
+                            .put(NAME, "Replacement Experience")
+                            .put(DATA, new JSONObject()
+                                    .put(TYPE, "experience")
+                                    .put("amount", 500)))
+                    .asJson();
+            Preconditions.checkArgument(expAwardResponse.getStatus() == HttpStatus.SC_CREATED);
+            final String expAwardId = expAwardResponse.getBody().getObject().getString(ID);
+
             // Create the achievement
             HttpResponse<JsonNode> achievementResponse = HttpUtils.post("/achievements")
                     .body(new JSONObject()
@@ -809,7 +819,8 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                     .put(TYPE, GROUP)
                                     .put(GROUPS, new JSONArray()))
                             .put(AWARDS, new JSONArray()
-                                    .put(bootsAwardId)))
+                                    .put(bootsAwardId)
+                                    .put(expAwardId)))
                     .asJson();
             Preconditions.checkArgument(achievementResponse.getStatus() == HttpStatus.SC_CREATED);
         }

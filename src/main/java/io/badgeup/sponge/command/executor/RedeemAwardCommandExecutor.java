@@ -4,6 +4,7 @@ import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.award.Award;
 import io.badgeup.sponge.award.CommandAward;
 import io.badgeup.sponge.award.EntityAward;
+import io.badgeup.sponge.award.ExperienceAward;
 import io.badgeup.sponge.award.ItemAward;
 import io.badgeup.sponge.award.MonetaryAward;
 import io.badgeup.sponge.award.PotionEffectAward;
@@ -96,6 +97,9 @@ public class RedeemAwardCommandExecutor implements CommandExecutor {
                 break;
             case "command":
                 awardOpt = Optional.of(new CommandAward(this.plugin, awardJSON));
+                break;
+            case "experience":
+                awardOpt = Optional.of(new ExperienceAward(this.plugin, awardJSON));
                 break;
             default:
                 awardOpt = Optional.empty();

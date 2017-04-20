@@ -7,6 +7,7 @@ The BadgeUp Sponge client has the ability to interpret and grant four different 
 3. [Entity Awards](#entity-awards)
 4. [Potion Effect Awards](#potion-effect-awards)
 5. [Command Awards](#command-awards)
+6. [Experience Awards](#experience-awards)
 
 Every award's data includes at least the following fields:
 
@@ -158,3 +159,20 @@ This type of award executes an arbitrary command as the console. As such, it is 
     "command": "smite ${playerName}"
 }
 ```
+
+## Experience Awards
+
+This type of award grants a configurable amount of experience to the player.
+
+* `type`: `experience`
+* `amount`: Required. This is the (integer) amount of experience given to the player.
+
+### Example Experience Award Data
+
+```json
+{
+    "type": "experience",
+    "amount": 500
+}
+```
+
