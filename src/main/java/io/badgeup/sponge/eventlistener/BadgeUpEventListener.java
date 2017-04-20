@@ -135,12 +135,22 @@ public abstract class BadgeUpEventListener {
         EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
         final String key = keyProvider.provide(event);
 
-        processEvent(event, player, key);
+        processEvent(event, player, key, 1);
     }
 
     public void processEvent(Event event, Player player, String key) {
+        processEvent(event, player, key, 1);
+    }
+
+    public void processEvent(Event event, Player player, int increment) {
+        EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
+        final String key = keyProvider.provide(event);
+
+        processEvent(event, player, key, increment);
+    }
+
+    public void processEvent(Event event, Player player, String key, int increment) {
         final UUID uuid = player.getUniqueId();
-        final int increment = 1;
 
         BadgeUpEvent newEvent = new BadgeUpEvent(key, uuid, new Modifier(ModifierOperation.INC, increment));
 

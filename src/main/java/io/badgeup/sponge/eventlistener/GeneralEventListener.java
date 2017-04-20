@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
+import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
@@ -57,7 +58,8 @@ public class GeneralEventListener extends BadgeUpEventListener {
     @Exclude({
             AnimateHandEvent.class,
             ChangeBlockEvent.class, // handled below by changeBlock
-            ChangeInventoryEvent.Held.class,
+            // Pickup handled below by pickupItem
+            ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Pickup.class,
             ChangeStatisticEvent.class,
             ChannelRegistrationEvent.class,
             ClickInventoryEvent.class,
@@ -87,7 +89,15 @@ public class GeneralEventListener extends BadgeUpEventListener {
             return;
         }
 
-        processEvent(event, (Player) cause.getEntity());
+        Player player = (Player) cause.getEntity();
+
+        if (event instanceof DropItemEvent.Dispense) {
+            DropItemEvent.Dispense dropEvent = (DropItemEvent.Dispense) event;
+            int quantityDropped = ((Item) dropEvent.getEntities().get(0)).item().get().getCount();
+            processEvent(event, player, quantityDropped);
+        } else {
+            processEvent(event, player);
+        }
     }
 
     @Listener(order = Order.POST)
@@ -98,6 +108,11 @@ public class GeneralEventListener extends BadgeUpEventListener {
         }
 
         processEvent(event, (Player) cause.getSource());
+    }
+
+    @Listener(order = Order.POST)
+    public void pickupItem(ChangeInventoryEvent.Pickup event, @Root Player player) {
+        processEvent(event, player, event.getTargetEntity().item().get().getCount());
     }
 
     @Listener(order = Order.POST)
