@@ -55,31 +55,43 @@ public class ObjectSerializers {
         StringWriter writer = new StringWriter();
         try {
             JSONConfigurationLoader.builder().build().saveInternal(node, writer);
-            return cleanData(new JSONObject(writer.toString()));
+            JSONObject data = new JSONObject(writer.toString());
+            cleanData(data);
+            return data;
         } catch (IOException e) {
             return new JSONObject();
         }
     }
 
-    private static JSONObject cleanData(JSONObject object) {
-        final String dataKey = "Data";
-        if (object.has(dataKey)) {
-            JSONArray dataArray = object.getJSONArray(dataKey);
+    private static void cleanData(JSONObject object) {
+        if (object.has("Data")) {
+            JSONArray dataArray = object.getJSONArray("Data");
             for (int i = 0; i < dataArray.length(); i++) {
                 JSONObject data = ((JSONObject) dataArray.get(i)).getJSONObject("ManipulatorData");
                 for (String key : data.keySet()) {
                     object.put(key, data.get(key));
                 }
             }
-            object.remove(dataKey);
+            object.remove("Data");
         }
 
-        removeFields(object);
-        return object;
-    }
+        for (String key : object.keySet()) {
+            Object value = object.get(key);
+            if (value instanceof JSONObject) {
+                cleanData((JSONObject) value);
+            } else if (value instanceof JSONArray) {
+                JSONArray array = (JSONArray) value;
+                for (int i = 0; i < array.length(); i++) {
+                    Object element = array.get(i);
+                    if (element instanceof JSONObject) {
+                        cleanData((JSONObject) element);
+                    }
+                }
+            }
+        }
 
-    private static void removeFields(JSONObject object) {
         object.remove("UnsafeData");
+        object.remove("UnsafeDamage");
         object.remove("ContentVersion");
 
         // For entities
@@ -87,21 +99,6 @@ public class ObjectSerializers {
 
         // For item stack snapshots
         object.remove("TypeClass"); // ItemType will suffice
-
-        for (String key : object.keySet()) {
-            Object value = object.get(key);
-            if (value instanceof JSONObject) {
-                removeFields((JSONObject) value);
-            } else if (value instanceof JSONArray) {
-                JSONArray array = (JSONArray) value;
-                for (int i = 0; i < array.length(); i++) {
-                    Object element = array.get(i);
-                    if (element instanceof JSONObject) {
-                        removeFields((JSONObject) element);
-                    }
-                }
-            }
-        }
     }
 
 }
