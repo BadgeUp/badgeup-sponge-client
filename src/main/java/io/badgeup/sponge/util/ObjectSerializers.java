@@ -1,19 +1,17 @@
 package io.badgeup.sponge.util;
 
 import com.flowpowered.math.vector.Vector3d;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.json.JSONConfigurationLoader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.persistence.DataTranslators;
+import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.Dimension;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
 
 public class ObjectSerializers {
 
@@ -51,11 +49,10 @@ public class ObjectSerializers {
     }
 
     public static JSONObject dataContainerToJSONObject(DataContainer container) {
-        ConfigurationNode node = DataTranslators.CONFIGURATION_NODE.translate(container);
-        StringWriter writer = new StringWriter();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
-            JSONConfigurationLoader.builder().build().saveInternal(node, writer);
-            JSONObject data = new JSONObject(writer.toString());
+            DataFormats.JSON.writeTo(stream, container);
+            JSONObject data = new JSONObject(stream.toString());
             cleanData(data);
             return data;
         } catch (IOException e) {

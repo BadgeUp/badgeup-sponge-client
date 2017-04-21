@@ -30,8 +30,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.spongepowered:spongeapi:5.1.0'
-	compile 'ninja.leaping.configurate:configurate-json:3.2'
+	compile 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
 	compile 'com.mashape.unirest:unirest-java:1.4.9'
     compile 'org.json:json:20160212'
 }
