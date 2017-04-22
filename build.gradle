@@ -42,9 +42,11 @@ shadowJar {
     version = 'v' + version
 
 	// Relocate apache packages because of Forge
-	relocate 'org.apache', 'relocated.org.apache'
-	// Relocate JSON lib because of incompatibilities with modpacks like FTB Beyond
-	relocate 'org.json', 'relocated.org.json'
+	relocate 'org.apache', 'badgeup.org.apache'
+	// Relocate these libraries because of incompatibilities with modpacks like FTB Beyond
+	relocate 'org.json', 'badgeup.org.json'
+	relocate 'com.mashape.unirest', 'badgeup.com.mashape.unirest'
+	
     dependencies {
         exclude(dependency('org.spongepowered:spongeapi'))
     }
