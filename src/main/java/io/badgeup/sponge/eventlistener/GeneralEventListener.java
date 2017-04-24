@@ -70,10 +70,13 @@ public class GeneralEventListener extends BadgeUpEventListener {
             CollideBlockEvent.class,
             CollideEntityEvent.class,
             ConstructEntityEvent.class,
+            DropItemEvent.class, // handled below by spawnEntity
             GrantAchievementEvent.class, // handled below by grantAchievement
-            InteractBlockEvent.class, // pretty useless - anything useful will be in ChangeBlockEvent
+            InteractBlockEvent.class, // pretty useless - anything useful will
+                                      // be in ChangeBlockEvent
             InteractItemEvent.class, // pretty useless
-            InteractInventoryEvent.Close.class, // pretty redundant to have both open and close
+            InteractInventoryEvent.Close.class, // pretty redundant to have both
+                                                // open and close
             MoveEntityEvent.class, // handled in MoveEventListener
             NotifyNeighborBlockEvent.class,
             PlayerChangeClientSettingsEvent.class,
@@ -88,7 +91,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    @Exclude({DropItemEvent.Pre.class})
+    @Exclude({ConstructEntityEvent.class, DropItemEvent.Pre.class})
     public void spawnEntity(Event event, @Root EntitySpawnCause cause)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (!(cause.getEntity() instanceof Player)) {
