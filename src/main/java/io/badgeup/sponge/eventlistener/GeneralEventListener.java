@@ -155,7 +155,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    public void entityDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player inventory)
+    public void playerDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         String key = "death";
         Optional<DamageSource> dmgSrcOpt = event.getCause().first(DamageSource.class);
@@ -163,7 +163,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             key += ":" + dmgSrcOpt.get().getType().getId();
         }
 
-        processEvent(event, (Player) event.getTargetEntity(), key);
+        processEvent(event, player, key);
     }
 
     @Listener
