@@ -19,6 +19,8 @@ In certain cases, extra commonly-used information is appended to the end of even
   * Ex: `changeinventory:pickup:minecraft:gold_ingot`
 * `destructentity:death:<entity category>:<entity ID>`: When killing entities, their category ("player", "boss", "hostile", or "passive") as well as their ID (UUID for players, `minecraft:*` for all others) will be appended to the event key.
   * Ex: `destructentity:death:passive:minecraft:chicken`
+* `spawnentity:<entity ID>`: When spawning entities (like throwing eggs or shooting arrows), the entity ID is appended to the event key
+  * Ex: `spawnentity:minecraft:egg`
 
 ## Disabled Events
 
