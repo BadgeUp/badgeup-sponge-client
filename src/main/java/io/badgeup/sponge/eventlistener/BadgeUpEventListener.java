@@ -13,6 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
@@ -127,6 +128,14 @@ public abstract class BadgeUpEventListener {
             @Override
             public String provide(GrantAchievementEvent event) {
                 return "grantachievement:" + event.getAchievement().getId();
+            }
+        });
+        
+        this.keyProviders.put(SpawnEntityEvent.class, new EventKeyProvider<SpawnEntityEvent>() {
+
+            @Override
+            public String provide(SpawnEntityEvent event) {
+                return getDefault(event) + ":" + event.getEntities().get(0).getType().getId();
             }
         });
     }
