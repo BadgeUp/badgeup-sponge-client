@@ -38,6 +38,7 @@ import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ChannelRegistrationEvent;
@@ -72,6 +73,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             GrantAchievementEvent.class, // handled below by grantAchievement
             InteractBlockEvent.class, // pretty useless - anything useful will be in ChangeBlockEvent
             InteractItemEvent.class, // pretty useless
+            InteractInventoryEvent.Close.class, // pretty redundant to have both open and close
             MoveEntityEvent.class, // handled in MoveEventListener
             NotifyNeighborBlockEvent.class,
             PlayerChangeClientSettingsEvent.class,
