@@ -20,6 +20,7 @@ import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
@@ -37,6 +38,7 @@ import org.spongepowered.api.event.filter.type.Exclude;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ChannelRegistrationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -68,6 +70,8 @@ public class GeneralEventListener extends BadgeUpEventListener {
             CollideEntityEvent.class,
             ConstructEntityEvent.class,
             GrantAchievementEvent.class, // handled below by grantAchievement
+            InteractBlockEvent.class, // pretty useless - anything useful will be in ChangeBlockEvent
+            InteractItemEvent.class, // pretty useless
             MoveEntityEvent.class, // handled in MoveEventListener
             NotifyNeighborBlockEvent.class,
             PlayerChangeClientSettingsEvent.class,
