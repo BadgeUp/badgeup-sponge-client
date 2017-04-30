@@ -2,6 +2,7 @@ package io.badgeup.sponge.util;
 
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.Config;
+import okhttp3.ConnectionPool;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -13,10 +14,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HttpUtils {
 
-    private static OkHttpClient httpClient = new OkHttpClient();
+    private static Logger httpClientLogger = Logger.getLogger(OkHttpClient.class.getName());
+    private static OkHttpClient httpClient = new OkHttpClient.Builder().connectionPool(new ConnectionPool(5, 15, TimeUnit.SECONDS)).build();
     private static String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
     private static String baseUrl = getApiBaseUrl();
     private static Headers headers = getHeaders();
@@ -24,6 +29,11 @@ public class HttpUtils {
     public static final int STATUS_OK = 200;
     public static final int STATUS_CREATED = 201;
     public static final int STATUS_NOT_FOUND = 404;
+    
+    static {
+        // Set the log level to FINE so that stacktraces from leaked responses are printed out
+        httpClientLogger.setLevel(Level.FINE);
+    }
 
     public static Response post(String url, JSONObject body) throws IOException {
         RequestBody requestBody = RequestBody.create(MediaType.parse(body.toString()), body.toString());
@@ -42,11 +52,11 @@ public class HttpUtils {
         return httpClient.newCall(request).execute();
     }
 
-    public static Request getRawRequest(String url) throws IOException {
+    public static Request getRawRequest(String url) {
         return new Request.Builder().url(baseUrl + url).headers(headers).get().build();
     }
 
-    public static Request getRequest(String url) throws IOException {
+    public static Request getRequest(String url) {
         return new Request.Builder().url(baseUrl + "/v1/apps/" + appId + url).headers(headers).get().build();
     }
 

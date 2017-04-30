@@ -45,9 +45,7 @@ public class PostEventRunnable implements Runnable {
     public void run() {
         this.event.setDiscardable(false);
 
-        try {
-            Response response = HttpUtils.post("/events", this.event.build());
-
+        try (Response response = HttpUtils.post("/events", this.event.build())) {
             // If status code is 413, log that the event was too big (to be
             // looked at and slimmed down later)
             if (response.code() == 413) {
@@ -79,11 +77,11 @@ public class PostEventRunnable implements Runnable {
             });
 
             for (JSONObject record : completedAchievements) {
-                final String achievementId = record.getString("achievementId");
-                final JSONObject achievement = HttpUtils.parseBody(
-                        HttpUtils.get("/achievements/" + achievementId));
-
-                final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(this.event.getSubject());
+                Optional<JSONObject> achievementOpt = this.plugin.getResourceCache().getAchievementById(record.getString("achievementId")).get();
+                if (!achievementOpt.isPresent()) {
+                    continue;
+                }
+                JSONObject achievement = achievementOpt.get();
 
                 AwardPersistenceService awardPS = Sponge.getServiceManager()
                         .provide(AwardPersistenceService.class).get();
@@ -91,10 +89,16 @@ public class PostEventRunnable implements Runnable {
                 achievement.getJSONArray("awards")
                         .forEach(awardId -> awardIds.add((String) awardId));
 
+                final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(this.event.getSubject());
+
                 for (String awardId : awardIds) {
-                    final JSONObject award = HttpUtils.parseBody(
-                            HttpUtils.get("/awards/" + awardId));
-                    awardPS.increment(this.event.getSubject(), award.getString("id"));
+                    Optional<JSONObject> awardOpt = this.plugin.getResourceCache().getAwardById(awardId).get();
+                    if (!awardOpt.isPresent()) {
+                        continue;
+                    }
+                    JSONObject award = awardOpt.get();
+
+                    awardPS.increment(this.event.getSubject(), awardId);
 
                     boolean autoRedeem = Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false);
                     if (subjectOpt.isPresent() && autoRedeem) {

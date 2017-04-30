@@ -150,98 +150,120 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
         }
 
         private void meatLoverAchievement() throws JSONException, IOException, IllegalStateException {
-            Response rawPorkCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String rawPorkCritId;
+            try (Response rawPorkCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Raw Porkchop")
                     .put(DESC, "Eat 1 Raw Porkchop")
                     .put(KEY, "^useitemstack:finish:minecraft:porkchop$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(rawPorkCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String rawPorkCritId = HttpUtils.parseBody(rawPorkCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(rawPorkCritResponse.code() == HttpUtils.STATUS_CREATED);
+                rawPorkCritId = HttpUtils.parseBody(rawPorkCritResponse).getString(ID);
+            }
 
-            Response cookedPorkCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String cookedPorkCritId;
+            try (Response cookedPorkCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Cooked Porkchop")
                     .put(DESC, "Eat 1 Cooked Porkchop")
                     .put(KEY, "^useitemstack:finish:minecraft:cooked_porkchop$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(cookedPorkCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String cookedPorkCritId = HttpUtils.parseBody(cookedPorkCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(cookedPorkCritResponse.code() == HttpUtils.STATUS_CREATED);
+                cookedPorkCritId = HttpUtils.parseBody(cookedPorkCritResponse).getString(ID);
+            }
 
-            Response rawChickenCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String rawChickenCritId;
+            try (Response rawChickenCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Raw Chicken")
                     .put(DESC, "Eat 1 Raw Chicken")
                     .put(KEY, "^useitemstack:finish:minecraft:chicken$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(rawChickenCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String rawChickenCritId = HttpUtils.parseBody(rawChickenCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(rawChickenCritResponse.code() == HttpUtils.STATUS_CREATED);
+                rawChickenCritId = HttpUtils.parseBody(rawChickenCritResponse).getString(ID);
+            }
 
-            Response cookedChickenCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String cookedChickenCritId;
+            try (Response cookedChickenCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Cooked Chicken")
                     .put(DESC, "Eat 1 Cooked Chicken")
                     .put(KEY, "^useitemstack:finish:minecraft:cooked_chicken$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(cookedChickenCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String cookedChickenCritId = HttpUtils.parseBody(cookedChickenCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(cookedChickenCritResponse.code() == HttpUtils.STATUS_CREATED);
+                cookedChickenCritId = HttpUtils.parseBody(cookedChickenCritResponse).getString(ID);
+            }
 
-            Response rawMuttonCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String rawMuttonCritId;
+            try (Response rawMuttonCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Raw Mutton")
                     .put(DESC, "Eat 1 Raw Mutton")
                     .put(KEY, "^useitemstack:finish:minecraft:mutton$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(rawMuttonCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String rawMuttonCritId = HttpUtils.parseBody(rawMuttonCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(rawMuttonCritResponse.code() == HttpUtils.STATUS_CREATED);
+                rawMuttonCritId = HttpUtils.parseBody(rawMuttonCritResponse).getString(ID);
+            }
 
-            Response cookedMuttonCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String cookedMuttonCritId;
+            try (Response cookedMuttonCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Cooked Mutton")
                     .put(DESC, "Eat 1 Cooked Mutton")
                     .put(KEY, "^useitemstack:finish:minecraft:cooked_mutton$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(cookedMuttonCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String cookedMuttonCritId = HttpUtils.parseBody(cookedMuttonCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(cookedMuttonCritResponse.code() == HttpUtils.STATUS_CREATED);
+                cookedMuttonCritId = HttpUtils.parseBody(cookedMuttonCritResponse).getString(ID);
+            }
 
-            Response rawBeefCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String rawBeefCritId;
+            try (Response rawBeefCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Raw Beef")
                     .put(DESC, "Eat 1 Raw Beef")
                     .put(KEY, "^useitemstack:finish:minecraft:beef$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(rawBeefCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String rawBeefCritId = HttpUtils.parseBody(rawBeefCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(rawBeefCritResponse.code() == HttpUtils.STATUS_CREATED);
+                rawBeefCritId = HttpUtils.parseBody(rawBeefCritResponse).getString(ID);
+            }
 
-            Response cookedBeefCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String cookedBeefCritId;
+            try (Response cookedBeefCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Cooked Beef")
                     .put(DESC, "Eat 1 Cooked Beef")
                     .put(KEY, "^useitemstack:finish:minecraft:cooked_beef$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(cookedBeefCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String cookedBeefCritId = HttpUtils.parseBody(cookedBeefCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(cookedBeefCritResponse.code() == HttpUtils.STATUS_CREATED);
+                cookedBeefCritId = HttpUtils.parseBody(cookedBeefCritResponse).getString(ID);
+            }
 
-            Response rawRabbitCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String rawRabbitCritId;
+            try (Response rawRabbitCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Raw Rabbit")
                     .put(DESC, "Eat 1 Raw Rabbit")
                     .put(KEY, "^useitemstack:finish:minecraft:rabbit$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(rawRabbitCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String rawRabbitCritId = HttpUtils.parseBody(rawRabbitCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(rawRabbitCritResponse.code() == HttpUtils.STATUS_CREATED);
+                rawRabbitCritId = HttpUtils.parseBody(rawRabbitCritResponse).getString(ID);
+            }
 
-            Response cookedRabbitCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String cookedRabbitCritId;
+            try (Response cookedRabbitCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Cooked Rabbit")
                     .put(DESC, "Eat 1 Cooked Rabbit")
                     .put(KEY, "^useitemstack:finish:minecraft:cooked_rabbit$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(cookedRabbitCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String cookedRabbitCritId = HttpUtils.parseBody(cookedRabbitCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(cookedRabbitCritResponse.code() == HttpUtils.STATUS_CREATED);
+                cookedRabbitCritId = HttpUtils.parseBody(cookedRabbitCritResponse).getString(ID);
+            }
 
-            Response steakAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String steakAwardId;
+            try (Response steakAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Where's the Meat?")
                     .put(DESC, "A feast to behold!")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
                             .put("itemType", "minecraft:cooked_beef")
-                            .put("quantity", 64)));
-            Preconditions.checkArgument(steakAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String steakAwardId = HttpUtils.parseBody(steakAwardResponse).getString(ID);
+                            .put("quantity", 64)))) {
+                Preconditions.checkArgument(steakAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                steakAwardId = HttpUtils.parseBody(steakAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Meat Lover")
                     .put(DESC, "Gotta get that protein!")
                     .put(EVAL_TREE, new JSONObject()
@@ -284,120 +306,146 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                                     .put(cookedRabbitCritId))
                                             .put(GROUPS, new JSONArray())
                                             .put(TYPE, GROUP))))
-                    .put(AWARDS, new JSONArray().put(steakAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
-
+                    .put(AWARDS, new JSONArray().put(steakAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
         }
 
         private void vegematicAchievement() throws JSONException, IOException, IllegalStateException {
-            Response appleCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String appleCritId;
+            try (Response appleCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Apple")
                     .put(DESC, "Eat 1 Apple")
                     .put(KEY, "^useitemstack:finish:minecraft:apple$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(appleCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String appleCritId = HttpUtils.parseBody(appleCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(appleCritResponse.code() == HttpUtils.STATUS_CREATED);
+                appleCritId = HttpUtils.parseBody(appleCritResponse).getString(ID);
+            }
 
-            Response goldenAppleCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String goldenAppleCritId;
+            try (Response goldenAppleCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Golden Apple")
                     .put(DESC, "Eat 1 Golden Apple")
                     .put(KEY, "^useitemstack:finish:minecraft:golden_apple$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(goldenAppleCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String goldenAppleCritId = HttpUtils.parseBody(goldenAppleCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(goldenAppleCritResponse.code() == HttpUtils.STATUS_CREATED);
+                goldenAppleCritId = HttpUtils.parseBody(goldenAppleCritResponse).getString(ID);
+            }
 
-            Response mushroomStewCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String mushroomStewCritId;
+            try (Response mushroomStewCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Mushroom Stew")
                     .put(DESC, "Eat 1 Mushroom Stew")
                     .put(KEY, "^useitemstack:finish:minecraft:mushroom_stew$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(mushroomStewCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String mushroomStewCritId = HttpUtils.parseBody(mushroomStewCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(mushroomStewCritResponse.code() == HttpUtils.STATUS_CREATED);
+                mushroomStewCritId = HttpUtils.parseBody(mushroomStewCritResponse).getString(ID);
+            }
 
-            Response melonCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String melonCritId;
+            try (Response melonCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Melon")
                     .put(DESC, "Eat 1 Melon")
                     .put(KEY, "^useitemstack:finish:minecraft:melon$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(melonCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String melonCritId = HttpUtils.parseBody(melonCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(melonCritResponse.code() == HttpUtils.STATUS_CREATED);
+                melonCritId = HttpUtils.parseBody(melonCritResponse).getString(ID);
+            }
 
-            Response carrotCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String carrotCritId;
+            try (Response carrotCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Carrot")
                     .put(DESC, "Eat 1 Carrot")
                     .put(KEY, "^useitemstack:finish:minecraft:carrot$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(carrotCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String carrotCritId = HttpUtils.parseBody(carrotCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(carrotCritResponse.code() == HttpUtils.STATUS_CREATED);
+                carrotCritId = HttpUtils.parseBody(carrotCritResponse).getString(ID);
+            }
 
-            Response goldenCarrotCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String goldenCarrotCritId;
+            try (Response goldenCarrotCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Golden Carrot")
                     .put(DESC, "Eat 1 Golden Carrot")
                     .put(KEY, "^useitemstack:finish:minecraft:golden_carrot$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(goldenCarrotCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String goldenCarrotCritId = HttpUtils.parseBody(goldenCarrotCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(goldenCarrotCritResponse.code() == HttpUtils.STATUS_CREATED);
+                goldenCarrotCritId = HttpUtils.parseBody(goldenCarrotCritResponse).getString(ID);
+            }
 
-            Response rawPotatoCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String rawPotatoCritId;
+            try (Response rawPotatoCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Raw Potato")
                     .put(DESC, "Eat 1 Raw Potato")
                     .put(KEY, "^useitemstack:finish:minecraft:potato$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(rawPotatoCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String rawPotatoCritId = HttpUtils.parseBody(rawPotatoCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(rawPotatoCritResponse.code() == HttpUtils.STATUS_CREATED);
+                rawPotatoCritId = HttpUtils.parseBody(rawPotatoCritResponse).getString(ID);
+            }
 
-            Response bakedPotatoCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String bakedPotatoCritId;
+            try (Response bakedPotatoCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Baked Potato")
                     .put(DESC, "Eat 1 Baked Mutton")
                     .put(KEY, "^useitemstack:finish:minecraft:baked_potato$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(bakedPotatoCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String bakedPotatoCritId = HttpUtils.parseBody(bakedPotatoCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(bakedPotatoCritResponse.code() == HttpUtils.STATUS_CREATED);
+                bakedPotatoCritId = HttpUtils.parseBody(bakedPotatoCritResponse).getString(ID);
+            }
 
-            Response poisonousPotatoCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String poisonousPotatoCritId;
+            try (Response poisonousPotatoCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Poisonous Potato")
                     .put(DESC, "Eat 1 Poisonous Potato")
                     .put(KEY, "^useitemstack:finish:minecraft:poisonous_potato$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(poisonousPotatoCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String poisonousPotatoCritId = HttpUtils.parseBody(poisonousPotatoCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(poisonousPotatoCritResponse.code() == HttpUtils.STATUS_CREATED);
+                poisonousPotatoCritId = HttpUtils.parseBody(poisonousPotatoCritResponse).getString(ID);
+            }
 
-            Response beetrootCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String beetrootCritId;
+            try (Response beetrootCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Beetroot")
                     .put(DESC, "Eat 1 Beetroot")
                     .put(KEY, "^useitemstack:finish:minecraft:beetroot$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(beetrootCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String beetrootCritId = HttpUtils.parseBody(beetrootCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(beetrootCritResponse.code() == HttpUtils.STATUS_CREATED);
+                beetrootCritId = HttpUtils.parseBody(beetrootCritResponse).getString(ID);
+            }
 
-            Response beetrootSoupCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String beetrootSoupCritId;
+            try (Response beetrootSoupCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Beetroot Soup")
                     .put(DESC, "Eat 1 Beetroot Soup")
                     .put(KEY, "^useitemstack:finish:minecraft:beetroot_soup$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(beetrootSoupCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String beetrootSoupCritId = HttpUtils.parseBody(beetrootSoupCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(beetrootSoupCritResponse.code() == HttpUtils.STATUS_CREATED);
+                beetrootSoupCritId = HttpUtils.parseBody(beetrootSoupCritResponse).getString(ID);
+            }
 
-            Response goldenAppleAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String goldenAppleAwardId;
+            try (Response goldenAppleAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Golden Apple")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
                             .put("itemType", "minecraft:golden_apple")
-                            .put("quantity", 1)));
-            Preconditions.checkArgument(goldenAppleAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String goldenAppleAwardId = HttpUtils.parseBody(goldenAppleAwardResponse).getString(ID);
+                            .put("quantity", 1)))) {
+                Preconditions.checkArgument(goldenAppleAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                goldenAppleAwardId = HttpUtils.parseBody(goldenAppleAwardResponse).getString(ID);
+            }
 
-            Response goldenCarrotAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String goldenCarrotAwardId;
+            try (Response goldenCarrotAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Golden Carrot")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
                             .put("itemType", "minecraft:golden_carrot")
-                            .put("quantity", 1)));
-            Preconditions.checkArgument(goldenCarrotAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String goldenCarrotAwardId = HttpUtils.parseBody(goldenCarrotAwardResponse).getString(ID);
+                            .put("quantity", 1)))) {
+                Preconditions.checkArgument(goldenCarrotAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                goldenCarrotAwardId = HttpUtils.parseBody(goldenCarrotAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Vegematic")
                     .put(DESC, "Is that a leaf growing from your head?")
                     .put(EVAL_TREE, new JSONObject()
@@ -438,40 +486,46 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                             .put(TYPE, GROUP))))
                     .put(AWARDS, new JSONArray()
                             .put(goldenAppleAwardId)
-                            .put(goldenCarrotAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
-
+                            .put(goldenCarrotAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
         }
 
         private void greenThumbAchievement() throws JSONException, IOException, IllegalStateException {
-            Response placeSaplingCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String placeSaplingCritId;
+            try (Response placeSaplingCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Place Saplings")
                     .put(DESC, "Place 10 Saplings")
                     .put(KEY, "^changeblock:place:minecraft:sapling$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 10)));
-            Preconditions.checkArgument(placeSaplingCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String placeSaplingCritId = HttpUtils.parseBody(placeSaplingCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 10)))) {
+                Preconditions.checkArgument(placeSaplingCritResponse.code() == HttpUtils.STATUS_CREATED);
+                placeSaplingCritId = HttpUtils.parseBody(placeSaplingCritResponse).getString(ID);
+            }
 
-            Response rainbowSheepAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String rainbowSheepAwardId;
+            try (Response rainbowSheepAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Rainbow Sheep")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "entity")
                             .put("entityType", "minecraft:sheep")
                             .put("position", new JSONObject().put("x", "~").put("y", "~").put("z", "~"))
-                            .put("displayName", "jeb_")));
-            Preconditions.checkArgument(rainbowSheepAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String rainbowSheepAwardId = HttpUtils.parseBody(rainbowSheepAwardResponse).getString(ID);
+                            .put("displayName", "jeb_")))) {
+                Preconditions.checkArgument(rainbowSheepAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                rainbowSheepAwardId = HttpUtils.parseBody(rainbowSheepAwardResponse).getString(ID);
+            }
 
-            Response timeMachineAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String timeMachineAwardId;
+            try (Response timeMachineAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Time Machine")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "command")
-                            .put("command", "time set day")));
-            Preconditions.checkArgument(timeMachineAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String timeMachineAwardId = HttpUtils.parseBody(timeMachineAwardResponse).getString(ID);
+                            .put("command", "time set day")))) {
+                Preconditions.checkArgument(timeMachineAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                timeMachineAwardId = HttpUtils.parseBody(timeMachineAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Green Thumb")
                     .put(DESC, "That deep-rooted desire")
                     .put(EVAL_TREE, new JSONObject()
@@ -482,41 +536,48 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(GROUPS, new JSONArray()))
                     .put(AWARDS, new JSONArray()
                             .put(rainbowSheepAwardId)
-                            .put(timeMachineAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+                            .put(timeMachineAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
 
         }
 
         private void pyroAchievement() throws JSONException, IOException, IllegalStateException {
-            Response lightFireCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String lightFireCritId;
+            try (Response lightFireCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Light Fires")
                     .put(DESC, "Light a fire")
                     .put(KEY, "^changeblock:place:minecraft:fire$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(lightFireCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String lightFireCritId = HttpUtils.parseBody(lightFireCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(lightFireCritResponse.code() == HttpUtils.STATUS_CREATED);
+                lightFireCritId = HttpUtils.parseBody(lightFireCritResponse).getString(ID);
+            }
 
-            Response tntAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String tntAwardId;
+            try (Response tntAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "TNT")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
                             .put("itemType", "minecraft:tnt")
-                            .put("quantity", 10)));
-            Preconditions.checkArgument(tntAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String tntAwardId = HttpUtils.parseBody(tntAwardResponse).getString(ID);
+                            .put("quantity", 10)))) {
+                Preconditions.checkArgument(tntAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                tntAwardId = HttpUtils.parseBody(tntAwardResponse).getString(ID);
+            }
 
-            Response resistanceEffectAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String resistanceEffectAwardId;
+            try (Response resistanceEffectAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Resistance Potion Effect")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "potion")
                             .put("potionEffectType", "minecraft:resistance")
                             .put("duration", 2400) // 2 minutes
-                            .put("amplifier", 4)));
-            Preconditions.checkArgument(resistanceEffectAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String resistanceEffectAwardId = HttpUtils.parseBody(resistanceEffectAwardResponse).getString(ID);
+                            .put("amplifier", 4)))) {
+                Preconditions.checkArgument(resistanceEffectAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                resistanceEffectAwardId = HttpUtils.parseBody(resistanceEffectAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Pyro")
                     .put(DESC, "Some people just want to watch the world burn")
                     .put(EVAL_TREE, new JSONObject()
@@ -527,21 +588,25 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(GROUPS, new JSONArray()))
                     .put(AWARDS, new JSONArray()
                             .put(tntAwardId)
-                            .put(resistanceEffectAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+                            .put(resistanceEffectAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
 
         }
 
         private void lumberjackAchievement() throws JSONException, IOException, IllegalStateException {
-            Response chopLogsCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String chopLogsCritId;
+            try (Response chopLogsCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Chop Trees")
                     .put(DESC, "Chop 50 Logs")
                     .put(KEY, "^changeblock:break:minecraft:log$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 50)));
-            Preconditions.checkArgument(chopLogsCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String chopLogsCritId = HttpUtils.parseBody(chopLogsCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 50)))) {
+                Preconditions.checkArgument(chopLogsCritResponse.code() == HttpUtils.STATUS_CREATED);
+                chopLogsCritId = HttpUtils.parseBody(chopLogsCritResponse).getString(ID);
+            }
 
-            Response axeAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String axeAwardId;
+            try (Response axeAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Chainsaw")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
@@ -553,12 +618,13 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                                             .put("level", 5))
                                     .put(new JSONObject()
                                             .put(ID, "minecraft:unbreaking")
-                                            .put("level", 3)))));
-            Preconditions.checkArgument(axeAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String axeAwardId = HttpUtils.parseBody(axeAwardResponse).getString(ID);
+                                            .put("level", 3)))))) {
+                Preconditions.checkArgument(axeAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                axeAwardId = HttpUtils.parseBody(axeAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Lumberjack")
                     .put(DESC, "Haven't you heard of email?")
                     .put(EVAL_TREE, new JSONObject()
@@ -568,31 +634,36 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(TYPE, GROUP)
                             .put(GROUPS, new JSONArray()))
                     .put(AWARDS, new JSONArray()
-                            .put(axeAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+                            .put(axeAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
 
         }
 
         private void moneybagsAchievement() throws JSONException, IOException, IllegalStateException {
-            Response dropGoldCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String dropGoldCritId;
+            try (Response dropGoldCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Drop Gold")
                     .put(DESC, "Drop a Gold Ingot")
                     .put(KEY, "^dropitem:dispense:minecraft:gold_ingot$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 1)));
-            Preconditions.checkArgument(dropGoldCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String dropGoldCritId = HttpUtils.parseBody(dropGoldCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 1)))) {
+                Preconditions.checkArgument(dropGoldCritResponse.code() == HttpUtils.STATUS_CREATED);
+                dropGoldCritId = HttpUtils.parseBody(dropGoldCritResponse).getString(ID);
+            }
 
-            Response moneyAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String moneyAwardId;
+            try (Response moneyAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "100 Grand")
                     .put(DESC, "Better than the candy bar!")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "monetary")
-                            .put("amount", 100000)));
-            Preconditions.checkArgument(moneyAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String moneyAwardId = HttpUtils.parseBody(moneyAwardResponse).getString(ID);
+                            .put("amount", 100000)))) {
+                Preconditions.checkArgument(moneyAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                moneyAwardId = HttpUtils.parseBody(moneyAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Moneybags")
                     .put(DESC, "'Let me get that for you!'")
                     .put(EVAL_TREE, new JSONObject()
@@ -602,31 +673,36 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(TYPE, GROUP)
                             .put(GROUPS, new JSONArray()))
                     .put(AWARDS, new JSONArray()
-                            .put(moneyAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+                            .put(moneyAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
 
         }
 
         private void oneMansTrashAchievement() throws JSONException, IOException, IllegalStateException {
-            Response pickupRottenFleshCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String pickupFleshCritId;
+            try (Response pickupRottenFleshCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Pickup Rotten Flesh")
                     .put(DESC, "Pick up 100 Rotten Flesh")
                     .put(KEY, "^changeinventory:pickup:minecraft:rotten_flesh$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 100)));
-            Preconditions.checkArgument(pickupRottenFleshCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String pickupFleshCritId = HttpUtils.parseBody(pickupRottenFleshCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 100)))) {
+                Preconditions.checkArgument(pickupRottenFleshCritResponse.code() == HttpUtils.STATUS_CREATED);
+                pickupFleshCritId = HttpUtils.parseBody(pickupRottenFleshCritResponse).getString(ID);
+            }
 
-            Response zombieSkullAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String zombieSkullAwardId;
+            try (Response zombieSkullAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Zombie Skull")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
                             .put("itemType", "minecraft:skull")
-                            .put("skullType", "zombie")));
-            Preconditions.checkArgument(zombieSkullAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String zombieSkullAwardId = HttpUtils.parseBody(zombieSkullAwardResponse).getString(ID);
+                            .put("skullType", "zombie")))) {
+                Preconditions.checkArgument(zombieSkullAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                zombieSkullAwardId = HttpUtils.parseBody(zombieSkullAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "One Man's Trash")
                     .put(DESC, "Never know when you might need it!")
                     .put(EVAL_TREE, new JSONObject()
@@ -636,21 +712,25 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(TYPE, GROUP)
                             .put(GROUPS, new JSONArray()))
                     .put(AWARDS, new JSONArray()
-                            .put(zombieSkullAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+                            .put(zombieSkullAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
 
         }
 
         private void baneOfUndeadAchievement() throws JSONException, IOException, IllegalStateException {
-            Response killMonstersCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String killMonstersCritId;
+            try (Response killMonstersCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Undead killer")
                     .put(DESC, "Slay 10 Skeletons or Zombies")
                     .put(KEY, "destructentity:death:hostile:minecraft:(zombie|skeleton)")
-                    .put(EVALUATION, standardEvalBlock("@gte", 10)));
-            Preconditions.checkArgument(killMonstersCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String killMonstersCritId = HttpUtils.parseBody(killMonstersCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 10)))) {
+                Preconditions.checkArgument(killMonstersCritResponse.code() == HttpUtils.STATUS_CREATED);
+                killMonstersCritId = HttpUtils.parseBody(killMonstersCritResponse).getString(ID);
+            }
 
-            Response swordAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String swordAwardId;
+            try (Response swordAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Zombie Ripper")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
@@ -659,12 +739,13 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put("enchantments", new JSONArray()
                                     .put(new JSONObject()
                                             .put(ID, "minecraft:smite")
-                                            .put("level", 5)))));
-            Preconditions.checkArgument(swordAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String swordAwardId = HttpUtils.parseBody(swordAwardResponse).getString(ID);
+                                            .put("level", 5)))))) {
+                Preconditions.checkArgument(swordAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                swordAwardId = HttpUtils.parseBody(swordAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Bane of the Undead")
                     .put(DESC, "Negan's got nothing on you!")
                     .put(EVAL_TREE, new JSONObject()
@@ -674,21 +755,25 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(TYPE, GROUP)
                             .put(GROUPS, new JSONArray()))
                     .put(AWARDS, new JSONArray()
-                            .put(swordAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+                            .put(swordAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
 
         }
 
         private void clumsyAchievement() throws JSONException, IOException, IllegalStateException {
-            Response fallCritResponse = HttpUtils.post("/criteria", new JSONObject()
+            String fallCritId;
+            try (Response fallCritResponse = HttpUtils.post("/criteria", new JSONObject()
                     .put(NAME, "Clumsy")
                     .put(DESC, "Fall to your death 3 times")
                     .put(KEY, "^death:fall$")
-                    .put(EVALUATION, standardEvalBlock("@gte", 3)));
-            Preconditions.checkArgument(fallCritResponse.code() == HttpUtils.STATUS_CREATED);
-            final String fallCritId = HttpUtils.parseBody(fallCritResponse).getString(ID);
+                    .put(EVALUATION, standardEvalBlock("@gte", 3)))) {
+                Preconditions.checkArgument(fallCritResponse.code() == HttpUtils.STATUS_CREATED);
+                fallCritId = HttpUtils.parseBody(fallCritResponse).getString(ID);
+            }
 
-            Response bootsAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String bootsAwardId;
+            try (Response bootsAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Feather Falling Boots")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "item")
@@ -697,20 +782,23 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put("enchantments", new JSONArray()
                                     .put(new JSONObject()
                                             .put(ID, "feather_falling")
-                                            .put("level", 4)))));
-            Preconditions.checkArgument(bootsAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String bootsAwardId = HttpUtils.parseBody(bootsAwardResponse).getString(ID);
+                                            .put("level", 4)))))) {
+                Preconditions.checkArgument(bootsAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                bootsAwardId = HttpUtils.parseBody(bootsAwardResponse).getString(ID);
+            }
 
-            Response expAwardResponse = HttpUtils.post("/awards", new JSONObject()
+            String expAwardId;
+            try (Response expAwardResponse = HttpUtils.post("/awards", new JSONObject()
                     .put(NAME, "Replacement Experience")
                     .put(DATA, new JSONObject()
                             .put(TYPE, "experience")
-                            .put("amount", 500)));
-            Preconditions.checkArgument(expAwardResponse.code() == HttpUtils.STATUS_CREATED);
-            final String expAwardId = HttpUtils.parseBody(expAwardResponse).getString(ID);
+                            .put("amount", 500)))) {
+                Preconditions.checkArgument(expAwardResponse.code() == HttpUtils.STATUS_CREATED);
+                expAwardId = HttpUtils.parseBody(expAwardResponse).getString(ID);
+            }
 
             // Create the achievement
-            Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
+            try (Response achievementResponse = HttpUtils.post("/achievements", new JSONObject()
                     .put(NAME, "Clumsy")
                     .put(EVAL_TREE, new JSONObject()
                             .put(CONDITION, AND)
@@ -720,8 +808,10 @@ public class BadgeUpInitCommandExecutor implements CommandExecutor {
                             .put(GROUPS, new JSONArray()))
                     .put(AWARDS, new JSONArray()
                             .put(bootsAwardId)
-                            .put(expAwardId)));
-            Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+                            .put(expAwardId)))) {
+                Preconditions.checkArgument(achievementResponse.code() == HttpUtils.STATUS_CREATED);
+            }
+
         }
 
         private JSONObject standardEvalBlock(String operator, int threshold) {

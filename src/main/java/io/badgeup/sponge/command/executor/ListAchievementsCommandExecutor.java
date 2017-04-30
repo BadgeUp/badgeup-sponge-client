@@ -70,12 +70,10 @@ public class ListAchievementsCommandExecutor implements CommandExecutor {
         public void run() {
             List<JSONObject> progress = Lists.newArrayList();
 
-            try {
-                boolean morePaginationData = true;
-                Request request = HttpUtils.getRequest("/progress?subject=" + this.player.getUniqueId().toString());
-                while (morePaginationData) {
-                    Response response = HttpUtils.getHttpClient().newCall(request).execute();
-
+            boolean morePaginationData = true;
+            Request request = HttpUtils.getRequest("/progress?subject=" + this.player.getUniqueId().toString());
+            while (morePaginationData) {
+                try (Response response = HttpUtils.getHttpClient().newCall(request).execute()) {
                     if (response.code() != HttpUtils.STATUS_OK) {
                         this.logger.error("Got response code " + response.code() + " with body " + response.body().string()
                                 + " when getting progress for player " + this.player.getUniqueId().toString());
@@ -92,11 +90,10 @@ public class ListAchievementsCommandExecutor implements CommandExecutor {
                     if (morePaginationData) {
                         request = HttpUtils.getRawRequest(pages.getString("next"));
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return;
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
             }
 
             if (progress.isEmpty()) {

@@ -128,8 +128,7 @@ public class CreateItemAwardCommandExecutor implements CommandExecutor {
         @Override
         public void run() {
 
-            try {
-                Response response = HttpUtils.post("/awards", this.body);
+            try (Response response = HttpUtils.post("/awards", this.body)) {
                 if (response.code() != HttpUtils.STATUS_CREATED) {
                     this.player.sendMessage(Text.of(TextColors.RED, "Failed to create award. See console for stacktrace."));
                     this.logger.error(

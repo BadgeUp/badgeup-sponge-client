@@ -39,14 +39,13 @@ public class ResourceCache {
         return this.awardsCache.get(awardId);
     }
 
-    public CompletableFuture<Optional<JSONObject>> getAchievementById(String awardId) {
-        return this.achievementsCache.get(awardId);
+    public CompletableFuture<Optional<JSONObject>> getAchievementById(String achievementId) {
+        return this.achievementsCache.get(achievementId);
     }
 
     private CompletableFuture<Optional<JSONObject>> getAwardById(String key, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                Response response = HttpUtils.get("/awards/" + key);
+            try (Response response = HttpUtils.get("/awards/" + key)) {
                 if (response.code() != HttpUtils.STATUS_OK) {
                     this.logger.error("Got " + response.code() + " response getting the award \"" + key + "\"");
 
@@ -68,8 +67,7 @@ public class ResourceCache {
 
     private CompletableFuture<Optional<JSONObject>> getAchievementById(String key, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                Response response = HttpUtils.get("/achievements/" + key);
+            try (Response response = HttpUtils.get("/achievements/" + key)) {
                 if (response.code() != HttpUtils.STATUS_OK) {
                     this.logger.error("Got " + response.code() + " response getting the achievement \"" + key + "\"");
 
