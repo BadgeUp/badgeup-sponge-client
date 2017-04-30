@@ -1,14 +1,12 @@
 package io.badgeup.sponge;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import io.badgeup.sponge.command.executor.DebugCommandExecutor;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
 import io.badgeup.sponge.util.HttpUtils;
 import io.badgeup.sponge.util.Util;
-import org.apache.http.HttpStatus;
+import okhttp3.Response;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -48,30 +46,29 @@ public class PostEventRunnable implements Runnable {
         this.event.setDiscardable(false);
 
         try {
-            HttpResponse<JsonNode> response = HttpUtils.post("/events").body(this.event.build())
-                    .asJson();
+            Response response = HttpUtils.post("/events", this.event.build());
 
             // If status code is 413, log that the event was too big (to be
             // looked at and slimmed down later)
-            if (response.getStatus() == HttpStatus.SC_REQUEST_TOO_LONG) {
+            if (response.code() == 413) {
                 this.plugin.getLogger().warn("Event too large: " + this.event.build().getString("key"));
                 this.plugin.getLogger().debug(this.event.build().toString());
                 DebugCommandExecutor.getDebugMessageChannelForPlayer(this.event.getSubject())
-                        .send(Text.of(TextColors.RED, constructEventText(this.event, response.getStatus())));
+                        .send(Text.of(TextColors.RED, constructEventText(this.event, response.code())));
                 return;
-            } else if (response.getStatus() != HttpStatus.SC_CREATED) {
+            } else if (response.code() != 201) {
                 // If not 201, log the error
-                this.plugin.getLogger().error("Non-201 status code response from BadgeUp. Response code: " + response.getStatus()
-                        + ". Response body: " + response.getBody().toString());
+                this.plugin.getLogger().error("Non-201 status code response from BadgeUp. Response code: " + response.code()
+                        + ". Response body: " + response.body().string());
                 DebugCommandExecutor.getDebugMessageChannelForPlayer(this.event.getSubject())
-                        .send(Text.of(TextColors.RED, constructEventText(this.event, response.getStatus())));
+                        .send(Text.of(TextColors.RED, constructEventText(this.event, response.code())));
                 return;
             }
 
             DebugCommandExecutor.getDebugMessageChannelForPlayer(this.event.getSubject())
-                    .send(Text.of(TextColors.GREEN, constructEventText(this.event, response.getStatus())));
+                    .send(Text.of(TextColors.GREEN, constructEventText(this.event, response.code())));
 
-            final JSONObject body = response.getBody().getObject();
+            final JSONObject body = HttpUtils.parseBody(response);
 
             List<JSONObject> completedAchievements = new ArrayList<>();
             body.getJSONArray("progress").forEach(progressObj -> {
@@ -83,8 +80,8 @@ public class PostEventRunnable implements Runnable {
 
             for (JSONObject record : completedAchievements) {
                 final String achievementId = record.getString("achievementId");
-                final JSONObject achievement = HttpUtils.get("/achievements/" + achievementId)
-                        .asJson().getBody().getObject();
+                final JSONObject achievement = HttpUtils.parseBody(
+                        HttpUtils.get("/achievements/" + achievementId));
 
                 final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(this.event.getSubject());
 
@@ -95,8 +92,8 @@ public class PostEventRunnable implements Runnable {
                         .forEach(awardId -> awardIds.add((String) awardId));
 
                 for (String awardId : awardIds) {
-                    final JSONObject award = HttpUtils.get("/awards/" + awardId).asJson()
-                            .getBody().getObject();
+                    final JSONObject award = HttpUtils.parseBody(
+                            HttpUtils.get("/awards/" + awardId));
                     awardPS.increment(this.event.getSubject(), award.getString("id"));
 
                     boolean autoRedeem = Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false);

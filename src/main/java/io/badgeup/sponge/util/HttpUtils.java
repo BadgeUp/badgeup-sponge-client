@@ -1,43 +1,72 @@
 package io.badgeup.sponge.util;
 
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.request.GetRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.Config;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HttpUtils {
 
+    private static OkHttpClient httpClient = new OkHttpClient();
     private static String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
     private static String baseUrl = getApiBaseUrl();
-    private static Map<String, String> headers = getHeaders();
+    private static Headers headers = getHeaders();
 
-    public static HttpRequestWithBody post(String url) {
-        return Unirest.post(baseUrl + "/v1/apps/" + appId + url).headers(headers);
+    public static final int STATUS_OK = 200;
+    public static final int STATUS_CREATED = 201;
+    public static final int STATUS_NOT_FOUND = 404;
+
+    public static Response post(String url, JSONObject body) throws IOException {
+        RequestBody requestBody = RequestBody.create(MediaType.parse(body.toString()), body.toString());
+        Request request = new Request.Builder().url(baseUrl + "/v1/apps/" + appId + url).headers(headers).post(requestBody).build();
+
+        return httpClient.newCall(request).execute();
     }
 
-    public static GetRequest getRaw(String url) {
-        return Unirest.get(baseUrl + url).headers(headers);
+    public static Response getRaw(String url) throws IOException {
+        Request request = new Request.Builder().url(baseUrl + url).headers(headers).get().build();
+        return httpClient.newCall(request).execute();
     }
 
-    public static GetRequest get(String url) {
-        return Unirest.get(baseUrl + "/v1/apps/" + appId + url).headers(headers);
+    public static Response get(String url) throws IOException {
+        Request request = new Request.Builder().url(baseUrl + "/v1/apps/" + appId + url).headers(headers).get().build();
+        return httpClient.newCall(request).execute();
     }
 
-    private static Map<String, String> getHeaders() {
-        Map<String, String> headers = new HashMap<>();
+    public static Request getRawRequest(String url) throws IOException {
+        return new Request.Builder().url(baseUrl + url).headers(headers).get().build();
+    }
+
+    public static Request getRequest(String url) throws IOException {
+        return new Request.Builder().url(baseUrl + "/v1/apps/" + appId + url).headers(headers).get().build();
+    }
+
+    public static JSONObject parseBody(Response response) throws JSONException, IOException {
+        return new JSONObject(response.body().string());
+    }
+
+    public static OkHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    private static Headers getHeaders() {
 
         String apiKey = BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey();
         final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
 
-        headers.put("User-Agent", "BadgeUp_SpongeClient v" + BadgeUpSponge.getContainer().getVersion().orElse("Unknown"));
-        headers.put("Authorization", authHeader);
-
-        return headers;
+        return new Headers.Builder()
+                .add("User-Agent", "BadgeUp_SpongeClient v" + BadgeUpSponge.getContainer().getVersion().orElse("Unknown"))
+                .add("Authorization", authHeader)
+                .build();
     }
 
     private static String getApiBaseUrl() {

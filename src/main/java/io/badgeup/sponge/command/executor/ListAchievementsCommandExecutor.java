@@ -3,15 +3,12 @@ package io.badgeup.sponge.command.executor;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.GetRequest;
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.util.HttpUtils;
 import io.badgeup.sponge.util.ResourceCache;
 import io.badgeup.sponge.util.Util;
-import org.apache.http.HttpStatus;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,6 +25,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -74,17 +72,17 @@ public class ListAchievementsCommandExecutor implements CommandExecutor {
 
             try {
                 boolean morePaginationData = true;
-                GetRequest request = HttpUtils.get("/progress?subject=" + this.player.getUniqueId().toString());
+                Request request = HttpUtils.getRequest("/progress?subject=" + this.player.getUniqueId().toString());
                 while (morePaginationData) {
-                    HttpResponse<JsonNode> response = request.asJson();
+                    Response response = HttpUtils.getHttpClient().newCall(request).execute();
 
-                    if (response.getStatus() != HttpStatus.SC_OK) {
-                        this.logger.error("Got response code " + response.getStatus() + " with body " + response.getBody().toString()
+                    if (response.code() != HttpUtils.STATUS_OK) {
+                        this.logger.error("Got response code " + response.code() + " with body " + response.body().string()
                                 + " when getting progress for player " + this.player.getUniqueId().toString());
                         return;
                     }
 
-                    JSONObject body = response.getBody().getObject();
+                    JSONObject body = HttpUtils.parseBody(response);
 
                     JSONArray data = body.getJSONArray("data");
                     data.forEach(obj -> progress.add((JSONObject) obj));
@@ -92,11 +90,11 @@ public class ListAchievementsCommandExecutor implements CommandExecutor {
                     JSONObject pages = body.getJSONObject("pages");
                     morePaginationData = !pages.isNull("next");
                     if (morePaginationData) {
-                        request = HttpUtils.getRaw(pages.getString("next"));
+                        request = HttpUtils.getRawRequest(pages.getString("next"));
                     }
                 }
 
-            } catch (UnirestException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 return;
             }

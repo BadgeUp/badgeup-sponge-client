@@ -32,7 +32,7 @@ repositories {
 dependencies {
 	compile 'org.spongepowered:spongeapi:5.1.0'
 	compile 'ninja.leaping.configurate:configurate-json:3.2'
-	compile 'com.mashape.unirest:unirest-java:1.4.9'
+	compile 'com.squareup.okhttp3:okhttp:3.7.0'
     compile 'org.json:json:20160212'
 }
 
@@ -45,7 +45,6 @@ shadowJar {
 	relocate 'org.apache', 'badgeup.org.apache'
 	// Relocate these libraries because of incompatibilities with modpacks like FTB Beyond
 	relocate 'org.json', 'badgeup.org.json'
-	relocate 'com.mashape.unirest', 'badgeup.com.mashape.unirest'
 	
     dependencies {
         exclude(dependency('org.spongepowered:spongeapi'))

@@ -2,16 +2,14 @@ package io.badgeup.sponge.util;
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import io.badgeup.sponge.service.AchievementPersistenceService;
 import io.badgeup.sponge.service.AwardPersistenceService;
-import org.apache.http.HttpStatus;
+import okhttp3.Response;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -48,11 +46,11 @@ public class ResourceCache {
     private CompletableFuture<Optional<JSONObject>> getAwardById(String key, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                HttpResponse<JsonNode> response = HttpUtils.get("/awards/" + key).asJson();
-                if (response.getStatus() != HttpStatus.SC_OK) {
-                    this.logger.error("Got " + response.getStatus() + " response getting the award \"" + key + "\"");
+                Response response = HttpUtils.get("/awards/" + key);
+                if (response.code() != HttpUtils.STATUS_OK) {
+                    this.logger.error("Got " + response.code() + " response getting the award \"" + key + "\"");
 
-                    if (response.getStatus() == HttpStatus.SC_NOT_FOUND) {
+                    if (response.code() == HttpUtils.STATUS_NOT_FOUND) {
                         this.logger.info("Got 404 for award \"" + key + "\". Removing from storage");
                         AwardPersistenceService aps = Sponge.getServiceManager().provideUnchecked(AwardPersistenceService.class);
                         aps.remove(key);
@@ -60,8 +58,8 @@ public class ResourceCache {
                     return Optional.empty();
                 }
 
-                return Optional.of(response.getBody().getObject());
-            } catch (UnirestException e) {
+                return Optional.of(HttpUtils.parseBody(response));
+            } catch (IOException e) {
                 e.printStackTrace();
                 return Optional.empty();
             }
@@ -71,11 +69,11 @@ public class ResourceCache {
     private CompletableFuture<Optional<JSONObject>> getAchievementById(String key, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                HttpResponse<JsonNode> response = HttpUtils.get("/achievements/" + key).asJson();
-                if (response.getStatus() != HttpStatus.SC_OK) {
-                    this.logger.error("Got " + response.getStatus() + " response getting the achievement \"" + key + "\"");
+                Response response = HttpUtils.get("/achievements/" + key);
+                if (response.code() != HttpUtils.STATUS_OK) {
+                    this.logger.error("Got " + response.code() + " response getting the achievement \"" + key + "\"");
 
-                    if (response.getStatus() == HttpStatus.SC_NOT_FOUND) {
+                    if (response.code() == HttpUtils.STATUS_NOT_FOUND) {
                         this.logger.info("Got 404 for award \"" + key + "\". Removing from storage");
                         AchievementPersistenceService aps = Sponge.getServiceManager().provideUnchecked(AchievementPersistenceService.class);
                         aps.remove(key);
@@ -83,8 +81,8 @@ public class ResourceCache {
                     return Optional.empty();
                 }
 
-                return Optional.of(response.getBody().getObject());
-            } catch (UnirestException e) {
+                return Optional.of(HttpUtils.parseBody(response));
+            } catch (IOException e) {
                 e.printStackTrace();
                 return Optional.empty();
             }

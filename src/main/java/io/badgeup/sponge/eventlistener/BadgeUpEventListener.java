@@ -130,7 +130,7 @@ public abstract class BadgeUpEventListener {
                 return "grantachievement:" + event.getAchievement().getId();
             }
         });
-        
+
         this.keyProviders.put(SpawnEntityEvent.class, new EventKeyProvider<SpawnEntityEvent>() {
 
             @Override
