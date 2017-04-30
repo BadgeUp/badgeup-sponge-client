@@ -35,6 +35,7 @@ import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeCli
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
@@ -71,6 +72,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             CollideEntityEvent.class,
             ConstructEntityEvent.class,
             DropItemEvent.class, // handled below by spawnEntity
+            GameReloadEvent.class,
             GrantAchievementEvent.class, // handled below by grantAchievement
             InteractBlockEvent.class, // pretty useless - anything useful will
                                       // be in ChangeBlockEvent
