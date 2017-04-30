@@ -59,18 +59,13 @@ import java.util.concurrent.ExecutionException;
 public class BadgeUpSponge {
 
     private static Config config;
-
     @Inject @ConfigDir(sharedRoot = false) private Path configDir;
-
     @Inject @DefaultConfig(sharedRoot = false) private File configFile;
-
     @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
-
     @Inject private Logger logger;
-
     private List<BadgeUpEventListener> eventListeners = Lists.newArrayList(new GeneralEventListener(this), new MoveEventListener(this));
-
     private ResourceCache resourceCache;
+    private EventConnectionPool eventConnectionPool = new EventConnectionPool(this);
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
@@ -86,11 +81,15 @@ public class BadgeUpSponge {
 
     public void setup() {
         // Make sure all commands & event listeners are disabled so there won't
-        // be any conflicts
+        // be any conflicts. Also closes all websockets
         disable();
 
         setupConfig();
         validateConfig();
+
+        for (int i = 0; i < BadgeUpSponge.config.getBadgeUpConfig().getEventPoolConnections(); i++) {
+            this.eventConnectionPool.openNewConnection();
+        }
 
         this.eventListeners.forEach(listener -> Sponge.getEventManager().registerListeners(this, listener));
 
@@ -259,6 +258,7 @@ public class BadgeUpSponge {
         this.eventListeners.forEach(Sponge.getEventManager()::unregisterListeners);
         Sponge.getCommandManager().getOwnedBy(this).forEach(Sponge.getGame().getCommandManager()::removeMapping);
         Sponge.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
+        this.eventConnectionPool.closeAllConnections("Disabling BadgeUp Sponge plugin");
     }
 
     public static Config getConfig() {
@@ -275,6 +275,10 @@ public class BadgeUpSponge {
 
     public ResourceCache getResourceCache() {
         return this.resourceCache;
+    }
+
+    public EventConnectionPool getEventConnectionPool() {
+        return this.eventConnectionPool;
     }
 
 }

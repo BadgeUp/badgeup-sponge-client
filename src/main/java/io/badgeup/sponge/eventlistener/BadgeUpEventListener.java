@@ -1,7 +1,6 @@
 package io.badgeup.sponge.eventlistener;
 
 import io.badgeup.sponge.BadgeUpSponge;
-import io.badgeup.sponge.PostEventRunnable;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
@@ -17,7 +16,6 @@ import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
-import org.spongepowered.api.scheduler.Task;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -184,7 +182,7 @@ public abstract class BadgeUpEventListener {
     }
 
     public void send(BadgeUpEvent event) {
-        Task.builder().async().execute(new PostEventRunnable(this.plugin, event)).submit(this.plugin);
+        this.plugin.getEventConnectionPool().sendEvent(event);
     }
 
 }

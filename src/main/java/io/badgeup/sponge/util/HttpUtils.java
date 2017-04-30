@@ -20,8 +20,12 @@ import java.util.logging.Logger;
 
 public class HttpUtils {
 
+    private static final String V1_APPS = "/v1/apps/";
     private static Logger httpClientLogger = Logger.getLogger(OkHttpClient.class.getName());
-    private static OkHttpClient httpClient = new OkHttpClient.Builder().connectionPool(new ConnectionPool(5, 15, TimeUnit.SECONDS)).build();
+    private static OkHttpClient httpClient = new OkHttpClient.Builder()
+            .connectionPool(new ConnectionPool(5, 15, TimeUnit.SECONDS))
+            .pingInterval(30, TimeUnit.SECONDS)
+            .build();
     private static String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
     private static String baseUrl = getApiBaseUrl();
     private static Headers headers = getHeaders();
@@ -29,15 +33,18 @@ public class HttpUtils {
     public static final int STATUS_OK = 200;
     public static final int STATUS_CREATED = 201;
     public static final int STATUS_NOT_FOUND = 404;
-    
+    // https://tools.ietf.org/html/rfc6455#section-7.4
+    public static final int WS_CLOSED = 1000;
+
     static {
-        // Set the log level to FINE so that stacktraces from leaked responses are printed out
+        // Set the log level to FINE so that stacktraces from leaked responses
+        // are printed out
         httpClientLogger.setLevel(Level.FINE);
     }
 
     public static Response post(String url, JSONObject body) throws IOException {
         RequestBody requestBody = RequestBody.create(MediaType.parse(body.toString()), body.toString());
-        Request request = new Request.Builder().url(baseUrl + "/v1/apps/" + appId + url).headers(headers).post(requestBody).build();
+        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(headers).post(requestBody).build();
 
         return httpClient.newCall(request).execute();
     }
@@ -48,7 +55,7 @@ public class HttpUtils {
     }
 
     public static Response get(String url) throws IOException {
-        Request request = new Request.Builder().url(baseUrl + "/v1/apps/" + appId + url).headers(headers).get().build();
+        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(headers).get().build();
         return httpClient.newCall(request).execute();
     }
 
@@ -57,7 +64,7 @@ public class HttpUtils {
     }
 
     public static Request getRequest(String url) {
-        return new Request.Builder().url(baseUrl + "/v1/apps/" + appId + url).headers(headers).get().build();
+        return new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(headers).get().build();
     }
 
     public static JSONObject parseBody(Response response) throws JSONException, IOException {
@@ -68,15 +75,21 @@ public class HttpUtils {
         return httpClient;
     }
 
+    public static String getWebSocketUrl() {
+        String baseUrl = getApiBaseUrl().replace("https://", "ws://").replace("http://", "ws://");
+        return baseUrl + V1_APPS + appId + "/events/streams/create?authorization=" + getAuthHeader();
+    }
+
     private static Headers getHeaders() {
-
-        String apiKey = BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey();
-        final String authHeader = "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
-
         return new Headers.Builder()
                 .add("User-Agent", "BadgeUp_SpongeClient v" + BadgeUpSponge.getContainer().getVersion().orElse("Unknown"))
-                .add("Authorization", authHeader)
+                .add("Authorization", getAuthHeader())
                 .build();
+    }
+
+    private static String getAuthHeader() {
+        String apiKey = BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey();
+        return "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
     }
 
     private static String getApiBaseUrl() {

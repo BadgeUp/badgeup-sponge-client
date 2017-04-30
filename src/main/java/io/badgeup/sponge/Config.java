@@ -39,6 +39,12 @@ public class Config {
         public String getBaseAPIURL() {
             return this.baseURL;
         }
+
+        @Setting("event-pool-connections") private int eventPoolConnections = 1;
+
+        public int getEventPoolConnections() {
+            return this.eventPoolConnections;
+        }
     }
 
     @Setting("badgeup") private BadgeUpConfig bUpConfig = new BadgeUpConfig();
