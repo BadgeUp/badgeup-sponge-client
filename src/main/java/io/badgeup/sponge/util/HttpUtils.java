@@ -76,7 +76,7 @@ public class HttpUtils {
     }
 
     public static String getWebSocketUrl() {
-        String baseUrl = getApiBaseUrl().replace("https://", "ws://").replace("http://", "ws://");
+        String baseUrl = getApiBaseUrl().replace("https://", "wss://").replace("http://", "ws://");
         return baseUrl + V1_APPS + appId + "/events/streams/create?authorization=" + getAuthHeader();
     }
 

@@ -12,6 +12,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,12 @@ public class EventConnectionPool {
     public void sendEvent(BadgeUpEvent event) {
         event.setDiscardable(false);
 
+        int size = event.build().toString().getBytes(StandardCharsets.UTF_8).length;
+        if (size > 5000) {
+            this.plugin.getLogger().warn("Event too large: " + event.build().toString());
+            return;
+        }
+
         WebSocket leastFullSocket = this.sockets.get(0);
         for (WebSocket ws : this.sockets) {
             if (ws.queueSize() < leastFullSocket.queueSize()) {
@@ -35,16 +43,26 @@ public class EventConnectionPool {
             }
         }
 
-        // TODO do something with this
         boolean isSuccessful = leastFullSocket.send(event.build().toString());
 
+        if (!isSuccessful) {
+            this.sockets.remove(leastFullSocket);
+            isSuccessful = openNewConnection().send(event.build().toString());
+
+            if (!isSuccessful) {
+                this.plugin.getLogger().error("Failed to send event after opening new connection");
+            }
+        }
+
         DebugCommandExecutor.getDebugMessageChannelForPlayer(event.getSubject())
-                .send(Text.of((isSuccessful ? TextColors.GREEN : TextColors.RED), constructEventText(event)));
+                .send(constructEventText(event));
     }
 
-    public void openNewConnection() {
+    public WebSocket openNewConnection() {
         Request wsRequest = new Request.Builder().url(HttpUtils.getWebSocketUrl()).build();
-        this.sockets.add(HttpUtils.getHttpClient().newWebSocket(wsRequest, new EventWebSocketListener(this.plugin)));
+        WebSocket socket = HttpUtils.getHttpClient().newWebSocket(wsRequest, new EventWebSocketListener(this.plugin));
+        this.sockets.add(socket);
+        return socket;
     }
 
     public void closeAllConnections(String reason) {
@@ -61,7 +79,7 @@ public class EventConnectionPool {
             playerName = playerOpt.get().getName();
         }
 
-        return Text.of(
+        return Text.of(TextColors.GREEN,
                 "<", playerName, "> ",
                 Text.builder(event.getKey()).onHover(TextActions.showText(Text.of(event.build().toString(4)))).build());
     }

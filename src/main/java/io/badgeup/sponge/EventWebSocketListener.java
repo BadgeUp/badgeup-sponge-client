@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
+import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +32,18 @@ public class EventWebSocketListener extends WebSocketListener {
     }
 
     @Override
+    public void onClosing(WebSocket webSocket, int code, String reason) {
+        this.plugin.getLogger().error("WebSocket closed (Code: " + code + ", Reason: " + reason + "). Starting new connection.");
+    }
+
+    @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-        this.plugin.getLogger().error("Error with WebSocket:");
-        t.printStackTrace();
+        if (t instanceof EOFException) {
+            this.plugin.getLogger().info("WebSocket disconnected. Reconnecting");
+        } else {
+            this.plugin.getLogger().error("Error with WebSocket:");
+            t.printStackTrace();
+        }
     }
 
     @Override
@@ -64,7 +74,6 @@ public class EventWebSocketListener extends WebSocketListener {
         for (JSONObject record : completedAchievements) {
             try {
                 Optional<JSONObject> achievementOpt = this.plugin.getResourceCache().getAchievementById(record.getString("achievementId")).get();
-                System.out.println(achievementOpt.isPresent());
                 if (!achievementOpt.isPresent()) {
                     continue;
                 }

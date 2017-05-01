@@ -244,8 +244,9 @@ public class BadgeUpSponge {
                 e.printStackTrace();
             }
 
-            // Remove the base URL config setting only intended for development
+            // Remove config settings only intended for development
             configNode.getNode("badgeup").removeChild("base-api-url");
+            configNode.getNode("badgeup").removeChild("event-pool-connections");
 
             this.configLoader.save(configNode);
             this.logger.info("Config file successfully generated.");
