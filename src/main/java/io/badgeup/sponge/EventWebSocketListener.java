@@ -12,6 +12,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.io.EOFException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class EventWebSocketListener extends WebSocketListener {
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-        if (t instanceof EOFException) {
+        if (t instanceof EOFException || t instanceof SocketException) {
             this.plugin.getLogger().info("WebSocket disconnected. Reconnecting");
         } else {
             this.plugin.getLogger().error("Error with WebSocket:");
