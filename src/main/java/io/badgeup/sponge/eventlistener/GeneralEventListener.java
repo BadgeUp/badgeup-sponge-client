@@ -128,7 +128,13 @@ public class GeneralEventListener extends BadgeUpEventListener {
 
     @Listener(order = Order.POST)
     public void pickupItem(ChangeInventoryEvent.Pickup event, @Root Player player) {
-        processEvent(event, player, event.getTargetEntity().item().get().getCount());
+        int itemQuantity = event.getTargetEntity().item().get().getCount();
+        // Sometimes it's 0 for some odd reason
+        if (itemQuantity == 0) {
+            return;
+        }
+        
+        processEvent(event, player, itemQuantity);
     }
 
     @Listener(order = Order.POST)
