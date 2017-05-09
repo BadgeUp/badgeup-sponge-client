@@ -40,7 +40,8 @@ public class Config {
             return this.baseURL;
         }
 
-        // 3 connections by default to try to spread connections out over BUp servers
+        // 3 connections by default to try to spread connections out over BUp
+        // servers
         @Setting("event-pool-connections") private int eventPoolConnections = 3;
 
         public int getEventPoolConnections() {

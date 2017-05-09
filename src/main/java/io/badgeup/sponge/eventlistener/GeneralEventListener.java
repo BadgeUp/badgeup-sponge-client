@@ -12,7 +12,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.ComparatorTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
@@ -106,11 +105,11 @@ public class GeneralEventListener extends BadgeUpEventListener {
 
         if (event instanceof DropItemEvent.Dispense) {
             DropItemEvent.Dispense dropEvent = (DropItemEvent.Dispense) event;
-            
+
             if (dropEvent.getEntities().size() <= 0) {
                 return;
             }
-            
+
             int quantityDropped = ((Item) dropEvent.getEntities().get(0)).item().get().getCount();
             processEvent(event, player, quantityDropped);
         } else {
@@ -135,7 +134,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
         if (itemQuantity == 0) {
             return;
         }
-        
+
         processEvent(event, player, itemQuantity);
     }
 
@@ -148,15 +147,18 @@ public class GeneralEventListener extends BadgeUpEventListener {
         final UUID uuid = player.getUniqueId();
         final int increment = 1;
 
-        System.out.println(event.getTransactions().size());
         for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
             String key = keyProvider.provide(event);
-            
+
             BlockSnapshot finalBlock = transaction.getFinal();
-            // Check if the block is a "modifiable" block like a redstone-related block
-            // So we can filter out crap like leaves being changed somehow by the player
-            // Keys.DELAY is for repeaters, Keys.COMPARATOR_TYPE is for comparators
-            if (event instanceof ChangeBlockEvent.Modify && !(finalBlock.supports(Keys.POWERED) || finalBlock.supports(Keys.DELAY) || finalBlock.supports(Keys.COMPARATOR_TYPE))) {
+            // Check if the block is a "modifiable" block like a
+            // redstone-related block so we can filter out crap like leaves
+            // being changed somehow by the player
+            //
+            // Keys.DELAY is for repeaters, Keys.COMPARATOR_TYPE is for
+            // comparators
+            if (event instanceof ChangeBlockEvent.Modify
+                    && !(finalBlock.supports(Keys.POWERED) || finalBlock.supports(Keys.DELAY) || finalBlock.supports(Keys.COMPARATOR_TYPE))) {
                 continue;
             } else if (event instanceof ChangeBlockEvent.Place || event instanceof ChangeBlockEvent.Modify) {
                 key += ":" + transaction.getFinal().getState().getType().getId();
