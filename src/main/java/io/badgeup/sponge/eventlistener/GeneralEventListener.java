@@ -106,7 +106,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
         if (event instanceof DropItemEvent.Dispense) {
             DropItemEvent.Dispense dropEvent = (DropItemEvent.Dispense) event;
 
-            if (dropEvent.getEntities().size() <= 0) {
+            if (dropEvent.getEntities().isEmpty()) {
                 return;
             }
 
