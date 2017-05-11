@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
+	compile 'org.spongepowered:spongeapi:6.0.0'
 	compile 'com.squareup.okhttp3:okhttp:3.7.0'
     compile 'org.json:json:20160212'
 }
