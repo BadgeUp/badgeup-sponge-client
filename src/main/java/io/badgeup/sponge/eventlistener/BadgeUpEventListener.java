@@ -1,7 +1,6 @@
 package io.badgeup.sponge.eventlistener;
 
 import io.badgeup.sponge.BadgeUpSponge;
-import io.badgeup.sponge.PostEventRunnable;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
@@ -13,10 +12,10 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
+import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
-import org.spongepowered.api.scheduler.Task;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -129,6 +128,14 @@ public abstract class BadgeUpEventListener {
                 return "grantachievement:" + event.getAchievement().getId();
             }
         });
+
+        this.keyProviders.put(SpawnEntityEvent.class, new EventKeyProvider<SpawnEntityEvent>() {
+
+            @Override
+            public String provide(SpawnEntityEvent event) {
+                return getDefault(event) + ":" + event.getEntities().get(0).getType().getId();
+            }
+        });
     }
 
     public void processEvent(Event event, Player player) {
@@ -175,7 +182,7 @@ public abstract class BadgeUpEventListener {
     }
 
     public void send(BadgeUpEvent event) {
-        Task.builder().async().execute(new PostEventRunnable(this.plugin, event)).submit(this.plugin);
+        this.plugin.getEventConnectionPool().sendEvent(event);
     }
 
 }

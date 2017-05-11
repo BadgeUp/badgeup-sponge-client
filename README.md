@@ -31,4 +31,4 @@ To run the server: `docker run -p 127.0.0.1:25565:25565 --interactive badgeup-sp
 
 ## Disclaimer
 
-*The use of the SpongePowered or other third-party logos and trademarks is not intended to imply endorsement of BadgeUp LLC. BadgeUp does not claim ownership of any third-party logs and trademarks used.*
+*The use of the SpongePowered or other third-party logos and trademarks is not intended to imply endorsement of BadgeUp LLC. BadgeUp does not claim ownership of any third-party logos and trademarks used.*

@@ -126,10 +126,8 @@ public class FlatfileAchievementPersistenceService implements AchievementPersist
     }
 
     private JSONObject readFromFile() {
-        try {
-            Scanner scanner = new Scanner(this.achievementFile);
+        try (Scanner scanner = new Scanner(this.achievementFile)) {
             String jsonTxt = scanner.useDelimiter("\\Z").next();
-            scanner.close();
             return new JSONObject(jsonTxt);
         } catch (Exception e) {
             // This shouldn't ever happen
@@ -139,12 +137,10 @@ public class FlatfileAchievementPersistenceService implements AchievementPersist
     }
 
     private void saveToFile() {
-        try {
+        try (FileWriter writer = new FileWriter(this.achievementFile)) {
             this.achievementFile.createNewFile(); // Only creates if not already
                                                   // exists
-            FileWriter writer = new FileWriter(this.achievementFile);
             writer.write(this.unpresentedAchievements.toString());
-            writer.close();
         } catch (IOException e) {
             // Shouldn't ever happen
             e.printStackTrace();

@@ -22,9 +22,9 @@ public class ExperienceAward extends Award {
             this.plugin.getLogger().error("No experience amount specified. Aborting.");
             return false;
         }
-        
+
         int existingExperience = player.get(Keys.TOTAL_EXPERIENCE).get();
-        
+
         DataTransactionResult result = player.offer(Keys.TOTAL_EXPERIENCE, existingExperience + expAmountOpt.get());
         return result.isSuccessful();
     }

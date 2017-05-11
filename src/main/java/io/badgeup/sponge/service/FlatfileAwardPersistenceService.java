@@ -126,10 +126,8 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
     }
 
     private JSONObject readFromFile() {
-        try {
-            Scanner scanner = new Scanner(this.awardsFile);
+        try (Scanner scanner = new Scanner(this.awardsFile)) {
             String jsonTxt = scanner.useDelimiter("\\Z").next();
-            scanner.close();
             return new JSONObject(jsonTxt);
         } catch (Exception e) {
             // This shouldn't ever happen
@@ -139,10 +137,9 @@ public class FlatfileAwardPersistenceService implements AwardPersistenceService 
     }
 
     private void saveToFile() {
-        try {
+        try (FileWriter writer = new FileWriter(this.awardsFile)) {
             this.awardsFile.createNewFile(); // Only creates if not already
                                              // exists
-            FileWriter writer = new FileWriter(this.awardsFile);
             writer.write(this.pendingAwards.toString());
             writer.close();
         } catch (IOException e) {

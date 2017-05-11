@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
@@ -20,6 +21,7 @@ import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
@@ -34,9 +36,12 @@ import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeCli
 import org.spongepowered.api.event.filter.Getter;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.filter.type.Exclude;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
+import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ChannelRegistrationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -67,7 +72,14 @@ public class GeneralEventListener extends BadgeUpEventListener {
             CollideBlockEvent.class,
             CollideEntityEvent.class,
             ConstructEntityEvent.class,
+            DropItemEvent.class, // handled below by spawnEntity
+            GameReloadEvent.class,
             GrantAchievementEvent.class, // handled below by grantAchievement
+            InteractBlockEvent.class, // pretty useless - anything useful will
+                                      // be in ChangeBlockEvent
+            InteractItemEvent.class, // pretty useless
+            InteractInventoryEvent.Close.class, // pretty redundant to have both
+                                                // open and close
             MoveEntityEvent.class, // handled in MoveEventListener
             NotifyNeighborBlockEvent.class,
             PlayerChangeClientSettingsEvent.class,
@@ -82,7 +94,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    @Exclude({DropItemEvent.Pre.class})
+    @Exclude({ConstructEntityEvent.class, DropItemEvent.Pre.class})
     public void spawnEntity(Event event, @Root EntitySpawnCause cause)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (!(cause.getEntity() instanceof Player)) {
@@ -93,7 +105,23 @@ public class GeneralEventListener extends BadgeUpEventListener {
 
         if (event instanceof DropItemEvent.Dispense) {
             DropItemEvent.Dispense dropEvent = (DropItemEvent.Dispense) event;
-            int quantityDropped = ((Item) dropEvent.getEntities().get(0)).item().get().getCount();
+
+            if (dropEvent.getEntities().isEmpty()) {
+                return;
+            }
+
+            int quantityDropped = 0;
+            try {
+                quantityDropped = ((Item) dropEvent.getEntities().get(0)).item().get().getCount();
+            } catch (IndexOutOfBoundsException err) {
+                // suppress IndexOutOfBoundsException error and bail
+                // this fixes an "impossible" issue #27
+            }
+
+            if (quantityDropped == 0) {
+                return;
+            }
+
             processEvent(event, player, quantityDropped);
         } else {
             processEvent(event, player);
@@ -112,7 +140,13 @@ public class GeneralEventListener extends BadgeUpEventListener {
 
     @Listener(order = Order.POST)
     public void pickupItem(ChangeInventoryEvent.Pickup event, @Root Player player) {
-        processEvent(event, player, event.getTargetEntity().item().get().getCount());
+        int itemQuantity = event.getTargetEntity().item().get().getCount();
+        // Sometimes it's 0 for some odd reason
+        if (itemQuantity == 0) {
+            return;
+        }
+
+        processEvent(event, player, itemQuantity);
     }
 
     @Listener(order = Order.POST)
@@ -126,7 +160,18 @@ public class GeneralEventListener extends BadgeUpEventListener {
 
         for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
             String key = keyProvider.provide(event);
-            if (event instanceof ChangeBlockEvent.Place || event instanceof ChangeBlockEvent.Modify) {
+
+            BlockSnapshot finalBlock = transaction.getFinal();
+            // Check if the block is a "modifiable" block like a
+            // redstone-related block so we can filter out crap like leaves
+            // being changed somehow by the player
+            //
+            // Keys.DELAY is for repeaters, Keys.COMPARATOR_TYPE is for
+            // comparators
+            if (event instanceof ChangeBlockEvent.Modify
+                    && !(finalBlock.supports(Keys.POWERED) || finalBlock.supports(Keys.DELAY) || finalBlock.supports(Keys.COMPARATOR_TYPE))) {
+                continue;
+            } else if (event instanceof ChangeBlockEvent.Place || event instanceof ChangeBlockEvent.Modify) {
                 key += ":" + transaction.getFinal().getState().getType().getId();
             } else if (event instanceof ChangeBlockEvent.Break) {
                 key += ":" + transaction.getOriginal().getState().getType().getId();
@@ -155,7 +200,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
-    public void entityDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player inventory)
+    public void playerDeath(DestructEntityEvent.Death event, @Getter("getTargetEntity") Player player)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         String key = "death";
         Optional<DamageSource> dmgSrcOpt = event.getCause().first(DamageSource.class);
@@ -163,7 +208,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             key += ":" + dmgSrcOpt.get().getType().getId();
         }
 
-        processEvent(event, (Player) event.getTargetEntity(), key);
+        processEvent(event, player, key);
     }
 
     @Listener

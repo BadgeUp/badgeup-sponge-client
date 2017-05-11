@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.mashape.unirest.http.Unirest;
 import io.badgeup.sponge.command.executor.BadgeUpInitCommandExecutor;
 import io.badgeup.sponge.command.executor.CreateItemAwardCommandExecutor;
 import io.badgeup.sponge.command.executor.DebugCommandExecutor;
@@ -19,16 +18,12 @@ import io.badgeup.sponge.service.AwardPersistenceService;
 import io.badgeup.sponge.service.FlatfileAchievementPersistenceService;
 import io.badgeup.sponge.service.FlatfileAwardPersistenceService;
 import io.badgeup.sponge.util.Constants;
-import io.badgeup.sponge.util.InsecureHostnameVerifier;
-import io.badgeup.sponge.util.InsecureTrustManager;
 import io.badgeup.sponge.util.ResourceCache;
 import io.badgeup.sponge.util.Util;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -53,8 +48,6 @@ import org.spongepowered.api.text.title.Title;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -62,25 +55,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-
 @Plugin(id = Constants.PLUGIN_ID)
 public class BadgeUpSponge {
 
     private static Config config;
-
     @Inject @ConfigDir(sharedRoot = false) private Path configDir;
-
     @Inject @DefaultConfig(sharedRoot = false) private File configFile;
-
     @Inject @DefaultConfig(sharedRoot = false) private ConfigurationLoader<CommentedConfigurationNode> configLoader;
-
     @Inject private Logger logger;
-
     private List<BadgeUpEventListener> eventListeners = Lists.newArrayList(new GeneralEventListener(this), new MoveEventListener(this));
-
     private ResourceCache resourceCache;
+    private EventConnectionPool eventConnectionPool = new EventConnectionPool(this);
 
     @Listener(order = Order.EARLY)
     public void preInit(GamePreInitializationEvent event) {
@@ -96,18 +81,14 @@ public class BadgeUpSponge {
 
     public void setup() {
         // Make sure all commands & event listeners are disabled so there won't
-        // be any conflicts
+        // be any conflicts. Also closes all websockets
         disable();
 
         setupConfig();
         validateConfig();
 
-        try {
-            setupRestClient();
-        } catch (KeyManagementException | NoSuchAlgorithmException e) {
-            this.logger.error("Could not initialize the REST client with TLS enabled. Disabling plugin.");
-            e.printStackTrace();
-            return;
+        for (int i = 0; i < BadgeUpSponge.config.getBadgeUpConfig().getEventPoolConnections(); i++) {
+            this.eventConnectionPool.openNewConnection();
         }
 
         this.eventListeners.forEach(listener -> Sponge.getEventManager().registerListeners(this, listener));
@@ -164,20 +145,6 @@ public class BadgeUpSponge {
         subCommands.put(Arrays.asList("awards"), CommandSpec.builder().children(awardsSubCommands).build());
 
         Sponge.getCommandManager().register(this, CommandSpec.builder().children(subCommands).build(), "badgeup");
-    }
-
-    private void setupRestClient() throws NoSuchAlgorithmException, KeyManagementException {
-        SSLContext sslcontext = SSLContext.getInstance("TLSv1");
-        System.setProperty("https.protocols", "TLSv1");
-        TrustManager[] trustAllCerts = {new InsecureTrustManager()};
-        sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
-
-        CloseableHttpClient httpclient = HttpClients.custom()
-                .setSSLHostnameVerifier(new InsecureHostnameVerifier())
-                .setSSLContext(sslcontext)
-                .build();
-
-        Unirest.setHttpClient(httpclient);
     }
 
     // Run asynchronously
@@ -277,8 +244,9 @@ public class BadgeUpSponge {
                 e.printStackTrace();
             }
 
-            // Remove the base URL config setting only intended for development
+            // Remove config settings only intended for development
             configNode.getNode("badgeup").removeChild("base-api-url");
+            configNode.getNode("badgeup").removeChild("event-pool-connections");
 
             this.configLoader.save(configNode);
             this.logger.info("Config file successfully generated.");
@@ -291,6 +259,7 @@ public class BadgeUpSponge {
         this.eventListeners.forEach(Sponge.getEventManager()::unregisterListeners);
         Sponge.getCommandManager().getOwnedBy(this).forEach(Sponge.getGame().getCommandManager()::removeMapping);
         Sponge.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
+        this.eventConnectionPool.closeAllConnections("Disabling BadgeUp Sponge plugin");
     }
 
     public static Config getConfig() {
@@ -307,6 +276,10 @@ public class BadgeUpSponge {
 
     public ResourceCache getResourceCache() {
         return this.resourceCache;
+    }
+
+    public EventConnectionPool getEventConnectionPool() {
+        return this.eventConnectionPool;
     }
 
 }

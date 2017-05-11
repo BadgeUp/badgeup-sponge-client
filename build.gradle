@@ -17,7 +17,7 @@ sponge {
 }
 
 group = 'io.badgeup'
-version = '2.1.0'
+version = '2.1.4'
 description = 'Easily add Achievements and Awards to your Sponge server'
 
 sourceCompatibility = 1.8
@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
 	compile 'org.spongepowered:spongeapi:6.0.0-SNAPSHOT'
-	compile 'com.mashape.unirest:unirest-java:1.4.9'
+	compile 'com.squareup.okhttp3:okhttp:3.7.0'
     compile 'org.json:json:20160212'
 }
 
@@ -41,9 +41,10 @@ shadowJar {
     version = 'v' + version
 
 	// Relocate apache packages because of Forge
-	relocate 'org.apache', 'relocated.org.apache'
-	// Relocate JSON lib because of incompatibilities with modpacks like FTB Beyond
-	relocate 'org.json', 'relocated.org.json'
+	relocate 'org.apache', 'badgeup.org.apache'
+	// Relocate these libraries because of incompatibilities with modpacks like FTB Beyond
+	relocate 'org.json', 'badgeup.org.json'
+	
     dependencies {
         exclude(dependency('org.spongepowered:spongeapi'))
     }

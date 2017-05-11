@@ -1,11 +1,8 @@
 package io.badgeup.sponge.command.executor;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.util.HttpUtils;
-import org.apache.http.HttpStatus;
+import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,7 +24,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -131,16 +128,15 @@ public class CreateItemAwardCommandExecutor implements CommandExecutor {
         @Override
         public void run() {
 
-            try {
-                HttpResponse<JsonNode> response = HttpUtils.post("/awards").body(this.body).asJson();
-                if (response.getStatus() != HttpStatus.SC_CREATED) {
+            try (Response response = HttpUtils.post("/awards", this.body)) {
+                if (response.code() != HttpUtils.STATUS_CREATED) {
                     this.player.sendMessage(Text.of(TextColors.RED, "Failed to create award. See console for stacktrace."));
                     this.logger.error(
-                            "Got response code " + response.getStatus() + " when creating an award. Response body: " + response.getBody().toString());
+                            "Got response code " + response.code() + " when creating an award. Response body: " + response.body().string());
                     return;
                 }
 
-                JSONObject body = response.getBody().getObject();
+                JSONObject body = HttpUtils.parseBody(response);
                 String awardId = body.getString("id");
 
                 URL url = new URL("https://dashboard.badgeup.io/#/awards/edit/" + awardId);
@@ -149,7 +145,7 @@ public class CreateItemAwardCommandExecutor implements CommandExecutor {
 
                 this.player.sendMessage(Text.of(TextColors.GREEN, "Successfully created award. View it on the dashboard ", dashboardLink));
 
-            } catch (UnirestException | MalformedURLException e) {
+            } catch (IOException e) {
                 this.player.sendMessage(Text.of(TextColors.RED, "Failed to create award. See console for stacktrace."));
                 e.printStackTrace();
             }
