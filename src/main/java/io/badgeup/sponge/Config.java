@@ -67,4 +67,26 @@ public class Config {
         return this.fireworks;
     }
 
+    @ConfigSerializable
+    public static class SoundEffectConfig {
+
+        @Setting("enabled") private boolean enabled = true;
+
+        public boolean isEnabled() {
+            return this.enabled;
+        }
+
+        @Setting("sound") private String sound = "minecraft:entity.experience_orb.pickup";
+
+        public String getSound() {
+            return this.sound;
+        }
+    }
+
+    @Setting("sounds") private SoundEffectConfig soundsConfig = new SoundEffectConfig();
+
+    public SoundEffectConfig getSoundsConfig() {
+        return this.soundsConfig;
+    }
+
 }

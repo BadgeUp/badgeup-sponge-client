@@ -31,6 +31,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -175,6 +176,14 @@ public class BadgeUpSponge {
 
         if (config.doFireworks()) {
             Sponge.getScheduler().createTaskBuilder().intervalTicks(10).execute(new FireworkConsumer(player)).submit(this);
+        }
+
+        if (config.getSoundsConfig().isEnabled()) {
+            Optional<SoundType> soundTypeOpt = Sponge.getRegistry().getType(SoundType.class, config.getSoundsConfig().getSound());
+
+            if (soundTypeOpt.isPresent()) {
+                Sponge.getScheduler().createTaskBuilder().intervalTicks(10).execute(new SoundEffectConsumer(player, soundTypeOpt.get())).submit(this);
+            }
         }
 
         AwardPersistenceService aps = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
