@@ -70,13 +70,14 @@ public class Config {
     @ConfigSerializable
     public static class SoundEffectConfig {
 
-        @Setting("enabled") private boolean enabled = true;
+        @Setting("enabled") private boolean enabled = false;
 
         public boolean isEnabled() {
             return this.enabled;
         }
 
-        @Setting("sound") private String sound = "minecraft:entity.experience_orb.pickup";
+        @Setting(value = "sound", comment = "See http://minecraft.gamepedia.com/Sounds.json for all sounds") private String sound =
+                "minecraft:entity.experience_orb.pickup";
 
         public String getSound() {
             return this.sound;
