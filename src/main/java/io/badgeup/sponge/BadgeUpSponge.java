@@ -173,6 +173,10 @@ public class BadgeUpSponge {
                     TextColors.GREEN, " has just completed ", achTextBuilder.build(), TextColors.GREEN, "!"));
         }
 
+        if (config.doFireworks()) {
+            Sponge.getScheduler().createTaskBuilder().intervalTicks(10).execute(new FireworkConsumer(player)).submit(this);
+        }
+
         AwardPersistenceService aps = Sponge.getServiceManager().provide(AwardPersistenceService.class).get();
         Map<String, Integer> playerAwards;
         try {

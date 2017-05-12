@@ -61,4 +61,10 @@ public class Config {
         return this.broadcastAchievements;
     }
 
+    @Setting("fireworks") private boolean fireworks = true;
+
+    public boolean doFireworks() {
+        return this.fireworks;
+    }
+
 }
