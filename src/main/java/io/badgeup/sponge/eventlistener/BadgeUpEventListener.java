@@ -4,6 +4,7 @@ import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.event.BadgeUpEvent;
 import io.badgeup.sponge.event.Modifier;
 import io.badgeup.sponge.event.ModifierOperation;
+import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.Hostile;
@@ -11,14 +12,17 @@ import org.spongepowered.api.entity.living.monster.Boss;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.achievement.GrantAchievementEvent;
+import org.spongepowered.api.event.action.FishingEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -134,6 +138,20 @@ public abstract class BadgeUpEventListener {
             @Override
             public String provide(SpawnEntityEvent event) {
                 return getDefault(event) + ":" + event.getEntities().get(0).getType().getId();
+            }
+        });
+
+        this.keyProviders.put(FishingEvent.Stop.class, new EventKeyProvider<FishingEvent.Stop>() {
+
+            @Override
+            public String provide(FishingEvent.Stop event) {
+                List<Transaction<ItemStackSnapshot>> transactions = event.getItemStackTransaction();
+
+                if (transactions.isEmpty()) {
+                    return getDefault(event);
+                }
+
+                return getDefault(event) + ":" + transactions.get(0).getFinal().getType().getId();
             }
         });
     }
