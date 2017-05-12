@@ -21,6 +21,8 @@ In certain cases, extra commonly-used information is appended to the end of even
   * Ex: `destructentity:death:passive:minecraft:chicken`
 * `spawnentity:<entity ID>`: When spawning entities (like throwing eggs or shooting arrows), the entity ID is appended to the event key
   * Ex: `spawnentity:minecraft:egg`
+* `fishing:end:<item ID>`: When fishing, the ID of the item caught will be appended to the event key.
+  * Ex: `fishing:end:minecraft:fish`
 
 ## Disabled Events
 
