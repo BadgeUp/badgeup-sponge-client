@@ -12,6 +12,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Item;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
@@ -31,6 +33,7 @@ import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.ConstructEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.entity.SpawnEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.AnimateHandEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.PlayerChangeClientSettingsEvent;
 import org.spongepowered.api.event.filter.Getter;
@@ -103,26 +106,33 @@ public class GeneralEventListener extends BadgeUpEventListener {
 
         Player player = (Player) cause.getEntity();
 
-        if (event instanceof DropItemEvent.Dispense) {
-            DropItemEvent.Dispense dropEvent = (DropItemEvent.Dispense) event;
-
-            if (dropEvent.getEntities().isEmpty()) {
+        if (event instanceof SpawnEntityEvent) {
+            if (((SpawnEntityEvent) event).getEntities().isEmpty()) {
                 return;
             }
 
-            int quantityDropped = 0;
-            try {
-                quantityDropped = ((Item) dropEvent.getEntities().get(0)).item().get().getCount();
-            } catch (IndexOutOfBoundsException err) {
-                // suppress IndexOutOfBoundsException error and bail
-                // this fixes an "impossible" issue #27
-            }
+            Entity entity = ((SpawnEntityEvent) event).getEntities().get(0);
 
-            if (quantityDropped == 0) {
+            if (entity.getType().equals(EntityTypes.FISHING_HOOK)) {
+                // Ignore fishing hooks - handled by FishingEvent
                 return;
             }
 
-            processEvent(event, player, quantityDropped);
+            if (event instanceof DropItemEvent.Dispense) {
+                int quantityDropped = 0;
+                try {
+                    quantityDropped = ((Item) entity).item().get().getCount();
+                } catch (IndexOutOfBoundsException err) {
+                    // suppress IndexOutOfBoundsException error and bail
+                    // this fixes an "impossible" issue #27
+                }
+
+                if (quantityDropped == 0) {
+                    return;
+                }
+
+                processEvent(event, player, quantityDropped);
+            }
         } else {
             processEvent(event, player);
         }
