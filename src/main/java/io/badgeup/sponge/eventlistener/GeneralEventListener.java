@@ -65,7 +65,9 @@ public class GeneralEventListener extends BadgeUpEventListener {
     @Listener(order = Order.POST)
     @Exclude({
             AnimateHandEvent.class,
-            ChangeBlockEvent.class, // handled below by changeBlock
+            // handled below by changeBlock
+            // have to include ChangeBlockEvent.Pre b/c of https://github.com/SpongePowered/SpongeForge/issues/1513
+            ChangeBlockEvent.class, ChangeBlockEvent.Pre.class,
             // Pickup handled below by pickupItem
             ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Pickup.class,
             ChangeStatisticEvent.class,
