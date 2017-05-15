@@ -26,7 +26,6 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
     maven { url 'http://repo.spongepowered.org/maven' }
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
