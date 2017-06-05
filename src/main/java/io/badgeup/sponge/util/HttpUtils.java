@@ -77,12 +77,12 @@ public class HttpUtils {
 
     public static String getWebSocketUrl() {
         String baseUrl = getApiBaseUrl().replace("https://", "wss://").replace("http://", "ws://");
-        return baseUrl + V1_APPS + appId + "/events/streams/create?authorization=" + getAuthHeader();
+        return baseUrl + V1_APPS + appId + "/events/streams/create?authorization=" + getAuthHeader() + "&userAgent=" + getUserAgent();
     }
 
     private static Headers getHeaders() {
         return new Headers.Builder()
-                .add("User-Agent", "BadgeUp_SpongeClient v" + BadgeUpSponge.getContainer().getVersion().orElse("Unknown"))
+                .add("User-Agent", getUserAgent())
                 .add("Authorization", getAuthHeader())
                 .build();
     }
@@ -90,6 +90,10 @@ public class HttpUtils {
     private static String getAuthHeader() {
         String apiKey = BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey();
         return "Basic " + new String(Base64.getEncoder().encode((apiKey + ":").getBytes()));
+    }
+
+    private static String getUserAgent() {
+        return "BadgeUp_SpongeClient v" + BadgeUpSponge.getContainer().getVersion().orElse("Unknown");
     }
 
     private static String getApiBaseUrl() {
