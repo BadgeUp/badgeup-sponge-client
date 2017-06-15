@@ -47,6 +47,13 @@ public class Config {
         public int getEventPoolConnections() {
             return this.eventPoolConnections;
         }
+        
+        @Setting("collect-event-data") private boolean collectEventData = false;
+        
+        public boolean collectEventData() {
+            return this.collectEventData;
+        }
+        
     }
 
     @Setting("badgeup") private BadgeUpConfig bUpConfig = new BadgeUpConfig();

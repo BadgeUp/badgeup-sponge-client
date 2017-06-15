@@ -1,5 +1,6 @@
 package io.badgeup.sponge.event;
 
+import io.badgeup.sponge.BadgeUpSponge;
 import io.badgeup.sponge.util.JSONSerializable;
 import io.badgeup.sponge.util.ObjectSerializers;
 import org.json.JSONArray;
@@ -64,6 +65,10 @@ public class BadgeUpEvent {
      */
     @SuppressWarnings("rawtypes")
     public void addDataEntry(final String key, Object value) {
+        if (!BadgeUpSponge.getConfig().getBadgeUpConfig().collectEventData()) {
+            return;
+        }
+        
         if (value instanceof Player || value instanceof Cause || value instanceof Class) {
             return;
         }
