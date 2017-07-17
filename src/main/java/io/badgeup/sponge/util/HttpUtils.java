@@ -28,7 +28,6 @@ public class HttpUtils {
             .build();
     private static String appId = Util.parseAppIdFromAPIKey(BadgeUpSponge.getConfig().getBadgeUpConfig().getAPIKey()).get();
     private static String baseUrl = getApiBaseUrl();
-    private static Headers headers = getHeaders();
 
     public static final int STATUS_OK = 200;
     public static final int STATUS_CREATED = 201;
@@ -44,27 +43,27 @@ public class HttpUtils {
 
     public static Response post(String url, JSONObject body) throws IOException {
         RequestBody requestBody = RequestBody.create(MediaType.parse(body.toString()), body.toString());
-        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(headers).post(requestBody).build();
+        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(getHeaders(requestBody)).post(requestBody).build();
 
         return httpClient.newCall(request).execute();
     }
 
     public static Response getRaw(String url) throws IOException {
-        Request request = new Request.Builder().url(baseUrl + url).headers(headers).get().build();
+        Request request = new Request.Builder().url(baseUrl + url).headers(getHeaders()).get().build();
         return httpClient.newCall(request).execute();
     }
 
     public static Response get(String url) throws IOException {
-        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(headers).get().build();
+        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(getHeaders()).get().build();
         return httpClient.newCall(request).execute();
     }
 
     public static Request getRawRequest(String url) {
-        return new Request.Builder().url(baseUrl + url).headers(headers).get().build();
+        return new Request.Builder().url(baseUrl + url).headers(getHeaders()).get().build();
     }
 
     public static Request getRequest(String url) {
-        return new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(headers).get().build();
+        return new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(getHeaders()).get().build();
     }
 
     public static JSONObject parseBody(Response response) throws JSONException, IOException {
@@ -80,11 +79,26 @@ public class HttpUtils {
         return baseUrl + V1_APPS + appId + "/events/streams/create?authorization=" + getAuthHeader() + "&userAgent=" + getUserAgent();
     }
 
-    private static Headers getHeaders() {
+    private static Headers.Builder getHeadersBuilder() {
         return new Headers.Builder()
                 .add("User-Agent", getUserAgent())
-                .add("Authorization", getAuthHeader())
-                .build();
+                .add("Authorization", getAuthHeader());
+    }
+
+    private static Headers getHeaders() {
+        return getHeadersBuilder().build();
+    }
+
+    private static Headers getHeaders(RequestBody body) {
+        try {
+            return getHeadersBuilder()
+                    .add("Content-Type", "application/json")
+                    .add("Content-Length", String.valueOf(body.contentLength()))
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return getHeaders();
+        }
     }
 
     private static String getAuthHeader() {
