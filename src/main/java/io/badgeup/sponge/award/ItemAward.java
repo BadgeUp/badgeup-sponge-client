@@ -90,7 +90,7 @@ public class ItemAward extends Award {
                             .error("Invalid enchantment level of " + enchantLevel + ". Skipping enchantment.");
                     continue;
                 }
-                
+
                 enchantments.add(Enchantment.builder().type(enchantmentTypeOpt.get()).level(enchantLevel).build());
             }
             if (!enchantments.isEmpty()) {

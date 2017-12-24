@@ -68,7 +68,7 @@ public class BadgeUpEvent {
         if (!BadgeUpSponge.getConfig().getBadgeUpConfig().collectEventData()) {
             return;
         }
-        
+
         if (value instanceof Player || value instanceof Cause || value instanceof Class) {
             return;
         }

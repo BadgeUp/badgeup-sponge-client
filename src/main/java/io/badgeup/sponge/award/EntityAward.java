@@ -63,7 +63,7 @@ public class EntityAward extends Award {
         if (displayNameOpt.isPresent()) {
             entity.offer(Keys.DISPLAY_NAME, displayNameOpt.get());
         }
-        
+
         return player.getWorld().spawnEntity(entity);
     }
 

@@ -66,7 +66,8 @@ public class GeneralEventListener extends BadgeUpEventListener {
     @Exclude({
             AnimateHandEvent.class,
             // handled below by changeBlock
-            // have to include ChangeBlockEvent.Pre b/c of https://github.com/SpongePowered/SpongeForge/issues/1513
+            // have to include ChangeBlockEvent.Pre b/c of
+            // https://github.com/SpongePowered/SpongeForge/issues/1513
             ChangeBlockEvent.class, ChangeBlockEvent.Pre.class,
             // Pickup handled below by pickupItem
             ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Pickup.class, ChangeInventoryEvent.Pickup.Pre.class,
@@ -152,12 +153,12 @@ public class GeneralEventListener extends BadgeUpEventListener {
     @Listener(order = Order.POST)
     @Exclude({ChangeInventoryEvent.Pickup.Pre.class})
     public void pickupItem(ChangeInventoryEvent.Pickup event, @Root Player player) {
-    	List<SlotTransaction> transactions = event.getTransactions();
-    	
-    	if (transactions.isEmpty()) {
-    		return;
-    	}
-    	
+        List<SlotTransaction> transactions = event.getTransactions();
+
+        if (transactions.isEmpty()) {
+            return;
+        }
+
         int itemQuantity = transactions.get(0).getFinal().getQuantity() - transactions.get(0).getOriginal().getQuantity();
         // Sometimes it's 0 for some odd reason
         if (itemQuantity == 0) {
