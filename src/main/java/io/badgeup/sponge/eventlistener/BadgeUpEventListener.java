@@ -149,6 +149,11 @@ public abstract class BadgeUpEventListener {
 
     public void processEvent(Event event, Player player) {
         EventKeyProvider<Event> keyProvider = resolveKeyProvider(event.getClass());
+        
+        if (keyProvider == null) {
+            return;
+        }
+        
         final String key = keyProvider.provide(event);
 
         processEvent(event, player, key, 1);
