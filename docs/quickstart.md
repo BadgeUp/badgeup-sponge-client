@@ -2,7 +2,7 @@
 
 The BadgeUp Sponge client is [hosted on GitHub](https://github.com/BadgeUp/sponge-client). If you encounter any problems, find any bugs, or would like a feature, please [submit an issue](https://github.com/BadgeUp/sponge-client/issues/new).
 
-The BadgeUp Sponge Client is built on SpongeAPI v5.0.0. Make sure you install a compatible version of Sponge.
+The BadgeUp Sponge Client is built on SpongeAPI v7.0.0. Make sure you install a compatible version of Sponge.
 
 ## BadgeUp Setup
 1. [Create a BadgeUp account](https://www.badgeup.io/)
