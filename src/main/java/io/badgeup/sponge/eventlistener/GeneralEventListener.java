@@ -19,15 +19,14 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.action.SleepingEvent;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.block.CollideBlockEvent;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
-import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.CollideEntityEvent;
 import org.spongepowered.api.event.entity.ConstructEntityEvent;
@@ -49,9 +48,10 @@ import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.event.network.ChannelRegistrationEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.statistic.ChangeStatisticEvent;
-import org.spongepowered.api.statistic.achievement.Achievement;
+import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -69,7 +69,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             // have to include ChangeBlockEvent.Pre b/c of https://github.com/SpongePowered/SpongeForge/issues/1513
             ChangeBlockEvent.class, ChangeBlockEvent.Pre.class,
             // Pickup handled below by pickupItem
-            ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Pickup.class,
+            ChangeInventoryEvent.Held.class, ChangeInventoryEvent.Pickup.class, ChangeInventoryEvent.Pickup.Pre.class,
             ChangeStatisticEvent.class,
             ChannelRegistrationEvent.class,
             ClickInventoryEvent.class,
@@ -79,7 +79,6 @@ public class GeneralEventListener extends BadgeUpEventListener {
             ConstructEntityEvent.class,
             DropItemEvent.class, // handled below by spawnEntity
             GameReloadEvent.class,
-            GrantAchievementEvent.class, // handled below by grantAchievement
             InteractBlockEvent.class, // pretty useless - anything useful will
                                       // be in ChangeBlockEvent
             InteractItemEvent.class, // pretty useless
@@ -100,13 +99,13 @@ public class GeneralEventListener extends BadgeUpEventListener {
 
     @Listener(order = Order.POST)
     @Exclude({ConstructEntityEvent.class, DropItemEvent.Pre.class})
-    public void spawnEntity(Event event, @Root EntitySpawnCause cause)
+    public void spawnEntity(Event event, @Root Cause cause)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (!(cause.getEntity() instanceof Player)) {
+        if (!(cause.root() instanceof Player)) {
             return;
         }
 
-        Player player = (Player) cause.getEntity();
+        Player player = (Player) cause.root();
 
         if (event instanceof SpawnEntityEvent) {
             if (((SpawnEntityEvent) event).getEntities().isEmpty()) {
@@ -123,7 +122,7 @@ public class GeneralEventListener extends BadgeUpEventListener {
             if (event instanceof DropItemEvent.Dispense) {
                 int quantityDropped = 0;
                 try {
-                    quantityDropped = ((Item) entity).item().get().getCount();
+                    quantityDropped = ((Item) entity).item().get().getQuantity();
                 } catch (IndexOutOfBoundsException err) {
                     // suppress IndexOutOfBoundsException error and bail
                     // this fixes an "impossible" issue #27
@@ -151,8 +150,15 @@ public class GeneralEventListener extends BadgeUpEventListener {
     }
 
     @Listener(order = Order.POST)
+    @Exclude({ChangeInventoryEvent.Pickup.Pre.class})
     public void pickupItem(ChangeInventoryEvent.Pickup event, @Root Player player) {
-        int itemQuantity = event.getTargetEntity().item().get().getCount();
+    	List<SlotTransaction> transactions = event.getTransactions();
+    	
+    	if (transactions.isEmpty()) {
+    		return;
+    	}
+    	
+        int itemQuantity = transactions.get(0).getFinal().getQuantity() - transactions.get(0).getOriginal().getQuantity();
         // Sometimes it's 0 for some odd reason
         if (itemQuantity == 0) {
             return;
@@ -195,20 +201,6 @@ public class GeneralEventListener extends BadgeUpEventListener {
             newEvent.addDataEntry("Transaction", transaction);
             send(newEvent);
         }
-    }
-
-    @Listener(order = Order.POST)
-    public void grantAchievement(GrantAchievementEvent.TargetPlayer event)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Player player = event.getTargetEntity();
-        for (Achievement earnedAchievement : player.getAchievementData().achievements().get()) {
-            if (earnedAchievement.getId().equals(event.getAchievement().getId())) {
-                // Player has already earned the achievement -> do nothing
-                return;
-            }
-        }
-
-        processEvent(event, player);
     }
 
     @Listener(order = Order.POST)

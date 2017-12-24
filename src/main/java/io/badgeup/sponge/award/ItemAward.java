@@ -5,12 +5,12 @@ import io.badgeup.sponge.util.Util;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.SkullType;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.enchantment.Enchantment;
+import org.spongepowered.api.item.enchantment.EnchantmentType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.text.Text;
@@ -60,7 +60,7 @@ public class ItemAward extends Award {
 
         final Optional<List<Object>> rawEnchantmentsOpt = Util.safeGetList(this.data, "enchantments");
         if (rawEnchantmentsOpt.isPresent()) {
-            List<ItemEnchantment> enchantments = new ArrayList<>();
+            List<Enchantment> enchantments = new ArrayList<>();
             for (Object obj : rawEnchantmentsOpt.get()) {
                 if (!(obj instanceof JSONObject)) {
                     this.plugin.getLogger().error("Item enchantment entry is not a JSON object. Skipping enchantment.");
@@ -72,9 +72,9 @@ public class ItemAward extends Award {
                     this.plugin.getLogger().error("No enchantment ID specified. Skipping enchantment.");
                     continue;
                 }
-                Optional<Enchantment> enchantmentOpt = Sponge.getRegistry().getType(Enchantment.class,
+                Optional<EnchantmentType> enchantmentTypeOpt = Sponge.getRegistry().getType(EnchantmentType.class,
                         enchantmentIDOpt.get());
-                if (!enchantmentOpt.isPresent()) {
+                if (!enchantmentTypeOpt.isPresent()) {
                     this.plugin.getLogger().error(
                             "Could not find enchantment with ID " + enchantmentIDOpt.get() + ". Skipping enchantment.");
                     continue;
@@ -90,7 +90,8 @@ public class ItemAward extends Award {
                             .error("Invalid enchantment level of " + enchantLevel + ". Skipping enchantment.");
                     continue;
                 }
-                enchantments.add(new ItemEnchantment(enchantmentOpt.get(), enchantLevel));
+                
+                enchantments.add(Enchantment.builder().type(enchantmentTypeOpt.get()).level(enchantLevel).build());
             }
             if (!enchantments.isEmpty()) {
                 builder.add(Keys.ITEM_ENCHANTMENTS, enchantments);

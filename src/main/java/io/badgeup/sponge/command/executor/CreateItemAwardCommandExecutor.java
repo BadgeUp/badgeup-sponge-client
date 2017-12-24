@@ -13,11 +13,11 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.data.type.SkullType;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.enchantment.Enchantment;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -59,7 +59,7 @@ public class CreateItemAwardCommandExecutor implements CommandExecutor {
 
         JSONObject awardData = new JSONObject()
                 .put("type", "item")
-                .put("itemType", itemStack.getItem().getId())
+                .put("itemType", itemStack.getType().getId())
                 .put("quantity", itemStack.getQuantity());
 
         Optional<Text> displayNameOpt = itemStack.get(Keys.DISPLAY_NAME);
@@ -76,12 +76,12 @@ public class CreateItemAwardCommandExecutor implements CommandExecutor {
             awardData.put("lore", TextSerializers.FORMATTING_CODE.serialize(displayNameOpt.get()));
         }
 
-        Optional<List<ItemEnchantment>> enchantmentsOpt = itemStack.get(Keys.ITEM_ENCHANTMENTS);
+        Optional<List<Enchantment>> enchantmentsOpt = itemStack.get(Keys.ITEM_ENCHANTMENTS);
         if (enchantmentsOpt.isPresent()) {
             JSONArray enchantments = new JSONArray();
-            for (ItemEnchantment enchant : enchantmentsOpt.get()) {
+            for (Enchantment enchant : enchantmentsOpt.get()) {
                 enchantments.put(new JSONObject()
-                        .put("id", enchant.getEnchantment().getId())
+                        .put("id", enchant.getType().getId())
                         .put("level", enchant.getLevel()));
             }
             awardData.put("enchantments", enchantments);

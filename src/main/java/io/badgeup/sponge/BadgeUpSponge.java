@@ -129,7 +129,7 @@ public class BadgeUpSponge {
         // badgeup debug <player name>
         subCommands.put(Arrays.asList("debug"),
                 CommandSpec.builder().description(Text.of("Monitor player event activity")).arguments(GenericArguments.player(Text.of("player")))
-                        .permission("badgeup.admin.debug").executor(new DebugCommandExecutor(this)).build());
+                        .permission("badgeup.admin.debug").executor(new DebugCommandExecutor()).build());
 
         // /badgeup awards
         Map<List<String>, CommandSpec> awardsSubCommands = new HashMap<>();

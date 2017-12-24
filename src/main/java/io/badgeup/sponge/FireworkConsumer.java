@@ -5,9 +5,6 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
-import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.item.FireworkEffect;
 import org.spongepowered.api.item.FireworkShapes;
 import org.spongepowered.api.scheduler.Task;
@@ -44,8 +41,7 @@ public class FireworkConsumer implements Consumer<Task> {
         firework.offer(Keys.FIREWORK_EFFECTS, Lists.newArrayList(fireworkEffect));
         firework.offer(Keys.FIREWORK_FLIGHT_MODIFIER, 2);
 
-        this.player.getWorld().spawnEntity(firework,
-                Cause.source(EntitySpawnCause.builder().type(SpawnTypes.PLUGIN).entity(firework).build()).build());
+        this.player.getWorld().spawnEntity(firework);
 
         this.counter++;
 

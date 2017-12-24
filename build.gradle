@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.spongepowered:spongeapi:5.1.0'
+	compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
 	compile 'ninja.leaping.configurate:configurate-json:3.2'
 	compile 'com.squareup.okhttp3:okhttp:3.7.0'
     compile 'org.json:json:20160212'

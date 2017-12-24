@@ -1,7 +1,6 @@
 package io.badgeup.sponge.command.executor;
 
 import com.google.common.collect.Lists;
-import io.badgeup.sponge.BadgeUpSponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -21,12 +20,7 @@ import java.util.UUID;
 
 public class DebugCommandExecutor implements CommandExecutor {
 
-    private BadgeUpSponge plugin;
     private static Map<UUID, MessageChannel> messageChannels = new HashMap<>();
-
-    public DebugCommandExecutor(BadgeUpSponge plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {

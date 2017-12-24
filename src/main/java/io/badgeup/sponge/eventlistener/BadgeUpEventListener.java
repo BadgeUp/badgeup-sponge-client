@@ -11,7 +11,6 @@ import org.spongepowered.api.entity.living.Hostile;
 import org.spongepowered.api.entity.living.monster.Boss;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;
-import org.spongepowered.api.event.achievement.GrantAchievementEvent;
 import org.spongepowered.api.event.action.FishingEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.SpawnEntityEvent;
@@ -93,7 +92,7 @@ public abstract class BadgeUpEventListener {
 
             @Override
             public String provide(ChangeInventoryEvent.Pickup event) {
-                return getDefault(event) + ":" + event.getTargetEntity().getItemType().getId();
+                return getDefault(event) + ":" + event.getTransactions().get(0).getFinal().getType().getId();
             }
         });
 
@@ -122,14 +121,6 @@ public abstract class BadgeUpEventListener {
                 }
 
                 return getDefault(event) + ":" + entityCategory + ":" + id;
-            }
-        });
-
-        this.keyProviders.put(GrantAchievementEvent.class, new EventKeyProvider<GrantAchievementEvent>() {
-
-            @Override
-            public String provide(GrantAchievementEvent event) {
-                return "grantachievement:" + event.getAchievement().getId();
             }
         });
 

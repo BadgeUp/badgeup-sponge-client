@@ -10,9 +10,6 @@ import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
-import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
 import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
@@ -66,10 +63,8 @@ public class EntityAward extends Award {
         if (displayNameOpt.isPresent()) {
             entity.offer(Keys.DISPLAY_NAME, displayNameOpt.get());
         }
-
-        // TODO configurable world?
-        return player.getWorld().spawnEntity(entity,
-                Cause.source(EntitySpawnCause.builder().entity(entity).type(SpawnTypes.PLUGIN).build()).build());
+        
+        return player.getWorld().spawnEntity(entity);
     }
 
     private Optional<Vector3d> resolvePosition(JSONObject raw, Vector3d playerPosition) {
