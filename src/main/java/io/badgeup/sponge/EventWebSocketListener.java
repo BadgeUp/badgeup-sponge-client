@@ -6,6 +6,7 @@ import io.badgeup.sponge.util.Util;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongepowered.api.Sponge;
@@ -62,65 +63,69 @@ public class EventWebSocketListener extends WebSocketListener {
             return;
         }
 
-        JSONObject event = body.getJSONObject("event");
+        JSONArray resultsArray = body.getJSONArray("results");
+        List<JSONObject> results = new ArrayList<>();
+        resultsArray.forEach(result -> results.add((JSONObject) result));
 
-        List<JSONObject> completedAchievements = new ArrayList<>();
-        body.getJSONArray("progress").forEach(progressObj -> {
-            JSONObject record = (JSONObject) progressObj;
-            if (record.getBoolean("isComplete") && record.getBoolean("isNew")) {
-                completedAchievements.add(record);
-            }
-        });
+        for (JSONObject result : results) {
+            JSONObject event = result.getJSONObject("event");
 
-        for (JSONObject record : completedAchievements) {
-            try {
-                Optional<JSONObject> achievementOpt = this.plugin.getResourceCache().getAchievementById(record.getString("achievementId")).get();
-                if (!achievementOpt.isPresent()) {
-                    continue;
+            List<JSONObject> completedAchievements = new ArrayList<>();
+            result.getJSONArray("progress").forEach(progressObj -> {
+                JSONObject record = (JSONObject) progressObj;
+                if (record.getBoolean("isComplete") && record.getBoolean("isNew")) {
+                    completedAchievements.add(record);
                 }
-                JSONObject achievement = achievementOpt.get();
+            });
 
-                AwardPersistenceService awardPS = Sponge.getServiceManager()
-                        .provide(AwardPersistenceService.class).get();
-                List<String> awardIds = new ArrayList<>();
-                achievement.getJSONArray("awards")
-                        .forEach(awardId -> awardIds.add((String) awardId));
-
-                final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(UUID.fromString(event.getString("subject")));
-
-                for (String awardId : awardIds) {
-                    Optional<JSONObject> awardOpt = this.plugin.getResourceCache().getAwardById(awardId).get();
-                    if (!awardOpt.isPresent()) {
+            for (JSONObject record : completedAchievements) {
+                try {
+                    Optional<JSONObject> achievementOpt = this.plugin.getResourceCache().getAchievementById(record.getString("achievementId")).get();
+                    if (!achievementOpt.isPresent()) {
                         continue;
                     }
-                    JSONObject award = awardOpt.get();
+                    JSONObject achievement = achievementOpt.get();
 
-                    awardPS.increment(UUID.fromString(event.getString("subject")), awardId);
+                    AwardPersistenceService awardPS = Sponge.getServiceManager()
+                            .provide(AwardPersistenceService.class).get();
+                    List<String> awardIds = new ArrayList<>();
+                    achievement.getJSONArray("awards")
+                            .forEach(awardId -> awardIds.add((String) awardId));
 
-                    boolean autoRedeem = Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false);
-                    if (subjectOpt.isPresent() && autoRedeem) {
-                        // Check if the award is auto-redeemable and
-                        // send the redeem command if it is
-                        Sponge.getCommandManager().process(subjectOpt.get(), "redeem " + awardId);
+                    final Optional<Player> subjectOpt = Sponge.getServer().getPlayer(UUID.fromString(event.getString("subject")));
+
+                    for (String awardId : awardIds) {
+                        Optional<JSONObject> awardOpt = this.plugin.getResourceCache().getAwardById(awardId).get();
+                        if (!awardOpt.isPresent()) {
+                            continue;
+                        }
+                        JSONObject award = awardOpt.get();
+
+                        awardPS.increment(UUID.fromString(event.getString("subject")), awardId);
+
+                        boolean autoRedeem = Util.safeGetBoolean(award.getJSONObject("data"), "autoRedeem").orElse(false);
+                        if (subjectOpt.isPresent() && autoRedeem) {
+                            // Check if the award is auto-redeemable and
+                            // send the redeem command if it is
+                            Sponge.getCommandManager().process(subjectOpt.get(), "redeem " + awardId);
+                        }
                     }
-                }
 
-                if (!subjectOpt.isPresent()) {
-                    // Store the achievement to be presented later
-                    AchievementPersistenceService achPS = Sponge.getServiceManager()
-                            .provide(AchievementPersistenceService.class).get();
-                    achPS.increment(UUID.fromString(event.getString("subject")), achievement.getString("id"));
-                } else {
-                    // Present the achievement to the player
-                    this.plugin.presentAchievement(subjectOpt.get(), achievement.getString("id"));
-                }
+                    if (!subjectOpt.isPresent()) {
+                        // Store the achievement to be presented later
+                        AchievementPersistenceService achPS = Sponge.getServiceManager()
+                                .provide(AchievementPersistenceService.class).get();
+                        achPS.increment(UUID.fromString(event.getString("subject")), achievement.getString("id"));
+                    } else {
+                        // Present the achievement to the player
+                        this.plugin.presentAchievement(subjectOpt.get(), achievement.getString("id"));
+                    }
 
-            } catch (JSONException | InterruptedException | ExecutionException e) {
-                this.plugin.getLogger().error("Error presenting achievements: ");
-                e.printStackTrace();
+                } catch (JSONException | InterruptedException | ExecutionException e) {
+                    this.plugin.getLogger().error("Error presenting achievements: ");
+                    e.printStackTrace();
+                }
             }
         }
-
     }
-
 }

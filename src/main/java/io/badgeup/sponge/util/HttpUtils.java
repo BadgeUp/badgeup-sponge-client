@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 public class HttpUtils {
 
-    private static final String V1_APPS = "/v1/apps/";
+    private static final String V2_APPS = "/v2/apps/";
     private static Logger httpClientLogger = Logger.getLogger(OkHttpClient.class.getName());
     private static OkHttpClient httpClient = new OkHttpClient.Builder()
             .connectionPool(new ConnectionPool(5, 15, TimeUnit.SECONDS))
@@ -43,7 +43,7 @@ public class HttpUtils {
 
     public static Response post(String url, JSONObject body) throws IOException {
         RequestBody requestBody = RequestBody.create(MediaType.parse(body.toString()), body.toString());
-        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(getHeaders(requestBody)).post(requestBody).build();
+        Request request = new Request.Builder().url(baseUrl + V2_APPS + appId + url).headers(getHeaders(requestBody)).post(requestBody).build();
 
         return httpClient.newCall(request).execute();
     }
@@ -54,7 +54,7 @@ public class HttpUtils {
     }
 
     public static Response get(String url) throws IOException {
-        Request request = new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(getHeaders()).get().build();
+        Request request = new Request.Builder().url(baseUrl + V2_APPS + appId + url).headers(getHeaders()).get().build();
         return httpClient.newCall(request).execute();
     }
 
@@ -63,7 +63,7 @@ public class HttpUtils {
     }
 
     public static Request getRequest(String url) {
-        return new Request.Builder().url(baseUrl + V1_APPS + appId + url).headers(getHeaders()).get().build();
+        return new Request.Builder().url(baseUrl + V2_APPS + appId + url).headers(getHeaders()).get().build();
     }
 
     public static JSONObject parseBody(Response response) throws JSONException, IOException {
@@ -76,7 +76,7 @@ public class HttpUtils {
 
     public static String getWebSocketUrl() {
         String baseUrl = getApiBaseUrl().replace("https://", "wss://").replace("http://", "ws://");
-        return baseUrl + V1_APPS + appId + "/events/streams/create?authorization=" + getAuthHeader() + "&userAgent=" + getUserAgent();
+        return baseUrl + V2_APPS + appId + "/events/streams/create?authorization=" + getAuthHeader() + "&userAgent=" + getUserAgent();
     }
 
     private static Headers.Builder getHeadersBuilder() {
