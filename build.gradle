@@ -17,7 +17,7 @@ sponge {
 }
 
 group = 'io.badgeup'
-version = '3.0.1'
+version = '3.1.0'
 description = 'Easily add Achievements and Awards to your Sponge server'
 
 sourceCompatibility = 1.8
