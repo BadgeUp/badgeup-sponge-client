@@ -1,3 +1,7 @@
+# :warning: DEPRECATED :warning:
+
+This library is no longer actively maintained, and should not be used.
+
 # BadgeUp Sponge Client
 > Easily add Achievements and Awards to your Sponge server
 
